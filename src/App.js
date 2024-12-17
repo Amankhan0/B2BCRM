@@ -1,12 +1,17 @@
 import React from 'react';
 import './App.css';
 import Main from './Panel/panel';
+import { getTrackYourTransportUser } from './Storage/Storage';
+import BeforeLogin from './Panel/BeforeLogin';
 
 function App() {
+  var user = getTrackYourTransportUser()
+
+  console.log("user", user);
+
   return (
     <div className="App">
-      {/* <p className='text-red-400'>sdkjcnfjkfref</p> */}
-      <Main/>
+      {user ? <Main /> : <BeforeLogin/>}
     </div>
   );
 }
