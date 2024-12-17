@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <g id="truck">
+    <g id="Group_218" data-name="Group 218">
+      <g id="Group_217" data-name="Group 217">
+        <path id="Path_103" data-name="Path 103" d="M74.53,21.09l-6.28-13.33c-.22-.46-.69-.76-1.2-.77h-12.39c-.74,0-1.33.6-1.33,1.33h0v13.34c0,.74.6,1.33,1.33,1.33h18.67c.74,0,1.33-.6,1.33-1.34,0-.19-.04-.39-.13-.56h0ZM56,20.32v-10.66h10.21l5.02,10.67h-15.23Z" style="fill: #0885a6; stroke: #fff; stroke-width: .6px;"/>
+      </g>
+    </g>
+    <g id="Group_220" data-name="Group 220">
+      <g id="Group_219" data-name="Group 219">
+        <rect id="Rectangle_215" data-name="Rectangle 215" x="53.35" y="24.3" width="3.91" height="2.69" style="fill: #0885a6; stroke: #fff; stroke-width: .6px;"/>
+      </g>
+    </g>
+    <g id="Group_222" data-name="Group 222">
+      <g id="Group_221" data-name="Group 221">
+        <path id="Path_104" data-name="Path 104" d="M79.86,19.73l-8-16c-.23-.45-.69-.74-1.2-.74h-21.33c-.74,0-1.33.6-1.33,1.33v22.67h-2.67V6.99c0-.74-.6-1.33-1.33-1.33H1.33C.6,5.66,0,6.26,0,6.99v32c0,.74.6,1.33,1.33,1.33h10.79c.73,4.35,4.84,7.29,9.19,6.57,3.37-.56,6.01-3.2,6.57-6.57h29.57c.73,4.35,4.84,7.29,9.19,6.57,3.37-.56,6.01-3.2,6.57-6.57h5.45c.74,0,1.33-.6,1.33-1.33v-18.67c0-.21-.05-.41-.14-.59ZM34.66,8.33h8v8h-8v-8ZM34.66,18.99h8v8h-8v-8ZM24,8.33h8v8h-8v-8ZM24,18.99h8v8h-8v-8ZM13.33,8.33h8v8h-8v-8ZM13.33,18.99h8v8h-8v-8ZM2.67,8.33h8v8H2.67v-8ZM2.67,18.99h8v8H2.67v-8ZM20,44.33c-2.95,0-5.33-2.39-5.33-5.33s2.39-5.33,5.33-5.33,5.33,2.39,5.33,5.33c0,2.94-2.39,5.33-5.33,5.33h0ZM48,37.65h-20.12c-.73-4.35-4.84-7.29-9.19-6.57-3.37.56-6.01,3.2-6.57,6.57H2.67v-8h45.33v8ZM65.33,44.32c-2.95,0-5.33-2.39-5.33-5.33s2.39-5.33,5.33-5.33,5.33,2.39,5.33,5.33c0,2.95-2.38,5.33-5.33,5.34h0ZM77.33,37.65h-4.12c-.73-4.35-4.84-7.29-9.19-6.57-3.37.56-6.01,3.2-6.57,6.57h-6.79V5.66h19.18l7.49,14.98v17.01Z" style="fill: #0885a6; stroke: #fff; stroke-width: .6px;"/>
+      </g>
+    </g>
+    <g id="Group_228" data-name="Group 228">
+      <g id="Group_227" data-name="Group 227">
+        <rect id="Rectangle_218" data-name="Rectangle 218" x="18.64" y="37.74" width="2.69" height="2.69" style="fill: #0885a6; stroke: #fff; stroke-width: .6px;"/>
+      </g>
+    </g>
+    <g id="Group_230" data-name="Group 230">
+      <g id="Group_229" data-name="Group 229">
+        <rect id="Rectangle_219" data-name="Rectangle 219" x="64.11" y="37.74" width="2.44" height="2.69" style="fill: #0885a6; stroke: #fff; stroke-width: .6px;"/>
+      </g>
+    </g>
+  </g>
+</svg>
