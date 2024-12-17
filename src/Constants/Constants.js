@@ -1,6 +1,5 @@
 // *************** VERCEL *******************************
-export const BaseUrl = "https://ulip.headsupcorporation.com/api/"
-export const BaseUrl2 = "https://ulip.headsupcorporation.com/"
+
 
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
@@ -9,6 +8,22 @@ export const BaseUrl2 = "https://ulip.headsupcorporation.com/"
 // *************** Local *******************************
 // export const BaseUrl = 'http://192.168.1.33:3001/api/'
 // export const BaseUrl2 = "http://192.168.1.33:3001/"
+
+
+
+
+// *************** TYT *******************************
+// export const BaseUrl = "https://api.trackyourtransport.in/api/"
+// export const BaseUrl2 = "https://api.trackyourtransport.in/"
+
+// *************** Local *******************************
+export const BaseUrl = 'http://192.168.1.32:3001/api/'
+export const BaseUrl2 = "http://192.168.1.32:3001/"
+
+let USER = 'user/'
+export const login = BaseUrl + USER+'login'
+export const verifyUser = BaseUrl + USER +'verifyUser'
+
 
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
 export const LoginApi = BaseUrl + 'Login'
