@@ -17,8 +17,8 @@
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://192.168.1.32:3001/api/'
-export const BaseUrl2 = "http://192.168.1.32:3001/"
+export const BaseUrl = 'http://192.168.1.37:3001/api/'
+export const BaseUrl2 = "http://192.168.1.37:3001/"
 
 let USER = 'user/'
 export const login = BaseUrl + USER+'login'

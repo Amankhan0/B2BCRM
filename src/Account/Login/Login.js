@@ -9,10 +9,13 @@ import { SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
 import { ApiHit } from '../../Constants/ApiFunction /ApiHit';
 import { login, verifyUser } from '../../Constants/Constants';
 import { regexEmail } from '../../utils';
+import InputOtp from '../../Component/OTP/InputOtp';
 
 function Login() {
     const dispatch = useDispatch();
     const [passwordTab, setPasswordTab] = useState(false)
+    const [otpTab , setOtpTab] = useState(false)
+    const [otp, setOtp] = useState('');
 
     const ApiReducer = useSelector((state) => state.ApiReducer);
     console.log("ApiReducer", ApiReducer);
@@ -38,9 +41,11 @@ function Login() {
                     else if(res?.message === "Wrong credentials"){
                         dispatch(setDataAction({ password: res?.message }, SET_API_JSON_ERROR))
                     }
+                    else if(res?.doc?.message === "OTPTab"){
+                        setOtpTab(true)
+                    }
                     else if(res?.doc?.message === "Loggged in successfully"){
-                        alert(res?.doc?.message)
-                      
+                        alert(res?.doc?.message) 
                     }
                 })
             }
@@ -49,7 +54,10 @@ function Login() {
 
     const handleLogin = () =>{
         handleVerify('login')
+    }
+    const handleVerifyOTP = ()=>{
 
+alert('verifyed')
     }
 
     return (
@@ -79,14 +87,27 @@ function Login() {
                 </div>
                 <div className="flex flex-col items-center w-full bg-white dark:bg-navy-700 lg:max-w-md">
                     <div className="flex flex-col justify-center w-full max-w-sm p-5 grow">
+                    <div className="text-center">
+                    <img
+                        className="w-16 h-16 mx-auto lg:hidden"
+                        src="https://play-lh.googleusercontent.com/e9LsfVvW11r0W0ONb0clg_Q4j_KBvfxlU8N6gCnqBxqy49XKLH5ZVkxwul-nyuFBGw"
+                        alt="logo"
+                    />
+                    <div className="mt-4">
+                        <h2 className="text-2xl font-semibold text-slate-600 dark:text-navy-100">
+                            Welcome
+                        </h2>
+                        <p className="text-slate-400 dark:text-navy-300">
+                            Login to continue
+                        </p>
+                    </div>
+                </div>
                         <div className="mt-16">
-                            <LoginInput imp={true} label={'Email'} name={'email'} lowercase error={!regexEmail?.test(ApiReducer?.apiJson?.email) || ApiReducer?.apiJsonError?.email} />
-                            {passwordTab &&
-                                <LoginInput imp={true} label={'Password'} name={'password'}  error={ ApiReducer?.apiJsonError?.password} />
-
-                            }
+                            <LoginInput imp={true} label={'Email'} name={'email'} lowercase error={!regexEmail?.test(ApiReducer?.apiJson?.email) || ApiReducer?.apiJsonError?.email} disabled={passwordTab ||otpTab } />
+                            {passwordTab && <LoginInput imp={true} label={'Password'} name={'password'}  error={ ApiReducer?.apiJsonError?.password}  />}
+                            {otpTab && <InputOtp otp={otp} setOtp={setOtp}/>}
                             <div className="mt-3 mb-3">
-                              { passwordTab ?  <BeforeLoginButton title={'Login'} onClick={handleLogin} /> :<BeforeLoginButton title={'Verify'} onClick={handleVerify} />}
+                              { passwordTab ?  <BeforeLoginButton title={'Login'} onClick={handleLogin} /> :otpTab ? <BeforeLoginButton title={'Verify OTP'} onClick={handleVerifyOTP} /> : <BeforeLoginButton title={'Verify'} onClick={handleVerify} />}
                             </div>
                         </div>
                     </div>
