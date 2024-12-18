@@ -1,10 +1,5 @@
-export const trackYourTransportUser = 'trackYourTransportUser';
+export const trackYourTransportUser = 'armyUser';
 export const tytPlan = 'tytPlan';
-
-
-
-
-
 
 
 

@@ -5,6 +5,8 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 
 function LoginInput({ imp, label, error, errormsg, name, title, important, type, defaultValue,lowercase , disabled}) {
 
+  
+
   console.log("error",error);
   
   const dispatch = useDispatch();

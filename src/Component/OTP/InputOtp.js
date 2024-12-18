@@ -3,7 +3,7 @@ import { useState } from 'react';
 import OtpInput from 'react-otp-input';
 
 
-function InputOtp({otp,setOtp}) {
+function InputOtp({otp,setOtp,otpError}) {
 
     console.log("OTP",otp);
     
@@ -27,6 +27,7 @@ function InputOtp({otp,setOtp}) {
                     borderRadius: '4px',
                 }}
             />
+           { otpError && <div className='text-red-600 mt-2'>{otpError}</div>} 
         </div>
     )
 }

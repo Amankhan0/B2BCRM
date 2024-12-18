@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "../Webview/Dashboard";
 import CreateTrip from "../Webview/CreateTrip";
 import ViewTrip from "../Webview/ViewTrip";
+import Profile from "../Account/Profile/Profile";
 
 const PanelRoutes = () => {
 
@@ -12,6 +13,8 @@ const PanelRoutes = () => {
           <Route path="/" exact element={<Dashboard />} />
           <Route path="/trip/create" exact element={<CreateTrip />} />
           <Route path="/trip/view" exact element={<ViewTrip />} />
+          <Route path="/profile" exact element={<Profile />} />
+
           {/* <Route path="/shared/trip/view" exact element={<ViewSharedTrip />} />
           <Route path="/trip/edit/:id/:index/:ref" exact element={<EditTrip />} />
           <Route path="/trip/edit/:id/:index/" exact element={<EditTrip />} />
