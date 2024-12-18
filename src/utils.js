@@ -691,3 +691,6 @@ export const finalCreateJson = (data, user) => {
       resolve(createTripFinalJson)
   })
 }
+
+
+export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhYTAzOGFlYzg4YTIxYWJjOWM3YTkiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNzM0MDg1NzU2LCJleHAiOjE3MzQwODkzNTZ9.YdNi7vs2XxITgTWUz62Y-rPQj6PoDvvfhAXrHs6fNno"
