@@ -6,8 +6,9 @@ import LocationInformation from './LocationInformation';
 import MyVehicleTypeInput from '../Component/MyVehicleTypeInput';
 import DatePicker from '../Component/DatePicker';
 import MyButton from '../Component/MyButton';
-import { finalCreateJson } from '../utils';
+import { ApiHit, finalCreateJson } from '../utils';
 import GMap from './GMap';
+import { CreateTripApi } from '../Constants/Constants';
 
 function CreateTrip() {
 
@@ -17,7 +18,9 @@ function CreateTrip() {
 
   const onSubmit = () => {
     finalCreateJson(ApiReducer,).then(res => {
-      console.log('res', res);
+      ApiHit(res,CreateTripApi).then(result=>{
+        console.log('res',result);
+      })
     })
   }
 

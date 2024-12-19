@@ -1,6 +1,5 @@
 // *************** VERCEL *******************************
 
-
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
@@ -9,21 +8,19 @@
 // export const BaseUrl = 'http://192.168.1.33:3001/api/'
 // export const BaseUrl2 = "http://192.168.1.33:3001/"
 
-
-
-
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://192.168.0.132:3001/api/'
-export const BaseUrl2 = "http://192.168.0.132:3001/"
-
+export const BaseUrl = 'http://192.168.1.9:8002/api/trip/'
+export const BaseUrl2 = "http://192.168.1.9:8002/"
+//  8002
 let USER = 'user/'
+let TRIP = 'trip/'
+
 export const login = BaseUrl + USER+'login'
 export const verifyUser = BaseUrl + USER +'verifyUser'
-
 
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
 export const LoginApi = BaseUrl + 'Login'
@@ -39,7 +36,7 @@ export const GetSubscribed = BaseUrl + 'GetSubscribed'
 export const GenerateQR = BaseUrl + "/generateQR"
 export const verifyConsent = BaseUrl + 'verifyConsent'
 export const ULIPApiHandler = BaseUrl + 'ULIPApiHandler'
-export const CreateTrip = BaseUrl + 'CreateTrip'
+export const CreateTripApi = BaseUrl + 'CreateTrip'
 export const checkEway = BaseUrl + 'checkEway'
 export const getTrip = BaseUrl + 'getTrip'
 export const UpdateTrip = BaseUrl + 'UpdateTrip'
@@ -271,6 +268,3 @@ export const getMessages = BaseUrl + "getMessages"
 // export const UpDateTrip = BaseUrl3 + 'trips/'
 // export const EndTripApi = BaseUrl3 + 'trips/end/'
 // export const UpDateTrip = BaseUrl3 + 'trips/'
-
-
-
