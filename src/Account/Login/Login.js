@@ -8,12 +8,14 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
 import { ApiHit } from '../../Constants/ApiFunction /ApiHit';
 import { login, verifyUser } from '../../Constants/Constants';
-import { regexEmail, STROGNPASSWORD } from '../../utils';
+import { regexEmail, secretKey, STROGNPASSWORD } from '../../utils';
 import InputOtp from '../../Component/OTP/InputOtp';
 import { VerifyPasswordValidation } from '../../ValidationScheema/PasswordValidate';
 import { TbRulerOff } from 'react-icons/tb';
 import ChangePassword from '../ChangePassword';
 import { setTrackYourTransportUser } from '../../Storage/Storage';
+import CryptoJS from 'crypto-js';
+
 
 function Login() {
     const dispatch = useDispatch();
@@ -22,6 +24,8 @@ function Login() {
     const [otp, setOtp] = useState('');
     const [otpError, setOtpError] = useState('')
     const [changePassword, setChangePassword] = useState(false)
+
+
 
     const ApiReducer = useSelector((state) => state.ApiReducer);
     console.log("ApiReducer", ApiReducer);
@@ -47,8 +51,19 @@ function Login() {
                 }
                 if (type === 'login') {
                     apiToHit = login
+
+                    if(ApiReducer.apiJson.password){
+                        var encryption = CryptoJS.AES.encrypt(JSON.stringify(json?.password), secretKey).toString();
+                        json.password = encryption
+                    }
+            
+
+
                 }
                 ApiHit(json, apiToHit).then((res) => {
+
+                    console.log("json",json);
+                    
                     console.log("res++++", res?.doc?.message);
                     if (res?.message === 'No Data Found') {
                         dispatch(setDataAction({ email: 'email not found' }, SET_API_JSON_ERROR))

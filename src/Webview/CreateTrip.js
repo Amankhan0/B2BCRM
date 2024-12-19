@@ -9,6 +9,7 @@ import MyButton from '../Component/MyButton';
 import { ApiHit, finalCreateJson } from '../utils';
 import GMap from './GMap';
 import { CreateTripApi } from '../Constants/Constants';
+import { getTrackYourTransportUser } from '../Storage/Storage';
 
 function CreateTrip() {
 
@@ -16,15 +17,40 @@ function CreateTrip() {
 
   var editPage = window.location.pathname.split('/')[2]
 
+  var user = getTrackYourTransportUser()
+
   const onSubmit = () => {
-    finalCreateJson(ApiReducer,).then(res => {
-      ApiHit(res,CreateTripApi).then(result=>{
-        console.log('res',result);
+    finalCreateJson(ApiReducer, user).then(res => {
+
+      var oldJson = res
+      var vehicleTollDetails = []
+      var newGeometry = {}
+      oldJson.driverDetails.map((ele, index) => {
+        vehicleTollDetails.push({
+          vehicleNumber: ele?.vehicleNumber,
+          axles: ele?.axles,
+          tollsArr: {
+            tolls: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].tolls,
+            summary: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].summary,
+            costs: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].costs,
+          }
+        })
+      })
+
+      newGeometry.vehicleInformationWithToll = vehicleTollDetails
+      newGeometry.polyline = oldJson?.geometry?.polyline
+      newGeometry.routeArr = oldJson?.geometry?.routeArr
+      oldJson.geometry = newGeometry
+
+      console.log('oldJson',oldJson);
+
+      ApiHit(oldJson, CreateTripApi).then(result => {
+        console.log('res', result);
       })
     })
   }
 
-  console.log('ApiReducer', ApiReducer);
+  console.log('ApiReducer?.createTripJson---', ApiReducer?.createTripJson);
 
   return (
     <div className=' m-5'>
@@ -36,10 +62,10 @@ function CreateTrip() {
           <div className='grid grid-cols-2 gap-6 p-3 bg-white rounded-b-xl'>
             <DatePicker name='genratedDate' title={ApiReducer.tripForm === 'withoutEway' ? 'Created On' : 'Generated on'} placeholder={ApiReducer.tripForm === 'withoutEway' ? 'Enter created date' : 'Enter generated date'} important={true} currentTime={true} />
             <DatePicker name='eWayBillValidity' title={ApiReducer.tripForm === 'withoutEway' ? 'Valid Till' : 'Valid Upto'} placeholder={ApiReducer.tripForm === 'withoutEway' ? 'Enter validity' : 'valid upto'} important={true} MidNight={true} />
-            <MyInput name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
-            <MyInput name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
-            <MyInput name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
-            <MyVehicleTypeInput name={'vehicleType'} />
+            <MyInput createTripJson name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
+            <MyInput createTripJson name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
+            <MyInput createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
+            <MyVehicleTypeInput createTripJson name={'vehicleType'} />
           </div>
           <LocationInformation />
         </div>

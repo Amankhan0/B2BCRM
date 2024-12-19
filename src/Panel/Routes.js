@@ -4,6 +4,7 @@ import Dashboard from "../Webview/Dashboard";
 import CreateTrip from "../Webview/CreateTrip";
 import ViewTrip from "../Webview/ViewTrip";
 import Profile from "../Account/Profile/Profile";
+import TrackMap from "../Webview/TrackMap";
 
 const PanelRoutes = () => {
 
@@ -14,6 +15,7 @@ const PanelRoutes = () => {
           <Route path="/trip/create" exact element={<CreateTrip />} />
           <Route path="/trip/view" exact element={<ViewTrip />} />
           <Route path="/profile" exact element={<Profile />} />
+          <Route path="/track/map/:id/:index" exact element={<TrackMap />} />
 
           {/* <Route path="/shared/trip/view" exact element={<ViewSharedTrip />} />
           <Route path="/trip/edit/:id/:index/:ref" exact element={<EditTrip />} />

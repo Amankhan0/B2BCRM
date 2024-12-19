@@ -9,10 +9,14 @@ import { thunk } from 'redux-thunk';
 import { Toaster } from 'react-hot-toast';
 import SidebarReducer from './Store/Reducer/SidebarReducer';
 import ApiReducer from './Store/Reducer/ApiReducer';
+import PaginationReducer from './Store/Reducer/PaginationReducer';
+import TripReducer from './Store/Reducer/TripReducer';
 
 const rootReducer = combineReducers({
   SidebarReducer:SidebarReducer,
-  ApiReducer:ApiReducer
+  ApiReducer:ApiReducer,
+  PaginationReducer:PaginationReducer,
+  TripReducer:TripReducer
 })
 
 

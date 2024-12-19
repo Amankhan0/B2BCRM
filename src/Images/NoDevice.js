@@ -1,6 +1,6 @@
 // export const NoDeviceIcon = () => {
 // 	<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-// 		viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xmlSpace="preserve">
+// 		viewBox="0 0 500 500" style="enableBackground:new 0 0 500 500;" xmlSpace="preserve">
 // 		<g id="Floor">
 // 			<path id="Floor_5_" style={{ fill: "#F5F5F5" }} d="M407.51,431.19c-87.422,48.426-229.162,48.427-316.582,0.001
 // 		c-87.422-48.427-87.422-126.941,0-175.367c87.422-48.427,229.161-48.427,316.583-0.001

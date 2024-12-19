@@ -630,57 +630,53 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
   });
 };
 
-
-
-
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {
       var createTripFinalJson = {
-          "eWayBillDetails": [
-              {
-                  "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
-                  "tripReferenceNumber": data?.apiJson?.tripReferenceNumber ? data?.apiJson?.tripReferenceNumber : '',
-                  "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
-                  "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
-                  "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
-                  "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',
-                  "totalTaxabaleAmount": data?.apiJson?.totalTaxabaleAmount ? data?.apiJson?.totalTaxabaleAmount : ''
-              }
-          ],
-          "traderDetils": [
-              {
-                  "traderName": data?.apiJson?.traderName ? data?.apiJson?.traderName : '',
-                  "traderPan": data?.apiJson?.traderPan ? data?.apiJson?.traderPan : '',
-                  "traderContact": data?.apiJson?.traderContact ? data?.apiJson?.traderContact : '',
-                  "traderEmail": data?.apiJson?.traderEmail ? data?.apiJson?.traderEmail : '',
-                  "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
-                  "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
-              }
-          ],
-          "transporterDetails": [
-              {
-                  "transporterName": data?.apiJson?.transporterName ? data?.apiJson?.transporterName : '',
-                  "transporterPan": data?.apiJson?.transporterPan ? data?.apiJson?.transporterPan : '',
-                  "transporterContact": data?.apiJson?.transporterContact ? data?.apiJson?.transporterContact : '',
-                  "transporterEmail": data?.apiJson?.transporterEmail ? data?.apiJson?.transporterEmail : '',
-                  "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
-                  "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
-              }
-          ],
-          "locationDetails": [
-              {
-                  "sourceLocation": data?.apiJson?.sourceLocation ? data?.apiJson?.sourceLocation : '',
-                  "destinationLocation": data?.apiJson?.destinationLocation ? data?.apiJson?.destinationLocation : '',
-                  "distance": data?.apiJson?.distance ? data?.apiJson?.distance : ''
-              }
-          ],
-          "geometry": data?.apiJson?.tollGuruGeo ? data?.apiJson?.tollGuruGeo : '',
+        "eWayBillDetails": [
+          {
+              "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
+              "tripReferenceNumber": generateRandomNumber(),
+              "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
+              "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
+              "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
+              "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',
+              "totalTaxabaleAmount": data?.apiJson?.totalTaxabaleAmount ? data?.apiJson?.totalTaxabaleAmount : ''
+          }
+      ],
+      "traderDetils": [
+          {
+              "traderName": data?.apiJson?.traderName ? data?.apiJson?.traderName : '',
+              "traderPan": data?.apiJson?.traderPan ? data?.apiJson?.traderPan : '',
+              "traderContact": data?.apiJson?.traderContact ? data?.apiJson?.traderContact : '',
+              "traderEmail": data?.apiJson?.traderEmail ? data?.apiJson?.traderEmail : '',
+              "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+              "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+          }
+      ],
+      "transporterDetails": [
+          {
+              "transporterName": data?.apiJson?.transporterName ? data?.apiJson?.transporterName : '',
+              "transporterPan": data?.apiJson?.transporterPan ? data?.apiJson?.transporterPan : '',
+              "transporterContact": data?.apiJson?.transporterContact ? data?.apiJson?.transporterContact : '',
+              "transporterEmail": data?.apiJson?.transporterEmail ? data?.apiJson?.transporterEmail : '',
+              "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+              "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+          }
+      ],
+      "locationDetails": [
+          {
+              "sourceLocation": data?.apiJson?.sourceLocation ? data?.apiJson?.sourceLocation : '',
+              "destinationLocation": data?.apiJson?.destinationLocation ? data?.apiJson?.destinationLocation : '',
+              "distance": data?.apiJson?.distance ? data?.apiJson?.distance : ''
+          }
+      ],
+      "geometry": data?.apiJson?.tollGuruGeo ? data?.apiJson?.tollGuruGeo : '',
 
-          "driverDetails": [{driverName:data?.apiJson?.driverName,driverContact:data?.apiJson?.driverContact,vehicleNumber:data?.apiJson?.vehicleNumber,vehicleType:data?.apiJson?.vehicleType}],
-
+      "driverDetails": data?.createTripJson?.driverDetails,
           "epod": data?.createTripJson?.epod[0],
 
-          // "user_id": user.userData.doc._id,
+          "user_id": user?._id,
 
           "status": {
               msg: 'Trip Added',
@@ -691,3 +687,6 @@ export const finalCreateJson = (data, user) => {
       resolve(createTripFinalJson)
   })
 }
+
+
+export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhYTAzOGFlYzg4YTIxYWJjOWM3YTkiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNzM0MDg1NzU2LCJleHAiOjE3MzQwODkzNTZ9.YdNi7vs2XxITgTWUz62Y-rPQj6PoDvvfhAXrHs6fNno"

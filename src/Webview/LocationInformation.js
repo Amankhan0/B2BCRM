@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { SET_API_JSON, SET_API_JSON_ERROR, SET_TRIP_STEP } from "../Store/ActionName/ActionName";
+import { SET_API_JSON, SET_API_JSON_ERROR, SET_CREATE_TRIP_JSON, SET_TRIP_STEP } from "../Store/ActionName/ActionName";
 import { CheckLocationValidation } from "./Validation";
 import { Colors } from "../Colors/color";
 import MyLoader from "../Component/MyLoader";
@@ -9,6 +9,8 @@ import { ApiHit, decodeGeometery } from "../utils";
 import { getTollGuru } from "../Constants/Constants";
 import GoogleLocationSearch from "../Component/GoogleLocationSearch";
 import { setDataAction } from "../Store/Action/SetDataAction";
+import { truckicon } from "../SVG/Icons";
+import MyInput from "../Component/MyInput";
 
 const LocationInformation = ({ editPage }) => {
 
@@ -50,44 +52,47 @@ const LocationInformation = ({ editPage }) => {
     function myFunction() {
         console.log('call ----- --');
         setLoopOff(true)
-        var json = {
-            "from": {
-                "lat": ApiReducer?.apiJson?.sourceLocation?.geometry?.location?.lat?.(),
-                "lng": ApiReducer?.apiJson?.sourceLocation?.geometry?.location?.lng?.()
-            },
-            "to": {
-                "lat": ApiReducer?.apiJson?.destinationLocation?.geometry?.location?.lat?.(),
-                "lng": ApiReducer?.apiJson?.destinationLocation?.geometry?.location?.lng?.()
-            },
-            "vehicle": {
-                "type": ApiReducer?.apiJson?.vehicleType,
-                "axles": ApiReducer?.apiJson?.axles
-            },
-            "json": true
-        }
-        if (json?.from?.lat && json?.to?.lat) {
-            setLoader(true)
-            ApiHit(json, getTollGuru).then(res => {
-                console.log('res', res);
-                if (res?.status === 200) {
-                    var oldArr = ApiReducer?.apiJson
-                    oldArr.suggestedRoutes = res?.doc
-                    setLoader(false)
-                    dispatch(setDataAction(oldArr, SET_API_JSON))
-                    // oldArr.driverDetails[index].tollInfo = res?.doc
-
-                    // if (oldArr.routes) {
-                    //     oldArr.routes.push(res?.doc)
-                    // }
-                    // else {
-                    //     oldArr.routes = [res?.doc]
-                    // }
-                    // if (index + 1 === ApiReducer?.createTripJson?.driverDetails?.length) {
-                    //     setLoader(false)
-                    //     dispatch(setDataAction(oldArr, SET_CREATE_TRIP_JSON))
-                    // }
+        if (editPage) {
+            console.log("null")
+        } else {
+            for (let index = 0; index < ApiReducer?.createTripJson?.driverDetails?.length; index++) {
+                const element = ApiReducer?.createTripJson?.driverDetails?.[index];
+                var json = {
+                    "from": {
+                        "lat": ApiReducer?.apiJson?.sourceLocation?.geometry?.location?.lat?.(),
+                        "lng": ApiReducer?.apiJson?.sourceLocation?.geometry?.location?.lng?.()
+                    },
+                    "to": {
+                        "lat": ApiReducer?.apiJson?.destinationLocation?.geometry?.location?.lat?.(),
+                        "lng": ApiReducer?.apiJson?.destinationLocation?.geometry?.location?.lng?.()
+                    },
+                    "vehicle": {
+                        "type": element?.vehicleType,
+                        "axles": element?.axles
+                    },
+                    "json": true
                 }
-            })
+                if (json?.from?.lat && json?.to?.lat) {
+                    setLoader(true)
+                    ApiHit(json, getTollGuru).then(res => {
+                        if (res?.status === 200) {
+                            var oldArr = ApiReducer?.createTripJson
+                            oldArr.driverDetails[index].tollInfo = res?.doc
+
+                            if (oldArr.routes) {
+                                oldArr.routes.push(res?.doc)
+                            }
+                            else {
+                                oldArr.routes = [res?.doc]
+                            }
+                            if (index + 1 === ApiReducer?.createTripJson?.driverDetails?.length) {
+                                setLoader(false)
+                                dispatch(setDataAction(oldArr, SET_CREATE_TRIP_JSON))
+                            }
+                        }
+                    })
+                }
+            }
         }
     }
 
@@ -151,40 +156,51 @@ const LocationInformation = ({ editPage }) => {
                         <p>Fetching....</p>
                     </div>
                 ) : (
-                    ApiReducer?.apiJson?.suggestedRoutes?.routes?.map((ele, i) => {
-                        return (
-                            <div className="p-2">
-                                <div className="grid grid-cols-1 gap-6">
-                                    <div key={i} onClick={() => onSelectRoute(ele, i)} className="cursor-pointer hover:bg-gray-200 rounded-lg transition duration-100 ease-in-out" style={{ background: ApiReducer?.apiJson?.tollGuruGeo?.selectedIndex === i? '#d5e3f7' : '' }}>
-                                        <div className="card p-2">
-                                            <div className="flex justify-between">
-                                                <div>
-                                                    <p className="text-black text-sm font-bold underline mb-2">Option {i + 1}</p>
-                                                    <p className="text-xs text-black mb-1">
-                                                        <span className="font-semibold">Duration :</span> {ele?.summary?.duration?.text}
-                                                    </p>
-                                                    <p className="text-xs text-black mb-1">
-                                                        <span className="font-semibold">Roadway :</span> {ele?.summary?.name}
-                                                    </p>
-                                                    <p className="text-xs text-black mb-1">
-                                                        <span className="font-semibold ">Tolls Cost :</span> 
-                                                        <span className="text-red-600"> ₹{ele?.costs?.tag}</span>
-                                                    </p>
-                                                    
-                                                </div>
-                                                <div className="m-4">
-                                                    {
-                                                        ApiReducer?.apiJson?.tollGuruGeo?.selectedIndex === i &&
-                                                        <input className="accent-blue-500" type="radio" checked />
-                                                    }
+                    Array.isArray(ApiReducer?.createTripJson?.routes?.[0]?.routes) && ApiReducer?.createTripJson?.routes?.[0]?.routes.length > 0 ? (
+                        <div className="bg-gray-100 p-2">
+                            <div className="grid grid-cols-1 gap-6">
+                                {ApiReducer?.createTripJson?.routes?.slice(-1).map((ele, i) => (
+                                    <div key={i}>
+                                        {ele?.routes?.map((routesEle, j) => (
+                                            <div key={`${i}-${j}`} onClick={() => onSelectRoute(routesEle, j)} className="p-2 mb-4 cursor-pointer hover:bg-gray-200 rounded-lg transition duration-100 ease-in-out" style={{ background: ApiReducer?.apiJson?.tollGuruGeo?.selectedIndex === j ? '#d5e3f7' : '' }}>
+                                                <div className="card p-2">
+                                                    <div className="flex justify-between">
+                                                        <div>
+                                                            <p className="text-black text-sm font-bold underline mb-2">Option {j + 1}</p>
+                                                            <p className="text-xs text-black mb-1">
+                                                                <span className="font-semibold">Duration :</span> {routesEle?.summary?.duration?.text}
+                                                            </p>
+                                                            <p className="text-xs text-black mb-1">
+                                                                <span className="font-semibold">Roadway :</span> {routesEle?.summary?.name}
+                                                            </p>
+                                                        </div>
+                                                        <div className="m-4">
+                                                            {
+                                                                ApiReducer?.apiJson?.tollGuruGeo?.selectedIndex === j &&
+                                                                <input className="accent-blue-500" type="radio" checked />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    {ApiReducer?.createTripJson?.driverDetails?.map((item, index) => (
+                                                        <div key={index} className="mb-2 flex justify-around p-2 bg-slate-100">
+                                                            <p>{truckicon}</p>
+                                                            <p className="text-sm text-black"><span className="font-semibold">Vehicle :</span> {item?.vehicleNumber}</p>
+                                                            <p className="text-sm text-black"><span className="font-semibold">Tolls Cost :</span> {item?.tollInfo?.routes?.[j]?.costs?.tag !== null ? item?.tollInfo?.routes?.[j]?.costs?.tag : item?.tollInfo?.routes?.[j]?.costs?.tagAndCash} ₹</p>
+                                                        </div>
+                                                    ))}
+
                                                 </div>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        )
-                    })
+                            <div className="mt-5">
+                                <MyInput value={ApiReducer?.apiJson?.distance} disable={true} important={false} name='distance' title='Distance' placeholder='Enter distance' error={!ApiReducer?.apiJson?.distance} />
+                            </div>
+                        </div>
+
+                    ) : ""
                 )
             }
             </div>

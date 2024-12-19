@@ -1,16 +1,29 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setDataAction } from '../Store/Action/SetDataAction'
-import { SET_API_JSON } from '../Store/ActionName/ActionName'
+import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName'
 
-function MyInput({ placeholder, name, value, title, error, errorMsg }) {
+function MyInput({ placeholder, name, value, title, error, createTripJson }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
+    const dispatch = useDispatch()
+
     const onChange = (value) =>{
-        var oldJson = ApiReducer?.apiJson
-        oldJson[name] = value
-        setDataAction(oldJson,SET_API_JSON)
+        if(createTripJson){
+            var oldJson = ApiReducer?.createTripJson
+            if(typeof oldJson.driverDetails[0] === 'object'){
+                oldJson.driverDetails[0][name] = value
+            }else{
+                oldJson.driverDetails[0] = {[name] : value}
+            }
+            
+            dispatch(setDataAction(oldJson,SET_CREATE_TRIP_JSON))
+        }else{
+            var oldJson = ApiReducer?.apiJson
+            oldJson[name] = value
+            dispatch(setDataAction(oldJson,SET_API_JSON))
+        }
     }
 
     return (
