@@ -20,9 +20,13 @@
 export const BaseUrl = 'http://192.168.1.17:8001/api/'
 export const BaseUrl2 = "http://192.168.1.17:8001/"
 
+// export const BaseUrl = 'http://192.168.1.32:8000/api/'
+// export const BaseUrl2 = "http://192.168.1.32:8000/"
+
 let USER = 'user/'
 export const login = BaseUrl + USER+'login'
 export const verifyUser = BaseUrl + USER +'verifyUser'
+export const changePassword = BaseUrl + USER +'changePassword'
 
 
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
@@ -33,7 +37,6 @@ export const otpLogin = BaseUrl + 'otpLogin'
 export const otpRegister = BaseUrl + 'otpRegister'
 export const UserUpdate = BaseUrl + 'UserUpdate'
 export const forgotPasswordOTP = BaseUrl + 'forgotPasswordOTP'
-export const changePassword = BaseUrl + 'changePassword'
 export const GetSubscriptionRoutes = BaseUrl + 'GetSubscriptionRoutes'
 export const GetSubscribed = BaseUrl + 'GetSubscribed'
 export const GenerateQR = BaseUrl + "/generateQR"

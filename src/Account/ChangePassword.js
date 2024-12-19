@@ -1,12 +1,14 @@
 import React from 'react'
 import LoginInput from '../Component/Input/LoginInput';
 import BeforeLoginButton from '../Component/BeforeLoginButton';
-import { ApiHit, STROGNPASSWORD } from '../utils';
+import { ApiHit, secretKey, STROGNPASSWORD } from '../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../Store/Action/SetDataAction';
 import { SET_API_JSON_ERROR } from '../Store/ActionName/ActionName';
 import { VerifyPasswordValidation } from '../ValidationScheema/PasswordValidate';
 import { login } from '../Constants/Constants';
+import CryptoJS from 'crypto-js';
+
 
 function ChangePassword() {
 
@@ -25,6 +27,11 @@ function ChangePassword() {
                     email: ApiReducer?.apiJson?.email,
                     password: ApiReducer?.apiJson?.password,
                     action : 'npg'
+                }
+
+                if(ApiReducer.apiJson.password){
+                    var encryption = CryptoJS.AES.encrypt(JSON.stringify(json?.password), secretKey).toString();
+                    json.password = encryption
                 }
 
                 console.log("json",json);
