@@ -24,6 +24,7 @@ function Login() {
     const [otp, setOtp] = useState('');
     const [otpError, setOtpError] = useState('')
     const [changePassword, setChangePassword] = useState(false)
+    const [ForgetPassword ,setForgetPassword] = useState(false)
 
 
 
@@ -34,9 +35,8 @@ function Login() {
     const handleVerify = (type) => {
         ApiReducer.apiJsonError = {}
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
-
         VerifyEamilValidation(ApiReducer).then((error) => {
-            console.log("res", error);
+            console.log("res__________", error);
             dispatch(setDataAction(error, SET_API_JSON_ERROR))
             if (Object.keys(error).length === 0) {
                 var json = ApiReducer?.apiJson
@@ -63,8 +63,16 @@ function Login() {
                 ApiHit(json, apiToHit).then((res) => {
 
                     console.log("json",json);
+
+
+                    console.log("res++++++++++++++ssss",res?.doc?.message);
+                    console.log("res++++++++++++++ssss",res);
                     
-                    console.log("res++++", res?.doc?.message);
+     
+                    
+                    
+                    console.log("res++++", res?.doc?.message ==="Logged in successfully");
+                    
                     if (res?.message === 'No Data Found') {
                         dispatch(setDataAction({ email: 'email not found' }, SET_API_JSON_ERROR))
                     }
@@ -77,7 +85,8 @@ function Login() {
                     else if (res?.doc?.message === "OTPTab") {
                         setOtpTab(true)
                     }
-                    else if (res?.doc?.message === "Loggged in successfully") {
+                    else if (res?.doc?.message === "Logged in successfully") {
+                        alert('yess')
                         alert(res?.doc?.message)
                         setTrackYourTransportUser(res?.doc?.finalDoc)
                         window.location.reload()
@@ -159,7 +168,12 @@ function Login() {
                                     :
                                     <div>
                                         <LoginInput imp={true} label={'Email'} name={'email'} lowercase error={!regexEmail?.test(ApiReducer?.apiJson?.email) || ApiReducer?.apiJsonError?.email} disabled={passwordTab || otpTab} />
-                                        {passwordTab && <LoginInput imp={true} label={'Password'} name={'password'} error={ApiReducer?.apiJsonError?.password} />}
+                                        {passwordTab && 
+                                       <>
+                                        <LoginInput imp={true} label={'Password'} name={'password'} error={ApiReducer?.apiJsonError?.password} />
+                                        <div className='text-end text-xs cursor-pointer text-blue-800 hover:underline'>Forgot password?</div>
+                                       </>
+                                        }
                                         {otpTab && <InputOtp otp={otp} setOtp={setOtp} otpError={otpError} />}
                                         <div className="mt-3 mb-3">
                                             {passwordTab ? <BeforeLoginButton title={'Login'} onClick={handleLogin} /> : otpTab ? <BeforeLoginButton title={'Verify OTP'} onClick={handleVerifyOTP} /> : <BeforeLoginButton title={'Verify'} onClick={handleVerify} />}

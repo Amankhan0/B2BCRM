@@ -17,8 +17,8 @@
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://192.168.1.17:8001/api/'
-export const BaseUrl2 = "http://192.168.1.17:8001/"
+export const BaseUrl = 'http://192.168.1.33:8001/api/'
+export const BaseUrl2 = "http://192.168.1.33:8001/"
 
 // export const BaseUrl = 'http://192.168.1.32:8000/api/'
 // export const BaseUrl2 = "http://192.168.1.32:8000/"

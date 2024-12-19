@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { getTrackYourTransportUser } from '../../Storage/Storage'
 import ChagePassTab from './ChagePassTab';
-import { groupIcon, messageIcon, messgaeIcon, simIcon, userIcon } from '../../Icons/Icon';
-import ChangePassword from './ChangePassword';
+import { groupIcon, messageIcon, simIcon, userIcon } from '../../Icons/Icon';
+import ChangePasswordProfile from './ChangePasswordProfile';
 
 function Profile() {
   const [activeTab, setActiveTab] = useState('account')
@@ -120,7 +120,7 @@ function Profile() {
           </div>
         </div> 
         : <div>
-          <ChangePassword/>
+          <ChangePasswordProfile/>
         </div>
           }
         
