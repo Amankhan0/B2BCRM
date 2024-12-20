@@ -6,24 +6,27 @@ import ChangePasswordProfile from './ChangePasswordProfile';
 
 function Profile() {
   const [activeTab, setActiveTab] = useState('account')
-
   const user = getTrackYourTransportUser()
-
-  console.log("user", user);
-
   const handleLogout = () => {
     localStorage.removeItem('armyUser');
     window.location.href = '/';
     window.location.reload()
   }
+  const getInitials = (name) => {
+    if (!name) return ''; 
+    const words = name.split(' ');
+    if (words.length === 1) return words[0][0].toUpperCase(); 
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  };
+  const initials = getInitials(user?.username);
 
   return (
     <div className='flex items-center justify-end'>
       <div style={{ position: 'absolute', zIndex: 900, right: 20, top: 50 }}>
         <div className="popper-box w-64 rounded-lg border border-slate-150 bg-white shadow-soft dark:border-navy-600 dark:bg-navy-700">
           <div className="flex items-center space-x-4 rounded-t-lg bg-slate-100 py-5 px-4 dark:bg-navy-800">
-            <div >
-              <div className='p-3 bg-gray-200 rounded-full text-base font-bold'>MS</div>
+            <div>
+              <div className='w-10 h-10 bg-gray-200 font-medium flex items-center justify-center text-base rounded-full'>{initials}</div>
             </div>
             <div>
               <div className="text-base font-medium text-slate-700 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">

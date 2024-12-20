@@ -7,117 +7,118 @@ import { VerifyEamilValidation } from '../../ValidationScheema/Login/VerifyEmail
 import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
 import { ApiHit } from '../../Constants/ApiFunction /ApiHit';
-import { login, verifyUser } from '../../Constants/Constants';
+import { forgotPassword, login, verifyUser } from '../../Constants/Constants';
 import { regexEmail, secretKey, STROGNPASSWORD } from '../../utils';
 import InputOtp from '../../Component/OTP/InputOtp';
-import { VerifyPasswordValidation } from '../../ValidationScheema/PasswordValidate';
-import { TbRulerOff } from 'react-icons/tb';
 import ChangePassword from '../ChangePassword';
 import { setTrackYourTransportUser } from '../../Storage/Storage';
 import CryptoJS from 'crypto-js';
+import ForgetPassword from '../ForgetPassword/ForgetPassword';
+
 
 
 function Login() {
     const dispatch = useDispatch();
-    const [passwordTab, setPasswordTab] = useState(false)
-    const [otpTab, setOtpTab] = useState(false)
+    const [passwordTab, setPasswordTab] = useState(false);
+    const [otpTab, setOtpTab] = useState(false);
     const [otp, setOtp] = useState('');
-    const [otpError, setOtpError] = useState('')
-    const [changePassword, setChangePassword] = useState(false)
-    const [ForgetPassword ,setForgetPassword] = useState(false)
-
-
+    const [otpError, setOtpError] = useState('');
+    const [changePassword, setChangePassword] = useState(false);
+    const [showForgetPassword, setShowForgetPassword] = useState(false); 
+    const [message ,setMessage] = useState('')
 
     const ApiReducer = useSelector((state) => state.ApiReducer);
     console.log("ApiReducer", ApiReducer);
 
-
     const handleVerify = (type) => {
-        ApiReducer.apiJsonError = {}
-        dispatch(setDataAction({}, SET_API_JSON_ERROR))
+        ApiReducer.apiJsonError = {};
+        dispatch(setDataAction({}, SET_API_JSON_ERROR));
         VerifyEamilValidation(ApiReducer).then((error) => {
             console.log("res__________", error);
-            dispatch(setDataAction(error, SET_API_JSON_ERROR))
+            dispatch(setDataAction(error, SET_API_JSON_ERROR));
             if (Object.keys(error).length === 0) {
-                var json = ApiReducer?.apiJson
-                var apiToHit = verifyUser
+                let json = ApiReducer?.apiJson;
+                let apiToHit = verifyUser;
+
                 if (type === 'otpverify') {
-                    apiToHit = login
+                    apiToHit = login;
                     json = {
                         OTP: otp,
                         email: ApiReducer?.apiJson?.email,
-                        action: 'fto'
-                    }
+                        action: 'fto',
+                    };
                 }
+
                 if (type === 'login') {
-                    apiToHit = login
+                    apiToHit = login;
 
-                    if(ApiReducer.apiJson.password){
-                        var encryption = CryptoJS.AES.encrypt(JSON.stringify(json?.password), secretKey).toString();
-                        json.password = encryption
+                    if (ApiReducer.apiJson.password) {
+                        const encryption = CryptoJS.AES.encrypt(
+                            JSON.stringify(json?.password),
+                            secretKey
+                        ).toString();
+                        json.password = encryption;
                     }
-            
-
-
                 }
+
                 ApiHit(json, apiToHit).then((res) => {
+                    console.log("json", json);
+                    console.log("res++++++++++++++ssss", res?.doc?.message);
+                    console.log("res++++++++++++++ssss", res);
 
-                    console.log("json",json);
-
-
-                    console.log("res++++++++++++++ssss",res?.doc?.message);
-                    console.log("res++++++++++++++ssss",res);
-                    
-     
-                    
-                    
-                    console.log("res++++", res?.doc?.message ==="Logged in successfully");
-                    
                     if (res?.message === 'No Data Found') {
-                        dispatch(setDataAction({ email: 'email not found' }, SET_API_JSON_ERROR))
+                        dispatch(setDataAction({ email: 'email not found' }, SET_API_JSON_ERROR));
+                    } else if (res?.doc?.message === "PasswordTab") {
+                        setPasswordTab(true);
+                    } else if (res?.message === "Wrong credentials") {
+                        dispatch(setDataAction({ password: res?.message }, SET_API_JSON_ERROR));
+                    } else if (res?.doc?.message === "OTPTab") {
+                        setOtpTab(true);
+                    } else if (res?.doc?.message === "Logged in successfully") {
+                        alert('yess');
+                        alert(res?.doc?.message);
+                        setTrackYourTransportUser(res?.doc?.finalDoc);
+                        window.location.reload();
+                    } else if (res.message === 'Invalid OTP') {
+                        setOtpError('Invalid OTP');
+                    } else if (res?.doc?.message === "Approved") {
+                        setChangePassword(true);
                     }
-                    else if (res?.doc?.message === "PasswordTab") {
-                        setPasswordTab(true)
-                    }
-                    else if (res?.message === "Wrong credentials") {
-                        dispatch(setDataAction({ password: res?.message }, SET_API_JSON_ERROR))
-                    }
-                    else if (res?.doc?.message === "OTPTab") {
-                        setOtpTab(true)
-                    }
-                    else if (res?.doc?.message === "Logged in successfully") {
-                        alert('yess')
-                        alert(res?.doc?.message)
-                        setTrackYourTransportUser(res?.doc?.finalDoc)
-                        window.location.reload()
-
-                    }
-                    else if (res.message === 'Invalid OTP') {
-                        setOtpError('Invalid OTP')
-                    }
-                    else if (res?.doc?.message === "Approved") {
-                        setChangePassword(true)
-                    }
-                })
+                });
             }
-        })
-    }
+        });
+    };
 
     const handleLogin = () => {
+        handleVerify('login');
+    };
 
-        handleVerify('login')
-    }
     const handleVerifyOTP = () => {
-        setOtpError('')
+        setOtpError('');
         if (otp === '') {
-            setOtpError('Please enter OTP')
+            setOtpError('Please enter OTP');
+        } else {
+            handleVerify('otpverify');
         }
-        else {
-            handleVerify('otpverify')
+    };
+
+    const handleForgetPassword = () => {
+        var json ={
+            email: ApiReducer.apiJson.email,
+            action: 'generate',
         }
-    }
+        ApiHit(json,forgotPassword).then((res)=>{
+            console.log("res",res);
 
+            if(res?.status === 200){
+                setShowForgetPassword(true)
+                setMessage(res?.message)
+            }
+            
+        })
+        // setShowForgetPassword(true)
 
+}
 
     return (
         <div>
@@ -162,33 +163,61 @@ function Login() {
                             </div>
                         </div>
                         <div className="mt-16">
-                            <div>
-                                {changePassword ?
-                                    <ChangePassword />
-                                    :
-                                    <div>
-                                        <LoginInput imp={true} label={'Email'} name={'email'} lowercase error={!regexEmail?.test(ApiReducer?.apiJson?.email) || ApiReducer?.apiJsonError?.email} disabled={passwordTab || otpTab} />
-                                        {passwordTab && 
-                                       <>
-                                        <LoginInput imp={true} label={'Password'} name={'password'} error={ApiReducer?.apiJsonError?.password} />
-                                        <div className='text-end text-xs cursor-pointer text-blue-800 hover:underline'>Forgot password?</div>
-                                       </>
-                                        }
-                                        {otpTab && <InputOtp otp={otp} setOtp={setOtp} otpError={otpError} />}
-                                        <div className="mt-3 mb-3">
-                                            {passwordTab ? <BeforeLoginButton title={'Login'} onClick={handleLogin} /> : otpTab ? <BeforeLoginButton title={'Verify OTP'} onClick={handleVerifyOTP} /> : <BeforeLoginButton title={'Verify'} onClick={handleVerify} />}
+                            {showForgetPassword ? (
+                                <ForgetPassword  message={message}/>
+                            ) : (
+                                <div>
+                                    {changePassword ? (
+                                        <ChangePassword />
+                                    ) : (
+                                        <div>
+                                            <LoginInput
+                                                imp={true}
+                                                label={'Email'}
+                                                name={'email'}
+                                                lowercase
+                                                error={
+                                                    !regexEmail?.test(ApiReducer?.apiJson?.email) ||
+                                                    ApiReducer?.apiJsonError?.email
+                                                }
+                                                disabled={passwordTab || otpTab}
+                                            />
+                                            {passwordTab && (
+                                                <>
+                                                    <LoginInput
+                                                        imp={true}
+                                                        label={'Password'}
+                                                        name={'password'}
+                                                        error={ApiReducer?.apiJsonError?.password}
+                                                    />
+                                                    <div
+                                                        className="text-end text-xs cursor-pointer text-blue-800 hover:underline"
+                                                        onClick={handleForgetPassword}
+                                                    >
+                                                        Forgot password?
+                                                    </div>
+                                                </>
+                                            )}
+                                            {otpTab && <InputOtp otp={otp} setOtp={setOtp} otpError={otpError} />}
+                                            <div className="mt-3 mb-3">
+                                                {passwordTab ? (
+                                                    <BeforeLoginButton title={'Login'} onClick={handleLogin} />
+                                                ) : otpTab ? (
+                                                    <BeforeLoginButton title={'Verify OTP'} onClick={handleVerifyOTP} />
+                                                ) : (
+                                                    <BeforeLoginButton title={'Verify'} onClick={handleVerify} />
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-
-                                }
-                            </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;
