@@ -13,7 +13,7 @@ export const Colors = {
    // ThemeBlue:'#0885a6',
    // ThemeBlue:'#0885a6',
    // ThemeBlue :"red",
-   ThemeBlue :'#0885a6',
+   ThemeBlue :'#4B5320',
    GRADIENTFIRST :'#0885a6',
    GRADIENTSECOND :'#002443',
    bgGreenColor :'#10B9811A',

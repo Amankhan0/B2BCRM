@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronDown, ChevronRight } from '../Icons/Icon';
+// import { ChevronDown, ChevronRight } from '../Icons/Icon';
 import Links from './NavLinks';
 import { setSidebar } from '../Store/Action/SidebarAction';
 import PanelRoutes from './Routes';
@@ -10,14 +10,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Title from '../Component/Title';
 import { FullReduxNull } from '../Store/FullReduxNull';
 import { getTrackYourTransportUser } from '../Storage/Storage';
-// import { setDataAction } from '../../Store/Action/Maintenence/MaintenenceAction';
-// import { SET_PANEL_TITLE } from '../../Store/ActionName/ActionName';
 import { MdOutlineCancel } from "react-icons/md";
 import AccordionSide from '../Component/AccordionSide';
 import { useEffect } from 'react';
 import { IoIosArrowDropleftCircle, IoIosNotificationsOutline } from "react-icons/io";
 import tytLogo from '../Images/tytLogo.png'
 import { getHeadingFromPathname } from '../utils';
+import Profile from '../Account/Profile/Profile';
 
 const SidebarItem = ({ item, onClick }) => {
 
@@ -47,7 +46,7 @@ const SidebarItem = ({ item, onClick }) => {
                                 <label className='mt-0.5 ml-1 cursor-pointer'>{item.title}</label>&nbsp;
                                 <label className='mt-0.5 ml-5 cursor-pointer'>{dropDownIcon}</label>
                             </span>
-                            {isSubMenuOpen ? ChevronDown : ChevronRight}
+                            {/* {isSubMenuOpen ? ChevronDown : ChevronRight} */}
                         </button>
                         {isSubMenuOpen && (
                             <ul className='ml-10'>
@@ -70,7 +69,7 @@ const SidebarItem = ({ item, onClick }) => {
 };
 
 const SideBarDropDown = ({ item, onClick }) => {
-    
+
     const UserReducer = useSelector(state => state.UserReducer)
 
     return (
@@ -87,6 +86,7 @@ export default function Main() {
     const reduxSidebar = useSelector(state => state.SidebarReducer)
     const UserReducer = useSelector(state => state.UserReducer)
     const SubReducer = useSelector(state => state.SubscriptionReducer);
+    const [showProfile ,setShowProfile] = useState(false)
     const [showPopUpExpire, setShowPopUpExpire] = useState(true)
 
     const [sideBarTitle, setSideBarTitle] = useState('');
@@ -135,23 +135,25 @@ export default function Main() {
     }, [location.pathname, isSmallScreen, window.innerWidth, reduxSidebar])
 
 
-let x =getHeadingFromPathname()
+    let x = getHeadingFromPathname()
 
-console.log("x",x);
+    console.log("x", x);
 
-    
+
 
     return (
         <div>
+
             <div className={reduxSidebar?.doc}>
+                {showProfile && <Profile/> }
                 <div id="root" style={{ backgroundColor: Colors.HEADER }} className="min-h-100vh flex grow relative overflow-hidden" >
                     <div className="sidebar sidebar-panel">
-                        <div  className={`flex h-full grow flex-col`} style={{background:Colors.ThemeBlue}}>
+                        <div className={`flex h-full grow flex-col`} style={{ background: Colors.ThemeBlue }}>
                             <div className="flex justify-between px-3 py-3 border-b-[0.5px]" >
                                 <h1 className="flex items-center" style={{ color: Colors.WHITE }}>
                                     <img className='w-8 h-8 mr-2 ' src={tytLogo} />
                                     <div className='mt-0.5'>
-                                        <div className='text-lg -tracking-wideest'>Track Your Transport</div>
+                                        <div className='text-lg -tracking-wideest'>Army Vehicle Tracking</div>
                                     </div>
                                     {isSmallScreen < 700 && <div className='px-5' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
                                 </h1>
@@ -162,7 +164,7 @@ console.log("x",x);
                                     <ul>
                                         {localNav.map((item, index) => (
                                             <div key={index} className={item?.id === 1 ? 'p-2 w-max -ml-4 font-semibold' : 'p-0'}>
-                                            {/* <div key={index} className={item?.id === 1 ? 'p-3 w-max -ml-6 font-semibold' : 'p-0'}> */}
+                                                {/* <div key={index} className={item?.id === 1 ? 'p-3 w-max -ml-6 font-semibold' : 'p-0'}> */}
 
                                                 {UserReducer?.userData?.doc?.userType === 'Transporter' ? (
                                                     <>
@@ -222,12 +224,15 @@ console.log("x",x);
                                             <span></span>
                                         </button>
                                         <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={tytLogo} />
-                                        <div className='text-black  md:text-md lg:text-lg'>Track Your Transport</div>
+                                        <div className='text-black  md:text-md lg:text-lg'>Army Vehicle Tracking</div>
 
                                     </h1>
                             }
-                            <div className='flex items-center gap-x-3' style={{ color: Colors.BLACK }}>
-                                <NavLink to='/profile' onCanPlay={() => setSideBarTitle('Profile')} ><div className={`${UserName.length == 1 ? "px-3 py-1.5" : "px-[9px] py-2"}  rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></NavLink>
+                            <div className='flex items-center gap-x-3 cursor-pointer' style={{ color: Colors.BLACK }}>
+                                {/* <NavLink to='/profile' onCanPlay={() => setSideBarTitle('Profile')} ><div className={`${UserName.length == 1 ? "px-3 py-1.5" : "px-[9px] py-2"}  rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></NavLink> */}
+                                <div className={`${UserName.length == 1 ? "px-3 py-1.5" : "px-[9px] py-2"}  rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={()=>setShowProfile(!showProfile)}>{UserName}
+                                </div>
+
                             </div>
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >

@@ -21,6 +21,8 @@ let TRIP = 'trip/'
 
 export const login = BaseUrl + USER+'login'
 export const verifyUser = BaseUrl + USER +'verifyUser'
+export const changePassword = BaseUrl + USER +'changePassword'
+export const forgotPassword = BaseUrl + USER +'forgotPassword'
 
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
 export const LoginApi = BaseUrl + 'Login'
@@ -30,7 +32,6 @@ export const otpLogin = BaseUrl + 'otpLogin'
 export const otpRegister = BaseUrl + 'otpRegister'
 export const UserUpdate = BaseUrl + 'UserUpdate'
 export const forgotPasswordOTP = BaseUrl + 'forgotPasswordOTP'
-export const changePassword = BaseUrl + 'changePassword'
 export const GetSubscriptionRoutes = BaseUrl + 'GetSubscriptionRoutes'
 export const GetSubscribed = BaseUrl + 'GetSubscribed'
 export const GenerateQR = BaseUrl + "/generateQR"

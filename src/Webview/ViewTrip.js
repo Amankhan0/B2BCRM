@@ -45,7 +45,7 @@ function ViewTrip() {
         return (
           <tr key={index}>
             <td className='p-2 border'>{index + 1}</td>
-            <td className='p-2 border'>{element?.eWayBillDetails?.[0]?.tripReferenceNumber}</td>
+            <td className='p-2 border'>{element?.code}</td>
             <td className='p-2 border'>{GetFullYearWithTime(element?.created_at)}</td>
             <td className='p-2 border'>{GetFullYearWithTime(element?.eWayBillDetails?.[0]?.genratedDate)}</td>
             <td className='p-2 border'>{GetFullYearWithTime(element?.eWayBillDetails?.[0]?.eWayBillValidity)}</td>
