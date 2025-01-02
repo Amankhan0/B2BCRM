@@ -139,11 +139,11 @@ function ChangePasswordProfile() {
   return (
     <div className='p-4'>
       <LoginInput imp={true} label={'Current Password'} name={'oldPassword'} error={!STROGNPASSWORD.test(ApiReducer.apiJson.oldPassword)} />
-      <LoginInput imp={true} label={'New Password'} name={'newPassword'} error={!STROGNPASSWORD.test(ApiReducer.apiJson.newPassword)} />
-      <LoginInput imp={true} label={'Confirm Password'} name={'confirmPassword'} error={(ApiReducer?.apiJson?.confirmPassword !== ApiReducer?.apiJson?.newPassword || ApiReducer?.apiJson?.confirmPassword === undefined)} />
+      <LoginInput type={'password'} imp={true} label={'New Password'} name={'newPassword'} error={!STROGNPASSWORD.test(ApiReducer.apiJson.newPassword)} />
+      <LoginInput type={'password'} imp={true} label={'Confirm Password'} name={'confirmPassword'} error={(ApiReducer?.apiJson?.confirmPassword !== ApiReducer?.apiJson?.newPassword || ApiReducer?.apiJson?.confirmPassword === undefined)} />
       <BeforeLoginButton title={'UPDATE PASSWORD'} onClick={handleUpdatePassword} />
     </div>
   )
 }
 
-export default ChangePasswordProfile
+export default ChangePasswordProfile;

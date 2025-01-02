@@ -16,49 +16,49 @@ function ChangePassword() {
 
     const dispatch = useDispatch();
 
-    const handleSave=() =>{
+    const handleSave = () => {
         ApiReducer.apiJsonError = {}
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
-        VerifyPasswordValidation(ApiReducer).then((error)=>{
+        VerifyPasswordValidation(ApiReducer).then((error) => {
             dispatch(setDataAction(error, SET_API_JSON_ERROR))
 
             if (Object.keys(error).length === 0) {
                 let json = {
                     email: ApiReducer?.apiJson?.email,
                     password: ApiReducer?.apiJson?.password,
-                    action : 'npg'
+                    action: 'npg'
                 }
 
-                if(ApiReducer.apiJson.password){
+                if (ApiReducer.apiJson.password) {
                     var encryption = CryptoJS.AES.encrypt(JSON.stringify(json?.password), secretKey).toString();
                     json.password = encryption
                 }
 
-                console.log("json",json);
+                console.log("json", json);
 
-                ApiHit(json, login).then((res)=>{
-                    console.log("res",res);
+                ApiHit(json, login).then((res) => {
+                    console.log("res", res);
 
                     if (res?.doc?.message === "Password changed successfully") {
                         alert(res?.doc?.message)
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             window.location.reload()
-                        },1000)
+                        }, 1000)
                     }
                 })
-                
+
 
             }
         })
     }
 
-  return (
-    <div>
-    <LoginInput defaultValue={ApiReducer.apiJson.password?ApiReducer.apiJson.password:''} imp={true} label={'New Password'} name={'password'} error={!STROGNPASSWORD.test(ApiReducer.apiJson.password)} />
-    <LoginInput imp={true} label={'Confirm Password'} name={'confirmPassword'}  error={(ApiReducer?.apiJson?.confirmPassword !== ApiReducer?.apiJson?.password || ApiReducer?.apiJson?.confirmPassword === undefined)}/>
-    <BeforeLoginButton title={'Save'} onClick={handleSave} /> 
-</div>
-  )
+    return (
+        <div>
+            <LoginInput defaultValue={ApiReducer.apiJson.password ? ApiReducer.apiJson.password : ''} imp={true} label={'New Password'} name={'password'} error={!STROGNPASSWORD.test(ApiReducer.apiJson.password)} />
+            <LoginInput imp={true} label={'Confirm Password'} name={'confirmPassword'} error={(ApiReducer?.apiJson?.confirmPassword !== ApiReducer?.apiJson?.password || ApiReducer?.apiJson?.confirmPassword === undefined)} />
+            <BeforeLoginButton title={'Save'} onClick={handleSave} />
+        </div>
+    )
 }
 
 export default ChangePassword

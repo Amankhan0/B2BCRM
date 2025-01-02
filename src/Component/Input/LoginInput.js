@@ -28,6 +28,7 @@ function LoginInput({ imp, label, error, errormsg, name, title, important, type,
           <span className="text-xs text-red-600">{imp ? '*' : ''}</span>
         </label>
         <input
+        type={type}
           placeholder={`Enter ${label}`}
           className={`bg-transparent placeholder:normal-case mb-2 text-black dark:text-navy-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 h-10 border border-gray-300 ${lowercase ? 'lowercase' : ''}`}
           defaultValue={defaultValue}

@@ -184,6 +184,7 @@ function Login() {
                                             {passwordTab && (
                                                 <>
                                                     <LoginInput
+                                                    type={'password'}
                                                         imp={true}
                                                         label={'Password'}
                                                         name={'password'}
