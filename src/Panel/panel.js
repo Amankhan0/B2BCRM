@@ -100,11 +100,7 @@ export default function Main() {
 
     const user = getTrackYourTransportUser();
 
-    let a = `${user?.doc?.fullName}`?.split(" ")
-    var UserName = a.map(item => item?.[0]?.toUpperCase()).join("").slice(0, 2);
-    if (UserName.length > 2) {
-        UserName = UserName.slice(0, 2);
-    }
+   
 
     const handleSidebar = (value) => {
         dispatch(setSidebar(value))
@@ -137,7 +133,7 @@ export default function Main() {
 
     let x = getHeadingFromPathname()
 
-    console.log("x", x);
+    console.log("user", user);
 
 
 
@@ -225,12 +221,10 @@ export default function Main() {
                                         </button>
                                         <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={tytLogo} />
                                         <div className='text-black  md:text-md lg:text-lg'>Army Vehicle Tracking</div>
-
                                     </h1>
                             }
                             <div className='flex items-center gap-x-3 cursor-pointer' style={{ color: Colors.BLACK }}>
-                                {/* <NavLink to='/profile' onCanPlay={() => setSideBarTitle('Profile')} ><div className={`${UserName.length == 1 ? "px-3 py-1.5" : "px-[9px] py-2"}  rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></NavLink> */}
-                                <div className={`${UserName.length == 1 ? "px-3 py-1.5" : "px-[9px] py-2"}  rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={()=>setShowProfile(!showProfile)}>{UserName}
+                                <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={()=>setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
                                 </div>
 
                             </div>

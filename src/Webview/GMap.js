@@ -7,7 +7,6 @@ import { isArray } from "underscore";
 
 const GMap = ({ routeArr, srcLatLngArr, desLatLngArr, tollsArr, tollImage, setActiveStation, inforWindow, setInfoWindow, srcName, desName, simLocationArr }) => {
 
-
     // console.log('routeArr--', routeArr);
 
     const [activeMarker, setActiveMarker] = useState(null)
@@ -68,7 +67,6 @@ const GMap = ({ routeArr, srcLatLngArr, desLatLngArr, tollsArr, tollImage, setAc
                         <p>{desName}</p>
                     </InfoWindow>
                 }
-
             </Marker>
 
             {
@@ -130,24 +128,3 @@ const GMap = ({ routeArr, srcLatLngArr, desLatLngArr, tollsArr, tollImage, setAc
 }
 
 export default GMap;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -360,7 +360,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   border-left-color: #333;
   border-radius: 50%;
   width: 40px;

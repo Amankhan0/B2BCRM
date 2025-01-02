@@ -3,6 +3,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import ReactPaginate from 'react-paginate';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPagination } from '../Store/Action/PaginationAction';
+import { Colors } from '../Colors/color';
 
 function MyPagination({ api,totalPages }) {
     const [error, setError] = useState(false)
@@ -41,6 +42,8 @@ function MyPagination({ api,totalPages }) {
         }
     }
 
+    console.log('totalPages --- -',totalPages);
+
 
     return (
         <div className='my-5'>
@@ -54,7 +57,6 @@ function MyPagination({ api,totalPages }) {
                         onChange={(e) => onChangeLimit(e.target.value)}
                         value={PaginationReducer.pagination.limit}
                     >
-                        <option value={6}>6</option>
                         <option value={10}>10</option>
                         <option value={50}>50</option>
                         <option value={100}>100</option>
@@ -67,7 +69,7 @@ function MyPagination({ api,totalPages }) {
                     <p className={`text-[#b31b1b] ml-4`}>{error ? "You need to return to Page 1 to change limit" : ""}</p>
                 </div>
 
-                < ReactPaginate
+                <ReactPaginate
                     breakLabel={<span className='mr-4 flex items-center justify-center'>...</span>}
                     nextLabel={<div className='p-2 flex items-center justify-center bg-slate-200 rounded-md'>
                         <IoIosArrowForward />        </div>}
@@ -83,7 +85,7 @@ function MyPagination({ api,totalPages }) {
                     nextLinkClassName="page-num"
                     activeLinkClassName="active"
                     pageClassName='block mr-2 rounded-md  tex-black px-3 text-xs flex items-center justify-center hover:bg-slate-300'
-                    activeClassName='bg-themeblue text-white hover:bg-themeblue hover:text-white'
+                    activeClassName={`bg-[${Colors.ThemeBlue}] text-white hover:bg-themeblue hover:text-white`}
                 />
             </div>
         </div>

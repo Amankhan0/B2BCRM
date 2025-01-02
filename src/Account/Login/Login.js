@@ -75,7 +75,6 @@ function Login() {
                     } else if (res?.doc?.message === "OTPTab") {
                         setOtpTab(true);
                     } else if (res?.doc?.message === "Logged in successfully") {
-                        alert('yess');
                         alert(res?.doc?.message);
                         setTrackYourTransportUser(res?.doc?.finalDoc);
                         window.location.reload();
@@ -131,7 +130,7 @@ function Login() {
                             alt="logo"
                         />
                         <p className="text-xl font-semibold uppercase text-slate-700 dark:text-navy-100">
-                            TYT ARMY WEB
+                            Army vehicle tracking
                         </p>
                     </div>
                 </div>

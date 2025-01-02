@@ -60,7 +60,7 @@ const TollPlaza = ({ tollsArr, data }) => {
                                         )}
                                     </div>
 
-                                    <p className="text-xs text-slate-500 font-medium"><span className="text-black font-bold">Toll Cost -</span> <span className="text-red-500">₹{toll?.tagCost}</span></p>
+                                    {/* <p className="text-xs text-slate-500 font-medium"><span className="text-black font-bold">Toll Cost -</span> <span className="text-red-500">₹{toll?.tagCost}</span></p> */}
 
                                     {toll?.readerReadTime &&
                                         <p className="mt-0.5 text-xs text-slate-500 w-32 font-medium">
@@ -92,9 +92,9 @@ const TollPlaza = ({ tollsArr, data }) => {
                 <p className="text-lg font-bold">
                     Total Distance: <span className="text-blue-500">{data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.summary?.distance?.metric}</span>
                 </p>
-                <p className="text-lg font-bold">
+                {/* <p className="text-lg font-bold">
                     Total Toll Cost: <span className="text-blue-500">₹{data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.costs?.tag}</span>
-                </p>
+                </p> */}
             </div>
         </div>
     );

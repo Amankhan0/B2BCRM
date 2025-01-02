@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast"
 import Cookies from "universal-cookie"
 import { setDataAction } from "./Store/Action/SetDataAction"
 import { SET_INTERNET_SERVICE } from "./Store/ActionName/ActionName"
+import { DashboardApi } from "./Constants/Constants"
 
 export const GetPageCount = (limit, page, index) => {
   var no = limit * page - limit + index + 1
@@ -37,7 +38,7 @@ export const GetFullYearWithTime = (timestamp) => {
   var hour = a.getHours();
   var min = a.getMinutes();
   var sec = a.getSeconds();
-  var minute = min<9?'0'+min:min
+  var minute = min < 9 ? '0' + min : min
 
   var time = date + '-' + month + '-' + year + ' ' + hour + ':' + minute;
   return time;
@@ -401,7 +402,7 @@ export const regexPAN = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 export const regexVehicle = /^[A-Z|a-z]{2}\s?[0-9]{1,2}\s?[A-Z|a-z]{0,3}\s?[0-9]{4}$/;
 export const regexDl = /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
 export const regexGStno = /\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/;
-export const STROGNPASSWORD =/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).*$/
+export const STROGNPASSWORD = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).*$/
 
 
 export const getHeadingFromPathname = () => {
@@ -411,51 +412,51 @@ export const getHeadingFromPathname = () => {
 
   switch (pathname) {
 
-    case "/":
+    case "/army":
       return "Dashboard"
-    case "/dashboard":
+    case "/army/dashboard":
       return "Dashboard"
-    case "/trip/create":
+    case "/army/trip/create":
       return "Create Trip"
-    case "/trip/view":
+    case "/army/trip/view":
       return "My Trips"
-    case "/shared/trip/view":
+    case "/army/shared/trip/view":
       return "Shared Trips"
-    case "/trips/epod":
+    case "/army/trips/epod":
       return "ePOD"
-    case "/book/empty/vehicle":
+    case "/army/book/empty/vehicle":
       return "Book Your Carrier"
-    case "/shortlist/vehicles":
+    case "/army/shortlist/vehicles":
       return "Shortlisted Carrier"
-    case "/empty/vehicle/registration":
+    case "/army/empty/vehicle/registration":
       return "Register Your Carrier"
-    case "/my/empty/vehicles":
+    case "/army/my/empty/vehicles":
       return "My Registered Carrier"
-    case "/verify/vehicle":
+    case "/army/verify/vehicle":
       return "Verify Your Carrier"
-    case "/my/vehicles":
+    case "/army/my/vehicles":
       return "Carrier Dashboard"
-    case "/verify/driver":
+    case "/army/verify/driver":
       return "Verify Your Driver"
-    case "/my/drivers":
+    case "/army/my/drivers":
       return "Driver Dashboard"
-    case "/e-challan":
+    case "/army/e-challan":
       return "E Challan"
-    case "/multimodal/tracking":
+    case "/army/multimodal/tracking":
       return "Multi Modal Cargo Tracking "
-    case "/toll/info":
+    case "/army/toll/info":
       return "Toll Plaza"
-    case "/ev/station":
+    case "/army/ev/station":
       return "EV Charging Sattions"
-    case "/bid/live":
+    case "/army/bid/live":
       return "Live Bid"
-    case "/bid/my":
+    case "/army/bid/my":
       return "My Bid"
-    case "/bid/dashboard":
+    case "/army/bid/dashboard":
       return "Bid Dashboard"
-      case "/bid/create":
-        return "Create Bid"
-      case "/group/create":
+    case "/army/bid/create":
+      return "Create Bid"
+    case "/army/group/create":
       return "Group Dashboard"
     // /trip/create
 
@@ -632,61 +633,165 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
 
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {
-      var createTripFinalJson = {
-        "eWayBillDetails": [
-          {
-              "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
-              "tripReferenceNumber": '',
-              "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
-              "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
-              "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
-              "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',
-              "totalTaxabaleAmount": data?.apiJson?.totalTaxabaleAmount ? data?.apiJson?.totalTaxabaleAmount : ''
-          }
+    var createTripFinalJson = {
+      "eWayBillDetails": [
+        {
+          "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
+          "tripReferenceNumber": '',
+          "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
+          "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
+          "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
+          "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',
+          "totalTaxabaleAmount": data?.apiJson?.totalTaxabaleAmount ? data?.apiJson?.totalTaxabaleAmount : ''
+        }
       ],
       "traderDetils": [
-          {
-              "traderName": data?.apiJson?.traderName ? data?.apiJson?.traderName : '',
-              "traderPan": data?.apiJson?.traderPan ? data?.apiJson?.traderPan : '',
-              "traderContact": data?.apiJson?.traderContact ? data?.apiJson?.traderContact : '',
-              "traderEmail": data?.apiJson?.traderEmail ? data?.apiJson?.traderEmail : '',
-              "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
-              "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
-          }
+        {
+          "traderName": data?.apiJson?.traderName ? data?.apiJson?.traderName : '',
+          "traderPan": data?.apiJson?.traderPan ? data?.apiJson?.traderPan : '',
+          "traderContact": data?.apiJson?.traderContact ? data?.apiJson?.traderContact : '',
+          "traderEmail": data?.apiJson?.traderEmail ? data?.apiJson?.traderEmail : '',
+          "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+          "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+        }
       ],
       "transporterDetails": [
-          {
-              "transporterName": data?.apiJson?.transporterName ? data?.apiJson?.transporterName : '',
-              "transporterPan": data?.apiJson?.transporterPan ? data?.apiJson?.transporterPan : '',
-              "transporterContact": data?.apiJson?.transporterContact ? data?.apiJson?.transporterContact : '',
-              "transporterEmail": data?.apiJson?.transporterEmail ? data?.apiJson?.transporterEmail : '',
-              "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
-              "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
-          }
+        {
+          "transporterName": data?.apiJson?.transporterName ? data?.apiJson?.transporterName : '',
+          "transporterPan": data?.apiJson?.transporterPan ? data?.apiJson?.transporterPan : '',
+          "transporterContact": data?.apiJson?.transporterContact ? data?.apiJson?.transporterContact : '',
+          "transporterEmail": data?.apiJson?.transporterEmail ? data?.apiJson?.transporterEmail : '',
+          "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+          "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+        }
       ],
       "locationDetails": [
-          {
-              "sourceLocation": data?.apiJson?.sourceLocation ? data?.apiJson?.sourceLocation : '',
-              "destinationLocation": data?.apiJson?.destinationLocation ? data?.apiJson?.destinationLocation : '',
-              "distance": data?.apiJson?.distance ? data?.apiJson?.distance : ''
-          }
+        {
+          "sourceLocation": data?.apiJson?.sourceLocation ? data?.apiJson?.sourceLocation : '',
+          "destinationLocation": data?.apiJson?.destinationLocation ? data?.apiJson?.destinationLocation : '',
+          "distance": data?.apiJson?.distance ? data?.apiJson?.distance : ''
+        }
       ],
       "geometry": data?.apiJson?.tollGuruGeo ? data?.apiJson?.tollGuruGeo : '',
 
       "driverDetails": data?.createTripJson?.driverDetails,
-          "epod": data?.createTripJson?.epod[0],
+      "epod": data?.createTripJson?.epod[0],
 
-          "user_id": user?._id,
+      "user_id": user?._id,
 
-          "status": {
-              msg: 'Trip Added',
-              value: 'Running',
-              timestamp: Date.now()
-          }
+      "status": {
+        msg: 'Trip Added',
+        value: 'Running',
+        timestamp: Date.now()
       }
-      resolve(createTripFinalJson)
+    }
+    resolve(createTripFinalJson)
+  })
+}
+
+export const finalCancelCreateJson = (data, user, id) => {
+  return new Promise(function (resolve, reject) {
+    var createTripFinalJson = {
+      "eWayBillDetails": [
+        {
+          "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
+          "tripReferenceNumber": '',
+          "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
+          "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
+          "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
+          "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',
+          "totalTaxabaleAmount": data?.apiJson?.totalTaxabaleAmount ? data?.apiJson?.totalTaxabaleAmount : ''
+        }
+      ],
+      "traderDetils": [
+        {
+          "traderName": data?.apiJson?.traderName ? data?.apiJson?.traderName : '',
+          "traderPan": data?.apiJson?.traderPan ? data?.apiJson?.traderPan : '',
+          "traderContact": data?.apiJson?.traderContact ? data?.apiJson?.traderContact : '',
+          "traderEmail": data?.apiJson?.traderEmail ? data?.apiJson?.traderEmail : '',
+          "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+          "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+        }
+      ],
+      "transporterDetails": [
+        {
+          "transporterName": data?.apiJson?.transporterName ? data?.apiJson?.transporterName : '',
+          "transporterPan": data?.apiJson?.transporterPan ? data?.apiJson?.transporterPan : '',
+          "transporterContact": data?.apiJson?.transporterContact ? data?.apiJson?.transporterContact : '',
+          "transporterEmail": data?.apiJson?.transporterEmail ? data?.apiJson?.transporterEmail : '',
+          "alternativeContact": data?.apiJson?.alternativeContact ? data?.apiJson?.alternativeContact : '',
+          "alternativeEmail": data?.apiJson?.alternativeEmail ? data?.apiJson?.alternativeEmail : '',
+        }
+      ],
+      "locationDetails": [
+        {
+          "sourceLocation": data?.apiJson?.sourceLocation ? data?.apiJson?.sourceLocation : '',
+          "destinationLocation": data?.apiJson?.destinationLocation ? data?.apiJson?.destinationLocation : '',
+          "distance": data?.apiJson?.distance ? data?.apiJson?.distance : ''
+        }
+      ],
+      "geometry": data?.apiJson?.tollGuruGeo ? data?.apiJson?.tollGuruGeo : '',
+
+      "driverDetails": data?.createTripJson?.driverDetails,
+      "epod": data?.createTripJson?.epod[0],
+
+      "user_id": user?._id,
+
+      "status": {
+        msg: 'Trip Cancel',
+        value: 'Cancelled',
+        timestamp: Date.now()
+      },
+      "_id": id
+    }
+    resolve(createTripFinalJson)
   })
 }
 
 
+
+
 export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhYTAzOGFlYzg4YTIxYWJjOWM3YTkiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNzM0MDg1NzU2LCJleHAiOjE3MzQwODkzNTZ9.YdNi7vs2XxITgTWUz62Y-rPQj6PoDvvfhAXrHs6fNno"
+
+
+
+
+export const ApiHitForDashboard = (json, data, setData, whichSection, setTotal, setLoader, quarter, setRender) => {
+
+  ApiHit(json, DashboardApi).then(res => {
+
+    console.log('res?.doc?.[quarter]', res?.doc?.[quarter], quarter);
+
+    console.log('quarter', quarter);
+
+    if (res?.status === 200) {
+
+      if (json.quarter === true) {
+        var oldData = data
+        oldData.trips.month = [
+          { data: res?.doc?.[quarter]?.months[0], count: res?.doc?.[quarter]?.count?.[0] },
+          { data: res?.doc?.[quarter]?.months[1], count: res?.doc?.[quarter]?.count?.[1] },
+          { data: res?.doc?.[quarter]?.months[2], count: res?.doc?.[quarter]?.count?.[2] }
+        ]
+        setData(oldData)
+        setRender(Date.now())
+      } else {
+        setLoader(false)
+
+        var oldData = data
+
+        oldData[whichSection].month = res?.doc?.arr
+        setData(oldData)
+
+        var totalCount = 0;
+
+        res?.doc?.arr.forEach(obj => {
+          totalCount += parseInt(obj?.count)
+        });
+
+        setTotal(totalCount)
+      }
+
+    }
+  })
+}

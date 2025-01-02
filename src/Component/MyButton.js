@@ -10,7 +10,7 @@ const MyButton = ({ title, onClick, width, type,icon,bg,color,border,font }) => 
              <button className={`p-2 rounded-md text-white w-max`} style={{ background: bg?bg:Colors.ThemeBlue }}>
              <div className="w-max">
                 <div className="flex gap-x-2 items-center">
-                <div className="spinner size-4 animate-spin rounded-full border-[2px] border-r-sky-500"></div>
+                <div className="spinner w-4 h-4 animate-spin  rounded-full border-[2px] border-white"></div>
                     <div>Loading.....</div>
                 </div>
              </div>

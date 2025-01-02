@@ -3,7 +3,7 @@ import { GetTripWithGeo, ULIPApiHandler, UpdateTrip, fetchSimLocation } from "..
 import { useSelector } from "react-redux";
 import TrackMapHeader from "./TrackMapHeader";
 import toast from "react-hot-toast";
-import { ApiHit, calculateDistance, graterThenAndLessThenTimeAccept } from "../utils";
+import { ApiHit, GetFullYearWithTime, calculateDistance, graterThenAndLessThenTimeAccept } from "../utils";
 import TollPlaza from "./TollPlaza";
 import { isArray } from "underscore";
 import GMap from "./GMap";
@@ -43,7 +43,7 @@ const TrackMap = () => {
         }
         console.log('call --- ');
         ApiHit(json, GetTripWithGeo).then(res => {
-            console.log('res ---- --- -- -- ',res);
+            console.log('res ---- --- -- -- ', res);
             if (res?.message === 'Success' && res?.status === 200 && res?.doc?.docs?.length === 1) {
                 var tempArr = []
                 var geometryData = res?.doc?.docs?.[0]
@@ -199,16 +199,29 @@ const TrackMap = () => {
                     desName={data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
                 />
 
-                <p className="bg-[#017f00] text-white w-max p-2 mt-5 border rounded-2xl text-md">
-                    <span className="font-bold ">Source : </span>
-                    {data?.[0]?.locationDetails[0]?.sourceLocation?.formatted_address}
-                </p>
+                <div>
+                    <p className="bg-[#017f00] text-white w-max p-2 mt-5 border rounded-2xl text-md">
+                        <span className="font-bold ">Source : </span>
+                        {data?.[0]?.locationDetails[0]?.sourceLocation?.formatted_address}
+                        <br />
+                    </p>
+                    <p className="flex gap-2 ml-2">
+                        <span className="text-black">Trip start date & time (ETD) - </span>
+                        {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}
+                    </p>
+                </div>
 
                 <TollPlaza data={data} tollsArr={data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[vehicleToDisplayTolls]?.tollsArr?.tolls} />
-                <p className="bg-[#c9292a] text-white w-max p-2 mb-7 border rounded-2xl text-md">
+                <div>
+                    <p className="bg-[#c9292a] text-white w-max p-2 border rounded-2xl text-md">
                     <span className="font-bold ">Destination : </span>
                     {data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
                 </p>
+                <p className="flex gap-2 ml-2">
+                        <span className="text-black">Trip start date & time (ETD) - </span>
+                        {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}
+                    </p>
+                </div>
 
             </div>
             :

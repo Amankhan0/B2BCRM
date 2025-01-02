@@ -7,7 +7,7 @@ function DataTable({ th, td, api, hidePagination,totalPages }) {
 
     const PaginationReducer = useSelector(state => state.PaginationReducer)
 
-    console.log('td', td);
+    console.log('totalPages', totalPages);
 
     return (
         <div>
@@ -33,10 +33,9 @@ function DataTable({ th, td, api, hidePagination,totalPages }) {
             </div>
             <div>
                 {
-                    !hidePagination &&
                     <MyPagination
                         currentPage={PaginationReducer?.pagination?.page}
-                        totalPage={totalPages}
+                        totalPages={totalPages}
                         api={api}
                     />
                 }

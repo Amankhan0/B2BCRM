@@ -1,5 +1,8 @@
 // *************** VERCEL *******************************
 
+import { setDataAction } from "../Store/Action/SetDataAction"
+import { SET_API_JSON, SET_CREATE_TRIP_JSON } from "../Store/ActionName/ActionName"
+
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
@@ -13,16 +16,28 @@
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://192.168.0.112:8000/api/trip/'
-export const BaseUrl2 = "http://192.168.0.112:8000/"
+export const BaseUrl = 'http://192.168.1.17:8000/api/'
+export const BaseUrl2 = "http://192.168.1.17:8000/"
 //  8002
 let USER = 'user/'
 let TRIP = 'trip/'
+
+
 
 export const login = BaseUrl + USER+'login'
 export const verifyUser = BaseUrl + USER +'verifyUser'
 export const changePassword = BaseUrl + USER +'changePassword'
 export const forgotPassword = BaseUrl + USER +'forgotPassword'
+
+export const ULIPApiHandler = BaseUrl + TRIP + 'ULIPApiHandler'
+export const CreateTripApi = BaseUrl + TRIP + 'CreateTrip'
+export const getTrip = BaseUrl + TRIP + 'getTrip'
+export const UpdateTrip = BaseUrl +TRIP+ 'UpdateTrip'
+export const getTollGuru = BaseUrl + TRIP + "getTollGuru"
+export const DashboardApi = BaseUrl + TRIP +'date-info'
+export const searchTrip = BaseUrl + TRIP +'searchTrip'
+export const GetTripWithGeo = BaseUrl + TRIP + 'GetTripWithGeo'
+
 
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
 export const LoginApi = BaseUrl + 'Login'
@@ -36,11 +51,14 @@ export const GetSubscriptionRoutes = BaseUrl + 'GetSubscriptionRoutes'
 export const GetSubscribed = BaseUrl + 'GetSubscribed'
 export const GenerateQR = BaseUrl + "/generateQR"
 export const verifyConsent = BaseUrl + 'verifyConsent'
-export const ULIPApiHandler = BaseUrl + 'ULIPApiHandler'
-export const CreateTripApi = BaseUrl + 'CreateTrip'
+
 export const checkEway = BaseUrl + 'checkEway'
-export const getTrip = BaseUrl + 'getTrip'
-export const UpdateTrip = BaseUrl + 'UpdateTrip'
+
+
+
+
+
+
 export const getAccessTokenMM = BaseUrl + 'getAccessTokenMM'
 export const AddUserToSubscription = BaseUrl + 'AddUserToSubscription'
 export const getHTTPNotifications = BaseUrl + 'getHTTPNotifications'
@@ -100,9 +118,9 @@ export const GetTransaction = BaseUrl + 'GetTransaction'
 
 export const countData = BaseUrl + 'countData'
 
-export const GetTripWithGeo = BaseUrl + 'GetTripWithGeo'
 
-export const getTollGuru = BaseUrl + "getTollGuru"
+
+
 export const fetchTollGuruDB = BaseUrl + "fetchTollGuruDB"
 export const fetchSimLocation = BaseUrl + "fetchSimLocation"
 
@@ -123,7 +141,6 @@ export const smsEmailVerification = BaseUrl + "sms-email/Verification"
 export const webhook = BaseUrl + "/webhook/simData"
 export const ownFirebase = BaseUrl2 + "upload"
 
-export const searchTrip = BaseUrl + "searchTransporter"
 export const triggerService = BaseUrl + "triggerService"
 
 export const createGroup = BaseUrl + "createGroup"

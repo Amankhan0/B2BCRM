@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName';
 
-function MyVehicleTypeInput({ createTripJson, name }) {
+function MyVehicleTypeInput({ createTripJson, name,editpage }) {
 
   const ApiReducer = useSelector(state => state.ApiReducer)
   const dispatch = useDispatch()
@@ -36,7 +36,7 @@ function MyVehicleTypeInput({ createTripJson, name }) {
         <Title title='Vehicle Type' color='black' size='md' />
         <span className="text-lg text-red-600">*</span>
       </div>
-      <div onClick={() => setTruckHide(true)} className={`cursor-pointer bg-white outline-none h-12 w-full text-base rounded-xl border border-slate-400 hover:border-slate-400 p-3 text-gray-400 flex justify-between`}>
+      <div onClick={() => setTruckHide(editpage?false:true)} className={`cursor-pointer bg-white outline-none h-12 w-full text-base rounded-xl border border-slate-400 hover:border-slate-400 p-3 text-gray-400 flex justify-between`}>
         <p>{ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleType ? ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleType : 'Select Vehicle Type'}</p>
         <svg className="w-2.5 h-2.5 ms-3 mt-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"></path></svg>
       </div>

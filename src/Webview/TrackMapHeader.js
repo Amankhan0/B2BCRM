@@ -2,7 +2,7 @@ import React from "react";
 
 const TrackMapHeader = ({ data }) => {
     return (
-        <div className="grid lg:grid-cols-5 md:grid-cols-6 sm:grid-cols-6 gap-6 mb-7 p-2 card items-center">
+        <div className="grid lg:grid-cols-4 md:grid-cols-6 sm:grid-cols-6 gap-6 mb-7 p-2 card items-center">
             <div className="ml-5 lg:col-span-2 md:col-span-2 sm:col-span-2 rounded-2xl flex">
                 <div className="self-center rounded-full" style={{ background: 'rgb(8, 133, 166)' }}>
                     <img className="w-8 h-16 p-2 " src="https://firebasestorage.googleapis.com/v0/b/tyt-doc-upload.appspot.com/o/track-your-transport%2FpanFile%2FUntitled-1.png?alt=media&amp;token=eefed7db-d04d-4126-819f-ad245f0630ae" />
@@ -20,11 +20,7 @@ const TrackMapHeader = ({ data }) => {
                 </div>
             </div>
             <div className="ml-5">
-                <p className="text-black">{data?.[0]?.eWayBillDetails?.[0]?.eWayBillNumber === '' ? 'Trip Ref Number' : 'Eway Bill Number'}</p>
-                <p>{data?.[0]?.eWayBillDetails?.[0]?.eWayBillNumber === '' ? data?.[0]?.eWayBillDetails?.[0]?.tripReferenceNumber : data?.[0]?.eWayBillDetails?.[0]?.eWayBillNumber}</p>
-            </div>
-            <div className="ml-5">
-                <p className="text-black">Generated on</p>
+                <p className="text-black">Trip start date & time (ETD)</p>
                 {/* <p>{GetFullYear(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}</p> */}
 
 
@@ -40,7 +36,7 @@ const TrackMapHeader = ({ data }) => {
                 </p>
             </div>
             <div className="ml-5">
-                <p className="text-black">Valid Till</p>
+                <p className="text-black">Estimated time of arrival</p>
                 {/* <p>{GetFullYear(data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity)}</p> */}
 
                 <p className="w-24">
