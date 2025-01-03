@@ -8,34 +8,34 @@ import { SET_API_JSON, SET_CREATE_TRIP_JSON } from "../Store/ActionName/ActionNa
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-// export const BaseUrl = 'http://192.168.1.33:3001/api/'
-// export const BaseUrl2 = "http://192.168.1.33:3001/"
+export const BaseUrl = 'http://localhost:8000/api/'
+export const BaseUrl2 = "http://localhost:8000/"
 
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://192.168.1.17:8000/api/'
-export const BaseUrl2 = "http://192.168.1.17:8000/"
+// export const BaseUrl = 'https://armyapi.headsupcorporation.com/api/'
+// export const BaseUrl2 = "https://armyapi.headsupcorporation.com/"
 //  8002
 let USER = 'user/'
 let TRIP = 'trip/'
 
 
 
-export const login = BaseUrl + USER+'login'
-export const verifyUser = BaseUrl + USER +'verifyUser'
-export const changePassword = BaseUrl + USER +'changePassword'
-export const forgotPassword = BaseUrl + USER +'forgotPassword'
+export const login = BaseUrl + USER + 'login'
+export const verifyUser = BaseUrl + USER + 'verifyUser'
+export const changePassword = BaseUrl + USER + 'changePassword'
+export const forgotPassword = BaseUrl + USER + 'forgotPassword'
 
 export const ULIPApiHandler = BaseUrl + TRIP + 'ULIPApiHandler'
 export const CreateTripApi = BaseUrl + TRIP + 'CreateTrip'
 export const getTrip = BaseUrl + TRIP + 'getTrip'
-export const UpdateTrip = BaseUrl +TRIP+ 'UpdateTrip'
+export const UpdateTrip = BaseUrl + TRIP + 'UpdateTrip'
 export const getTollGuru = BaseUrl + TRIP + "getTollGuru"
-export const DashboardApi = BaseUrl + TRIP +'date-info'
-export const searchTrip = BaseUrl + TRIP +'searchTrip'
+export const DashboardApi = BaseUrl + TRIP + 'date-info'
+export const searchTrip = BaseUrl + TRIP + 'searchTrip'
 export const GetTripWithGeo = BaseUrl + TRIP + 'GetTripWithGeo'
 
 
