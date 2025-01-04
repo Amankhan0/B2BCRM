@@ -8,16 +8,16 @@ import { SET_API_JSON, SET_CREATE_TRIP_JSON } from "../Store/ActionName/ActionNa
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'http://localhost:8000/api/'
-export const BaseUrl2 = "http://localhost:8000/"
+// export const BaseUrl = 'http://localhost:8000/api/'
+// export const BaseUrl2 = "http://localhost:8000/"
 
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-// export const BaseUrl = 'https://armyapi.headsupcorporation.com/api/'
-// export const BaseUrl2 = "https://armyapi.headsupcorporation.com/"
+export const BaseUrl = 'https://armyapi.headsupcorporation.com/api/'
+export const BaseUrl2 = "https://armyapi.headsupcorporation.com/"
 //  8002
 let USER = 'user/'
 let TRIP = 'trip/'
