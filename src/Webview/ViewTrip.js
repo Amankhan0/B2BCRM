@@ -49,7 +49,7 @@ function ViewTrip() {
       page: PaginationReducer?.pagination?.page,
       limit: PaginationReducer?.pagination?.limit,
       search: {
-       
+
       },
       user_id: user?._id,
     }
@@ -68,7 +68,7 @@ function ViewTrip() {
     if (confirmation) {
       var newData = data
       newData.status[0] = {
-        msg: "Trip Ended",
+        msg: "Manually ended",
         timestamp: Date.now(),
         value: 'Ended'
       }
@@ -85,7 +85,7 @@ function ViewTrip() {
   }
 
   console.log('TripReducer', TripReducer);
-  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Start Date', 'End Date', 'Trip Status', 'Source Location', 'Destination Location', 'Driver Name', 'Driver Contact', 'Action']
+  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Estimated time of arrival', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
 
   let TD;
   if (TripReducer?.doc !== null) {
@@ -99,12 +99,14 @@ function ViewTrip() {
             <td className='p-2 border'>{GetFullYearWithTime(element?.eWayBillDetails?.[0]?.genratedDate)}</td>
             <td className='p-2 border'>{GetFullYearWithTime(element?.eWayBillDetails?.[0]?.eWayBillValidity)}</td>
             <td className={`p-2 border text-white`}>
-              <p className='rounded-lg py-1' style={{ background: element?.status?.[0]?.value === 'Running' ? 'green' : element?.status?.[0]?.value === 'Ended' ? Colors.ThemeBlue : 'red' }}>
-                {element?.status?.[0]?.value}
-              </p>
+              <div className='rounded-lg w-full' style={{ fontSize: '12px', background: element?.status?.[0]?.value === 'Running' ? 'green' : element?.status?.[0]?.value === 'Ended' ? Colors.ThemeBlue : 'red' }}>
+                <span className='mr-1'>{element?.status?.[0]?.msg === 'Manually ended' ? 'Manually ended' : element?.status?.[0]?.msg === 'Ended' ? 'Automatically ended' : element?.status?.[0]?.value}</span>
+                <span className='ml-1'>{element?.status?.[0]?.value === 'Ended' && GetFullYearWithTime(element?.status?.[0]?.timestamp)}</span>
+              </div>
             </td>
             <td className='p-2 border'>{element?.locationDetails?.[0]?.sourceLocation?.name}</td>
             <td className='p-2 border'>{element?.locationDetails?.[0]?.destinationLocation?.name}</td>
+            <td className='p-2 border'>{element?.driverDetails?.[0]?.driverContact ? element?.driverDetails?.[0]?.vehicleNumber : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverName ? element?.driverDetails?.[0]?.driverName : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverContact ? element?.driverDetails?.[0]?.driverContact : '-'}</td>
 
@@ -154,7 +156,7 @@ function ViewTrip() {
 
   return (
     <div className='m-10'>
-      <ViewTripFilter fetchData={fetchData} fetchDataBySearch={fetchDataBySearch}/>
+      <ViewTripFilter fetchData={fetchData} fetchDataBySearch={fetchDataBySearch} />
       <DataTable td={TD} th={th} totalPages={TripReducer?.doc?.totalPages} api={fetchData} />
     </div>
   )

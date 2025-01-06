@@ -764,7 +764,7 @@ export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhY
 
 
 
-export const ApiHitForDashboard = (json, data, setData, whichSection, setTotal, setLoader, quarter, setRender) => {
+export const ApiHitForDashboard = (json, data, setData, setTotal, setLoader, quarter, setRender) => {
 
   ApiHit(json, DashboardApi).then(res => {
 
@@ -776,7 +776,7 @@ export const ApiHitForDashboard = (json, data, setData, whichSection, setTotal, 
 
       if (json.quarter === true) {
         var oldData = data
-        oldData.trips.month = [
+        oldData = [
           { data: res?.doc?.[quarter]?.months[0], count: res?.doc?.[quarter]?.count?.[0] },
           { data: res?.doc?.[quarter]?.months[1], count: res?.doc?.[quarter]?.count?.[1] },
           { data: res?.doc?.[quarter]?.months[2], count: res?.doc?.[quarter]?.count?.[2] }
@@ -788,7 +788,7 @@ export const ApiHitForDashboard = (json, data, setData, whichSection, setTotal, 
 
         var oldData = data
 
-        oldData[whichSection].month = res?.doc?.arr
+        oldData = res?.doc?.arr
         setData(oldData)
 
         var totalCount = 0;

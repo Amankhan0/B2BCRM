@@ -7,6 +7,8 @@ import { ApiHit, GetFullYearWithTime, calculateDistance, graterThenAndLessThenTi
 import TollPlaza from "./TollPlaza";
 import { isArray } from "underscore";
 import GMap from "./GMap";
+import { ShareTripIcon, shareSmallIcon } from "../SVG/Icons";
+import { Colors } from "../Colors/color";
 
 const TrackMap = () => {
 
@@ -18,20 +20,6 @@ const TrackMap = () => {
 
     var url = window.location.pathname
     var splitUrl = url.split('/')[4]
-
-    console.log({ splitUrl })
-
-
-
-    console.log(url.split('/')?.[1])
-    console.log(url.split('/')?.[2])
-
-    console.log(url.split('/')?.[3])
-
-    console.log(url.split('/')?.[4])
-
-    console.log(url.split('/')?.[5])
-
 
     useEffect(() => {
         if (data === null) {
@@ -47,7 +35,7 @@ const TrackMap = () => {
             page: 1,
             limit: 1,
             search: {
-                originalId: splitUrl
+                originalId: splitUrl !== 'share' ? splitUrl : url.split('/')?.[5]
             },
             populate: 'originalId',
             ref: ''
@@ -180,23 +168,45 @@ const TrackMap = () => {
 
     console.log('data----', data);
 
+    const sharetrip = () => {
+        console.log(url.split('/')[5]);
+        var shareTripUrl = 'https://trackyourtransport.in/army/track/map/share/'+url.split('/')[4]+'/'+url.split('/')[5]
+        navigator.clipboard.writeText(shareTripUrl)
+            .then(() => {
+                toast.success('Share trip link copied!');
+            })
+            .catch((err) => {
+                toast.error('Something went wrong!');
+                console.error('Error copying text: ', err);
+            });
+    }
+
     return (
         data !== null ?
             <div className="m-10">
 
                 {/* ******* map Header ******* */}
                 <TrackMapHeader data={data} />
-                <div className="mt-7 mb-10">
-                    <p className="text-black">Selected Vehicle</p>
-                    <select onChange={(e) => onChange(e)} className="bg-gray-200 rounded-xl p-2 w-32 card">
-                        {
-                            data?.[0]?.driverDetails?.map((ele, index) => {
-                                return (
-                                    <option key={index} value={index} selected={parseInt(vehicleToDisplayTolls) === index ? true : false}>{ele?.vehicleNumber}</option>
-                                )
-                            })
-                        }
-                    </select>
+                <div className="mt-7 mb-10 flex justify-between">
+                    <div>
+                        <p className="text-black">Selected Vehicle</p>
+                        <select onChange={(e) => onChange(e)} className="bg-gray-200 rounded-xl p-2 w-32 card">
+                            {
+                                data?.[0]?.driverDetails?.map((ele, index) => {
+                                    return (
+                                        <option key={index} value={index} selected={parseInt(vehicleToDisplayTolls) === index ? true : false}>{ele?.vehicleNumber}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                    {
+                        url.split('/')[4] !== 'share' &&
+                        <div onClick={() => sharetrip()} className="flex self-center items-center gap-2 px-3 h-10 cursor-pointer rounded-lg" style={{ background: Colors.ThemeBlue, color: 'white' }}>
+                            <p className="text-sm">Share</p>
+                            <span>{shareSmallIcon}</span>
+                        </div>
+                    }
                 </div>
                 {/* ******* map Header ******* */}
 
@@ -225,10 +235,10 @@ const TrackMap = () => {
                 <TollPlaza data={data} tollsArr={data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[vehicleToDisplayTolls]?.tollsArr?.tolls} />
                 <div>
                     <p className="bg-[#c9292a] text-white w-max p-2 border rounded-2xl text-md">
-                    <span className="font-bold ">Destination : </span>
-                    {data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
-                </p>
-                <p className="flex gap-2 ml-2">
+                        <span className="font-bold ">Destination : </span>
+                        {data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
+                    </p>
+                    <p className="flex gap-2 ml-2">
                         <span className="text-black">Trip start date & time (ETD) - </span>
                         {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}
                     </p>

@@ -190,12 +190,12 @@ function Login() {
                                                         name={'password'}
                                                         error={ApiReducer?.apiJsonError?.password}
                                                     />
-                                                    <div
+                                                    {/* <div
                                                         className="text-end text-xs cursor-pointer text-blue-800 hover:underline"
                                                         onClick={handleForgetPassword}
                                                     >
                                                         Forgot password?
-                                                    </div>
+                                                    </div> */}
                                                 </>
                                             )}
                                             {otpTab && <InputOtp otp={otp} setOtp={setOtp} otpError={otpError} />}

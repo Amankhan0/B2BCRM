@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { ApiHit } from '../utils'
 import { getTrip } from '../Constants/Constants'
 import { getTrackYourTransportUser } from '../Storage/Storage'
+import { Colors } from '../Colors/color'
 
-const DashboardCard = ({ title, type, icon, themeColor }) => {
+const DashboardCard = ({ title, type, icon, themeColor,onClick,activeCard }) => {
 
     const [data,setData] = useState(null)
 
@@ -35,7 +36,7 @@ const DashboardCard = ({ title, type, icon, themeColor }) => {
     }
 
     return (
-      <div className='card p-7'>
+      <div className={`card p-7 cursor-pointer`} onClick={onClick} style={{border:activeCard === type?'0.5px solid'+Colors.ThemeBlue:'blue'}}>
         <div className='flex justify-between'>
           <div>
             <p className='text-xl font-bold text-black mb-2'>{data}</p>

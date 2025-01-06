@@ -5,16 +5,16 @@
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-// export const BaseUrl = 'http://192.168.1.17:8003/api/'
-// export const BaseUrl2 = "http://192.168.1.17:8003/"
+export const BaseUrl = 'http://192.168.1.17:8003/api/'
+export const BaseUrl2 = "http://192.168.1.17:8003/"
 
 // *************** TYT *******************************
 // export const BaseUrl = "https://api.trackyourtransport.in/api/"
 // export const BaseUrl2 = "https://api.trackyourtransport.in/"
 
 // *************** Local *******************************
-export const BaseUrl = 'https://armyapi.headsupcorporation.com/api/'
-export const BaseUrl2 = "https://armyapi.headsupcorporation.com/"
+// export const BaseUrl = 'https://armyapi.headsupcorporation.com/api/'
+// export const BaseUrl2 = "https://armyapi.headsupcorporation.com/"
 //  8002
 let USER = 'user/'
 let TRIP = 'trip/'

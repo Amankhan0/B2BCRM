@@ -10,7 +10,7 @@ function Profile() {
   const user = getTrackYourTransportUser()
   const handleLogout = () => {
     localStorage.removeItem('armyUser');
-    window.location.href = '/army';
+    window.location.href = '/army/';
   }
   const getInitials = (name) => {
     if (!name) return ''; 
