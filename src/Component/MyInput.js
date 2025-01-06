@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setDataAction } from '../Store/Action/SetDataAction'
 import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName'
 
-function MyInput({ placeholder, name, disable, title, error, createTripJson }) {
+function MyInput({ placeholder, name, disable, title, error, createTripJson,important }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
@@ -28,8 +28,8 @@ function MyInput({ placeholder, name, disable, title, error, createTripJson }) {
 
     return (
         <div>
-            <label className='w-full text-black'>{title}</label>
-            <input disabled={disable} onChange={(e)=>onChange(e.target.value)} className='mt-2 w-full outline-none h-12 text-md rounded-xl border border-slate-400 hover:border-slate-400 pl-2' defaultValue={ApiReducer?.apiJson?.[name]} name={name} placeholder={placeholder} />
+            <label className='w-full text-black'>{title}{important ? <span className='text-red-600 text-base'>*</span> : ''}</label>
+            <input disabled={disable} onChange={(e)=>onChange(e.target.value)} className='mt-1 w-full outline-none h-12 text-md rounded-xl border border-slate-400 hover:border-slate-400 pl-2' defaultValue={ApiReducer?.apiJson?.[name]} name={name} placeholder={placeholder} />
             <label className='w-full text-red-600'>{error ? title+' is Required' : ''}</label>
         </div>
     )

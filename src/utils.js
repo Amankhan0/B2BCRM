@@ -646,7 +646,7 @@ export const finalCreateJson = (data, user) => {
         {
           "eWayBillNumber": data?.apiJson?.eWayBillNumber ? data?.apiJson?.eWayBillNumber : '',
           "tripReferenceNumber": '',
-          "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : '',
+          "genratedDate": data?.apiJson?.genratedDate ? data?.apiJson?.genratedDate : Date.now(),
           "eWayBillValidity": data?.apiJson?.eWayBillValidity ? data?.apiJson?.eWayBillValidity : '',
           "invoiceNumber": data?.apiJson?.invoiceNumber ? data?.apiJson?.invoiceNumber : '',
           "hsnCode": data?.apiJson?.hsnCode ? data?.apiJson?.hsnCode : '',

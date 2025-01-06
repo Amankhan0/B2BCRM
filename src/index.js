@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -13,12 +13,11 @@ import PaginationReducer from './Store/Reducer/PaginationReducer';
 import TripReducer from './Store/Reducer/TripReducer';
 
 const rootReducer = combineReducers({
-  SidebarReducer:SidebarReducer,
-  ApiReducer:ApiReducer,
-  PaginationReducer:PaginationReducer,
-  TripReducer:TripReducer
+  SidebarReducer: SidebarReducer,
+  ApiReducer: ApiReducer,
+  PaginationReducer: PaginationReducer,
+  TripReducer: TripReducer
 })
-
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -26,7 +25,7 @@ const root = createRoot(document.getElementById("root"));
 
 root.render(
   <Provider store={store}>
-    <BrowserRouter basename='/army'>
+    <BrowserRouter basename='/army/'>
       <App />
       <Toaster />
     </BrowserRouter>

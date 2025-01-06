@@ -17,9 +17,20 @@ const TrackMap = () => {
     const [simLocation, setSimlocation] = useState(null);
 
     var url = window.location.pathname
-    var splitUrl = url.split('/')[3]
+    var splitUrl = url.split('/')[4]
 
     console.log({ splitUrl })
+
+
+
+    console.log(url.split('/')?.[1])
+    console.log(url.split('/')?.[2])
+
+    console.log(url.split('/')?.[3])
+
+    console.log(url.split('/')?.[4])
+
+    console.log(url.split('/')?.[5])
 
 
     useEffect(() => {
