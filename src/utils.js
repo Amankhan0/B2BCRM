@@ -502,8 +502,6 @@ export const stateOptions = [
   { value: 'west-bengal', label: 'West Bengal' },
 ];
 
-
-
 export const decodeGeometery = (encoded) => {
 
   console.log({ encoded })
@@ -560,7 +558,6 @@ const fetchPublicIPv4Address = async () => {
   return ip;
 };
 
-
 export const ApiHit = (json, api, token, cookie, dispatch) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -569,16 +566,17 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
       const cookieValue = cookies.get('jwt');
       const userAgent = navigator.userAgent;
       const browser = Bowser.getParser(userAgent);
-      let browserName = browser?.getBrowser()
-      let os = browser?.getOS()
-      let platformType = browser?.getPlatformType()
-      let ipv4 = await fetchPublicIPv4Address()
+      let browserName = browser?.getBrowser();
+      let os = browser?.getOS();
+      let platformType = browser?.getPlatformType();
+      let ipv4 = await fetchPublicIPv4Address();
 
       if (!checkInternet) {
         if (dispatch) {
           dispatch(setDataAction(true, SET_INTERNET_SERVICE));
         }
         reject('No internet connection');
+        return;
       }
 
       const requestOptions = {
@@ -591,7 +589,6 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
           "browserName": browserName?.name,
           "OS": os?.name,
           "platformType": platformType
-
         },
         body: JSON.stringify(json),
       };
@@ -605,31 +602,42 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
         localStorage.removeItem("trackYourTransportUser");
         window.location.href = '/login';
         resolve('Missing token');
-      }
-      else if (result?.message === "jwt expired") {
+      } else if (result?.message === "jwt expired") {
         cookies.remove();
         cookies.remove("jwt", { path: "/" });
         localStorage.removeItem("trackYourTransportUser");
         window.location.reload();
         window.location.href = '/login';
         resolve('JWT expired');
-      }
-      else if (result?.message === "Prohibited") {
+      } else if (result?.message === "Prohibited") {
         cookies.remove();
         cookies.remove("jwt", { path: "/" });
         localStorage.removeItem("trackYourTransportUser");
         window.location.reload();
         window.location.href = '/login';
         resolve('Prohibited');
-      }
-      else {
+      } else {
         resolve(result);
       }
     } catch (error) {
-      reject(error);
+      // Enhanced error handling
+      if (error.name === 'TypeError') {
+        // Possible fetch network error
+        console.error('Network error or resource unavailable:', error.message);
+        resolve('Network error or resource unavailable');
+      } else if (error.name === 'SyntaxError') {
+        // JSON parsing error
+        console.error('Failed to parse response JSON:', error.message);
+        resolve('Failed to parse response JSON');
+      } else {
+        // General error handling
+        console.error('An unexpected error occurred:', error.message);
+        resolve('An unexpected error occurred');
+      }
     }
   });
 };
+
 
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {

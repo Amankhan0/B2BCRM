@@ -1,7 +1,7 @@
 import React from 'react'
 import LoginInput from '../../Component/Input/LoginInput'
 import BeforeLoginButton from '../../Component/BeforeLoginButton'
-import { ApiHit, regexEmail, secretKey, STROGNPASSWORD } from '../../utils'
+import { ApiHit, secretKey, STROGNPASSWORD } from '../../utils'
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from '../../Constants/Constants';
 import { getTrackYourTransportUser } from '../../Storage/Storage';
@@ -10,13 +10,11 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
 import { ChangePasswordValidation } from '../../ValidationScheema/Login/ChangePassword';
 
-
 function ChangePasswordProfile() {
   const ApiReducer = useSelector((state) => state.ApiReducer);
   const user = getTrackYourTransportUser()
   console.log("user", user);
   const dispatch = useDispatch();
-
 
   console.log("ApiReducer", ApiReducer);
 
@@ -60,16 +58,7 @@ function ChangePasswordProfile() {
 
   //     }
     
-
-
-
-
   //   })
-
-
-
- 
-
 
   // }
 
@@ -134,7 +123,6 @@ function ChangePasswordProfile() {
       }
     });
   };
-  
 
   return (
     <div className='p-4'>
