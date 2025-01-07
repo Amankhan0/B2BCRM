@@ -94,9 +94,11 @@ function Dashboard() {
               {typeOfChart}
             </p>
           </p>
+          <NavLink to='/trip/view'>
           <p className='border p-2 rounded-full text-center text-white mt-[44%]' style={{ background: Colors.ThemeBlue }}>
-            <NavLink to='/trip/view'>View Trips</NavLink>
+            <p >View Trips</p>
           </p>
+          </NavLink>
         </div>
 
         <div className='col-span-9'>
