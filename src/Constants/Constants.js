@@ -34,6 +34,8 @@ export const searchTrip = BaseUrl + TRIP + 'searchTrip'
 export const GetTripWithGeo = BaseUrl + TRIP + 'GetTripWithGeo'
 
 
+
+
 export const GetMaintenance = BaseUrl + 'GetMaintenance'
 export const LoginApi = BaseUrl + 'Login'
 export const Register = BaseUrl + 'Register'
@@ -48,10 +50,6 @@ export const GenerateQR = BaseUrl + "/generateQR"
 export const verifyConsent = BaseUrl + 'verifyConsent'
 
 export const checkEway = BaseUrl + 'checkEway'
-
-
-
-
 
 
 export const getAccessTokenMM = BaseUrl + 'getAccessTokenMM'

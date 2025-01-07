@@ -63,7 +63,7 @@ function Dashboard() {
         type: 'trips'
       }
     }
-    ApiHitForDashboard(json, data, setData, setTotal, setLoader, type?.[1], setRender)
+    ApiHitForDashboard(json, data, setData, setTotal, setLoader, value, setRender)
   }
 
   const onClickCard = (type) => {
