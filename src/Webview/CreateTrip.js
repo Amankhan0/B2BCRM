@@ -44,38 +44,46 @@ function CreateTrip() {
         toast.error('Please select route')
       }
       else{
-        setLoader('submit')
-        finalCreateJson(ApiReducer, user).then(res => {
-          var oldJson = res
-          var vehicleTollDetails = []
-          var newGeometry = {}
-          oldJson.driverDetails.map((ele, index) => {
-            vehicleTollDetails.push({
-              vehicleNumber: ele?.vehicleNumber,
-              axles: ele?.axles,
-              tollsArr: {
-                tolls: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].tolls,
-                summary: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].summary,
-                costs: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].costs,
+        let confirmation = false
+        if(!ApiReducer?.apiJson?.genratedDate){
+          confirmation = window.confirm('bla bla')
+        }else{
+          confirmation = true
+        }
+        if(confirmation) {
+          setLoader('submit')
+          finalCreateJson(ApiReducer, user).then(res => {
+            var oldJson = res
+            var vehicleTollDetails = []
+            var newGeometry = {}
+            oldJson.driverDetails.map((ele, index) => {
+              vehicleTollDetails.push({
+                vehicleNumber: ele?.vehicleNumber,
+                axles: ele?.axles,
+                tollsArr: {
+                  tolls: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].tolls,
+                  summary: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].summary,
+                  costs: ele?.tollInfo?.routes[oldJson?.geometry?.selectedIndex].costs,
+                }
+              })
+            })
+            newGeometry.vehicleInformationWithToll = vehicleTollDetails
+            newGeometry.polyline = oldJson?.geometry?.polyline
+            newGeometry.routeArr = oldJson?.geometry?.routeArr
+            oldJson.geometry = newGeometry
+    
+            console.log('oldJson', oldJson);
+    
+            ApiHit(oldJson, CreateTripApi).then(result => {
+              setLoader(false)
+              if (result?.status === 404) {
+                toast.error('Vehicle already in a trip')
+              } else if (result?.status === 200) {
+                window.location.pathname = '/army/trip/view'
               }
             })
           })
-          newGeometry.vehicleInformationWithToll = vehicleTollDetails
-          newGeometry.polyline = oldJson?.geometry?.polyline
-          newGeometry.routeArr = oldJson?.geometry?.routeArr
-          oldJson.geometry = newGeometry
-  
-          console.log('oldJson', oldJson);
-  
-          ApiHit(oldJson, CreateTripApi).then(result => {
-            setLoader(false)
-            if (result?.status === 404) {
-              toast.error('Vehicle already in a trip')
-            } else if (result?.status === 200) {
-              window.location.pathname = '/army/trip/view'
-            }
-          })
-        })
+        }
       }
   }
 
