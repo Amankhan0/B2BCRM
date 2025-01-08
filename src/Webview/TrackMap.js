@@ -9,6 +9,7 @@ import { isArray } from "underscore";
 import GMap from "./GMap";
 import { ShareTripIcon, shareSmallIcon } from "../SVG/Icons";
 import { Colors } from "../Colors/color";
+import ShareTripModal from "./ShareTripModal";
 
 const TrackMap = () => {
 
@@ -17,6 +18,9 @@ const TrackMap = () => {
     const [vehicleToDisplayTolls, setVehicleToDisplayTolls] = useState(0);
     const [fetchToll, setFetchToll] = useState(false);
     const [simLocation, setSimlocation] = useState(null);
+    const [openShareModal, setOpenShareModal] = useState(false);
+
+
 
     var url = window.location.pathname
     var splitUrl = url.split('/')[4]
@@ -169,22 +173,25 @@ const TrackMap = () => {
     console.log('data----', data);
 
     const sharetrip = () => {
-        console.log(url.split('/')[5]);
-        var shareTripUrl = 'https://trackyourtransport.in/army/track/map/share/'+url.split('/')[4]+'/'+url.split('/')[5]
-        navigator.clipboard.writeText(shareTripUrl)
-            .then(() => {
-                toast.success('Share trip link copied!');
-            })
-            .catch((err) => {
-                toast.error('Something went wrong!');
-                console.error('Error copying text: ', err);
-            });
+
+        setOpenShareModal(true)
+
+        // console.log(url.split('/')[5]);
+        // var shareTripUrl = 'https://trackyourtransport.in/army/track/map/share/'+url.split('/')[4]+'/'+url.split('/')[5]
+        // navigator.clipboard.writeText(shareTripUrl)
+        //     .then(() => {
+        //         toast.success('Share trip link copied!');
+        //     })
+        //     .catch((err) => {
+        //         toast.error('Something went wrong!');
+        //         console.error('Error copying text: ', err);
+        //     });
     }
 
     return (
         data !== null ?
             <div className="m-10">
-
+                {openShareModal && <ShareTripModal data={data} modal={openShareModal} setModal={setOpenShareModal}/>}
                 {/* ******* map Header ******* */}
                 <TrackMapHeader data={data} />
                 <div className="mt-7 mb-10 flex justify-between">
@@ -203,7 +210,7 @@ const TrackMap = () => {
                     {
                         url.split('/')[4] !== 'share' &&
                         <div onClick={() => sharetrip()} className="flex self-center items-center gap-2 px-3 h-10 cursor-pointer rounded-lg" style={{ background: Colors.ThemeBlue, color: 'white' }}>
-                            <p className="text-sm">Share</p>
+                            <p className="text-sm">Share Trip</p>
                             <span>{shareSmallIcon}</span>
                         </div>
                     }
