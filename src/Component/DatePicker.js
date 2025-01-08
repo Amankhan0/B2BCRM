@@ -12,29 +12,39 @@ function DatePicker({ register, date, enableTime, title, important, placeholder,
   const dispatch = useDispatch()
 
   const handleStart = (selectedDate, name) => {
-    if (currentTime) {
-      const currentDate = new Date();
-      selectedDate.setHours(currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds());
-      console.log("handleStart", { selectedDate, name });
-      const d = selectedDate.getTime();
-      var json = ApiReducer.apiJson;
-      Object.assign(json, { [name]: d });
+
+    console.log('selectedDate',selectedDate);
+    console.log('name',name);
+
+    const date = new Date(selectedDate);
+
+    var json = ApiReducer.apiJson;
+      Object.assign(json, { [name]: date.getTime() });
       dispatch(setDataAction(json, SET_API_JSON));
-    }
-    else if (MidNight) {
-      selectedDate.setHours(23, 59, 59, 999);
-      console.log("handleStart", { selectedDate, name });
-      const d = selectedDate.getTime();
-      var json = ApiReducer.apiJson;
-      Object.assign(json, { [name]: d });
-      dispatch(setDataAction(json, SET_API_JSON));
-    }
-    else {
-      var d = selectedDate.getTime();
-      var json = ApiReducer.apiJson
-      Object.assign(json, { [name]: d })
-      dispatch(setDataAction(json, SET_API_JSON))
-    }
+
+    // if (currentTime) {
+    //   const currentDate = new Date();
+    //   selectedDate.setHours(currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds());
+    //   console.log("handleStart", { selectedDate, name });
+    //   const d = selectedDate.getTime();
+    //   var json = ApiReducer.apiJson;
+    //   Object.assign(json, { [name]: d });
+    //   dispatch(setDataAction(json, SET_API_JSON));
+    // }
+    // else if (MidNight) {
+    //   selectedDate.setHours(23, 59, 59, 999);
+    //   console.log("handleStart", { selectedDate, name });
+    //   const d = selectedDate.getTime();
+    //   var json = ApiReducer.apiJson;
+    //   Object.assign(json, { [name]: d });
+    //   dispatch(setDataAction(json, SET_API_JSON));
+    // }
+    // else {
+    //   var d = selectedDate.getTime();
+    //   var json = ApiReducer.apiJson
+    //   Object.assign(json, { [name]: d })
+    //   dispatch(setDataAction(json, SET_API_JSON))
+    // }
   }
 
   return (

@@ -11,7 +11,6 @@ function Dashboard() {
 
   const [data, setData] = useState(null)
   const [typeOfChart, setTypeOfChart] = useState('Yearly')
-  const [chartOpenWhichCard, setChartOpenWhichCard] = useState('trips')
   const [total, setTotal] = useState(null)
   const [loader, setLoader] = useState(false)
   const [render, setRender] = useState(null)

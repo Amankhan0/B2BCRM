@@ -638,7 +638,6 @@ export const ApiHit = (json, api, token, cookie, dispatch) => {
   });
 };
 
-
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {
     var createTripFinalJson = {
