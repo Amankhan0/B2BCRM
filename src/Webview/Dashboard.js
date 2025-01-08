@@ -75,7 +75,7 @@ function Dashboard() {
   return (
     <div>
       <div className='grid grid-cols-3 gap-4 m-5'>
-        <DashboardCard activeCard={activeCard} onClick={() => onClickCard('Running')} type='Running' themeColor={'green'} title={'Running Trips'} value={'02'} icon={myVehicleicon} />
+        <DashboardCard activeCard={activeCard} onClick={() => onClickCard('Running')} type='Running' themeColor={'green'} title={'Active Trips'} value={'02'} icon={myVehicleicon} />
         <DashboardCard activeCard={activeCard} onClick={() => onClickCard('Ended')} type='Ended' themeColor={Colors.GRADIENTFIRST} title={'Closed Trips'} value={'22'} icon={myVehicleicon} />
         <DashboardCard activeCard={activeCard} onClick={() => onClickCard('Cancelled')} type='Cancelled' themeColor='darkorange' title={'Cancelled Trips'} value={'01'} icon={myVehicleicon} />
       </div>

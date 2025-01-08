@@ -30,7 +30,7 @@ function ViewTripFilter({ fetchData, fetchDataBySearch }) {
                 <p className='text-black ml-1'>Status</p>
                 <select className='p-2 rounded-xl w-28 border-slate-300 mb-2' onChange={(e) => onChange(e.target.value, 'select')}>
                     <option>All</option>
-                    <option>Running</option>
+                    <option value='Running'>Active</option>
                     <option>Ended</option>
                     <option>Cancelled</option>
                 </select>
