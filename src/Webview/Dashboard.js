@@ -82,7 +82,7 @@ function Dashboard() {
 
       <div className='grid grid-cols-12 gap-4 mt-10 card p-5 m-5'>
         <div className='col-span-3 p-4'>
-          <p className='text-2xl text-black mb-5 mt-5'>{activeCard === 'Ended' ? 'Closed' : activeCard} Trips Overview</p>
+          <p className='text-2xl text-black mb-5 mt-5'>{activeCard === 'Ended' ? 'Closed' : activeCard === 'Running'?'Active':activeCard} Trips Overview</p>
           <svg xmlns="http://www.w3.org/2000/svg" class="size-12 text-info" fill="none" viewBox="0 0 24 24" stroke={Colors.ThemeBlue} stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
