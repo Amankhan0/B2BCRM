@@ -239,7 +239,7 @@ const TrackMap = () => {
                         {data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
                     </p>
                     <p className="flex gap-2 ml-2">
-                        <span className="text-black">Trip start date & time (ETD) - </span>
+                        <span className="text-black">Trip end date & time (ETA) - </span>
                         {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}
                     </p>
                 </div>
