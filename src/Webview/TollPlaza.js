@@ -1,50 +1,59 @@
 import React from "react";
+import { GetFullYearWithTime } from "../utils";
 
 const TollPlaza = ({ tollsArr, data }) => {
+
+    let totalspeed = 0;
+    var lastToll = tollsArr[tollsArr?.length - 1]
+    var lastTollTime = new Date(lastToll?.readerReadTime).getTime()
+    if (lastTollTime) {
+        var endDate = data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity
+        var totalDistance = (data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.summary?.distance?.value) / 1000 - (lastToll?.arrival?.distance ? lastToll?.arrival?.distance : lastToll?.end?.arrival?.distance) / 1000
+        const timeDifferenceInMs = endDate - lastTollTime;
+        const timeDifferenceInHours = timeDifferenceInMs / (1000 * 60 * 60);
+        totalspeed = totalDistance / timeDifferenceInHours;
+    }
 
     return (
         <div className="w-full p-6">
             <div id="demo-list" className="steps-list-looped">
+                <div className="step-wrapper">
+                    <div className="step-content">
+                        <div style={{background:'#017f00'}} className="step-number border card p-2">
+                            <p className="text-white w-32 border rounded-2xl text-md">
+                                <span className="font-bold ">Source : </span>
+                                {data?.[0]?.locationDetails[0]?.sourceLocation?.formatted_address}
+                                <br />
+                            </p>
+                            <div className="gap-2 ml-2 w-32">
+                                <p className="text-white">Trip start date & time (ETD) - </p>
+                                <p className="text-white">{GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {tollsArr?.map((toll, tollIndex) => {
-
-                    console.log('toll', toll);
-
-                    var totalspeed;
-                    var preData = tollsArr[tollIndex - 1]
-
-                    if (preData?.readerReadTime && toll?.readerReadTime) {
-                        var preTime = new Date(preData?.readerReadTime).getTime()
-                        console.log({ preTime })
-                        var currentTime = new Date(toll?.readerReadTime).getTime()
-                        console.log({ currentTime })
-
-                        // var timeDiff = (preTime - currentTime) / (1000 * 60 * 60);
-
-                        var timeDiff = (currentTime - preTime) / (1000 * 60 * 60);
-
-                        console.log('preData', preData);
-
-                        var preDis = preData.arrival ? preData.arrival.distance : preData.end.arrival.distance
-                        var currentDis = toll.arrival ? toll.arrival.distance : toll.end.arrival.distance
-
-                        var totalDis = currentDis - preDis
-
-                        console.log({ totalDis })
-
-                        const speed = totalDis / timeDiff;
-
-                        console.log({ timeDiff })
-
-
-                        console.log({ speed })
-
-                        totalspeed = speed.toFixed(2) / 1000
-
+                    var totalspeed = 0;
+                    if (tollIndex === 0) {
+                        var totalDistance = (toll?.arrival?.distance) / 1000
+                        var preTime = data?.[0]?.eWayBillDetails?.[0]?.genratedDate
+                        var curretnTime = new Date(toll?.readerReadTime).getTime()
+                        const timeDifferenceInMs = curretnTime - preTime;
+                        const timeDifferenceInHours = timeDifferenceInMs / (1000 * 60 * 60);
+                        totalspeed = totalDistance / timeDifferenceInHours;
+                    } else {
+                        var preToll = tollsArr?.[tollIndex - 1]
+                        if (preToll?.readerReadTime && toll?.readerReadTime) {
+                            var totalDistance = (preToll?.arrival?.distance) / 1000 - (toll?.arrival?.distance) / 1000
+                            var preTime = new Date(preToll?.readerReadTime).getTime()
+                            var curretnTime = new Date(toll?.readerReadTime).getTime()
+                            const timeDifferenceInMs = preTime - curretnTime;
+                            const timeDifferenceInHours = timeDifferenceInMs / (1000 * 60 * 60);
+                            totalspeed = totalDistance / timeDifferenceInHours;
+                        } else {
+                            totalspeed = 0
+                        }
                     }
-                    else {
-                        totalspeed = 0
-                    }
-
                     return (
                         <div key={tollIndex} className="step-wrapper ">
                             <div className="step-content">
@@ -87,14 +96,26 @@ const TollPlaza = ({ tollsArr, data }) => {
                         </div>
                     )
                 })}
-            </div>
-            <div className="totals  flex flex-col justify-end items-end p-4">
-                <p className="text-lg font-bold">
-                    Total Distance: <span className="text-blue-500">{data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.summary?.distance?.metric}</span>
-                </p>
-                {/* <p className="text-lg font-bold">
-                    Total Toll Cost: <span className="text-blue-500">₹{data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.costs?.tag}</span>
-                </p> */}
+                <div className="step-wrapper">
+                    <div className="step-content">
+                        <div style={{background:'#c9292a'}} className="step-number border card p-2">
+                            <p className="text-white p-2 w-32 border rounded-2xl text-md">
+                                <span className="font-bold ">Destination : </span>
+                                {data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
+                            </p>
+                            <div className="gap-2 ml-2 w-32">
+                                <p className="text-white">Trip end date & time (ETA) - </p>
+                                <p className="text-white"> {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity)}</p>
+                            </div>
+                            <p className="mt-0.5 text-xs text-slate-500 w-32 font-medium">
+                                <span className="text-white font-bold">Speed -</span> <span className="text-white">{totalspeed?.toFixed(2)} km/h</span>
+                            </p>
+                            <p className="text-sm font-bold mt-2 w-32 text-white">
+                                Total Distance - <span className="text-white">{data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.summary?.distance?.metric}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

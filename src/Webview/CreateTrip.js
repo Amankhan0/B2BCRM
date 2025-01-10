@@ -26,7 +26,7 @@ function CreateTrip() {
 
   const onSubmit = () => {
       if(!ApiReducer?.apiJson?.eWayBillValidity){
-        toast.error('Estimated time of arrival is required')
+        toast.error('Trip end date and time (ETA) is required')
       }
       else if(!ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleNumber){
         toast.error('Vehicle number is required')
@@ -140,8 +140,8 @@ function CreateTrip() {
             <p className='p-2 text-white font-bold rounded-lg' style={{ background: Colors.ThemeBlue }}>Basic Details</p>
           </div>
           <div className='grid grid-cols-2 gap-6 p-3 bg-white rounded-b-xl'>
-            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='genratedDate' title={'Trip start date & time (ETD)'} placeholder={ApiReducer.tripForm === 'withoutEway' ? 'Enter created date' : 'Trip start date & time (ETD)'} currentTime={true} />
-            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Estimated time of arrival'} placeholder={ApiReducer.tripForm === 'withoutEway' ? 'Enter validity' : 'Estimated time of arrival'} important={true} MidNight={true} />
+            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='genratedDate' title={'Trip start date & time (ETD)'} placeholder={'Trip start date & time (ETD)'} currentTime={true} />
+            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Trip end date and time (ETA)'} placeholder={'Trip end date and time (ETA)'} important={true} MidNight={true} />
             <MyInput createTripJson name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
             <MyInput createTripJson name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
             <MyInput important={true} disable={editPage === 'edit'} createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />

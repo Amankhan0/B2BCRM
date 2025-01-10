@@ -412,7 +412,7 @@ export const getHeadingFromPathname = () => {
 
   switch (pathname) {
 
-    case "/army":
+    case "/army/":
       return "Dashboard"
     case "/army/dashboard":
       return "Dashboard"

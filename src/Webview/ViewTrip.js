@@ -85,7 +85,7 @@ function ViewTrip() {
   }
 
   console.log('TripReducer', TripReducer);
-  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Estimated time of arrival', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
+  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Trip end date and time (ETA)', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
 
   let TD;
   if (TripReducer?.doc !== null) {
@@ -100,13 +100,13 @@ function ViewTrip() {
             <td className='p-2 border'>{GetFullYearWithTime(element?.eWayBillDetails?.[0]?.eWayBillValidity)}</td>
             <td className={`p-2 border text-white`}>
               <div className='rounded-lg w-full' style={{ fontSize: '12px', background: element?.status?.[0]?.value === 'Running' ? 'green' : element?.status?.[0]?.value === 'Ended' ? Colors.ThemeBlue : 'red' }}>
-                <span className='mr-1'>{element?.status?.[0]?.msg === 'Manually ended' ? 'Manually ended' : element?.status?.[0]?.msg === 'Ended' ? 'Automatically ended' : element?.status?.[0]?.value}</span>
+                <span className='mr-1'>{element?.status?.[0]?.msg === 'Manually ended' ? 'Manual Closure' : element?.status?.[0]?.msg === 'Ended' ? 'Automatically ended' : element?.status?.[0]?.value}</span>
                 <span className='ml-1'>{element?.status?.[0]?.value === 'Ended' && GetFullYearWithTime(element?.status?.[0]?.timestamp)}</span>
               </div>
             </td>
             <td className='p-2 border'>{element?.locationDetails?.[0]?.sourceLocation?.name}</td>
             <td className='p-2 border'>{element?.locationDetails?.[0]?.destinationLocation?.name}</td>
-            <td className='p-2 border'>{element?.driverDetails?.[0]?.driverContact ? element?.driverDetails?.[0]?.vehicleNumber : '-'}</td>
+            <td className='p-2 border'>{element?.driverDetails?.[0]?.vehicleNumber ? element?.driverDetails?.[0]?.vehicleNumber : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverName ? element?.driverDetails?.[0]?.driverName : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverContact ? element?.driverDetails?.[0]?.driverContact : '-'}</td>
 

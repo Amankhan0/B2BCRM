@@ -12,8 +12,7 @@ function App() {
   var url = window.location.pathname
 
   useEffect(() => {
-    if (window.location.pathname === '/army') {
-      console.log("hhelloo")
+    if (window.location.pathname === '/army/') {
       // return 
       window.history.replaceState({}, '', '/army/');
     }
