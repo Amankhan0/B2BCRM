@@ -14,7 +14,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import AccordionSide from '../Component/AccordionSide';
 import { useEffect } from 'react';
 import { IoIosArrowDropleftCircle, IoIosNotificationsOutline } from "react-icons/io";
-import tytLogo from '../Images/tytLogo.png'
+import armyLogo from '../Images/armyLogo.jpg'
 import { getHeadingFromPathname } from '../utils';
 import Profile from '../Account/Profile/Profile';
 
@@ -86,7 +86,7 @@ export default function Main() {
     const reduxSidebar = useSelector(state => state.SidebarReducer)
     const UserReducer = useSelector(state => state.UserReducer)
     const SubReducer = useSelector(state => state.SubscriptionReducer);
-    const [showProfile ,setShowProfile] = useState(false)
+    const [showProfile, setShowProfile] = useState(false)
     const [showPopUpExpire, setShowPopUpExpire] = useState(true)
 
     const [sideBarTitle, setSideBarTitle] = useState('');
@@ -100,7 +100,7 @@ export default function Main() {
 
     const user = getTrackYourTransportUser();
 
-   
+
 
     const handleSidebar = (value) => {
         dispatch(setSidebar(value))
@@ -130,32 +130,31 @@ export default function Main() {
         }
     }, [location.pathname, isSmallScreen, window.innerWidth, reduxSidebar])
 
-
     let x = getHeadingFromPathname()
 
     console.log("user", user);
 
-
-
     return (
         <div>
-
             <div className={reduxSidebar?.doc}>
-                {showProfile && <Profile/> }
+                {showProfile && <Profile />}
                 <div id="root" style={{ backgroundColor: Colors.HEADER }} className="min-h-100vh flex grow relative overflow-hidden" >
                     <div className="sidebar sidebar-panel">
                         <div className={`flex h-full grow flex-col`} style={{ background: Colors.ThemeBlue }}>
                             <div className="flex justify-between px-3 py-3 border-b-[0.5px]" >
-                                <h1 className="flex items-center" style={{ color: Colors.WHITE }}>
-                                    <img className='w-8 h-8 mr-2 ' src={tytLogo} />
+                                <h1 className="flex items-center gap-2" style={{ color: Colors.WHITE }}>
+                                    <div className='w-10 h-10 bg-white rounded-full'>
+                                        <div className='ml-1.5 mt-1.5'>
+                                            <img className='w-7 h-7 rounded-sm' src={armyLogo} />
+                                        </div>
+                                    </div>
                                     <div className='mt-0.5'>
-                                        <div className='text-lg -tracking-wideest'>Army Vehicle Tracking</div>
+                                        <div className='text-base -tracking-wideest'>Army Vehicle Tracking</div>
                                     </div>
                                     {isSmallScreen < 700 && <div className='px-5' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
                                 </h1>
                             </div>
                             <div className="nav-wrapper my-5 h-[calc(100%-4.5rem)] overflow-x-hidden pb-6" data-simplebar="init"><div className="simplebar-wrapper" style={{ margin: '0px 0px -24px' }}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{ right: '0px', bottom: '0px' }}>
-
                                 <div className="simplebar-content-wrapper" tabIndex="0" role="region" aria-label="scrollable content" style={{ height: '100%', overflow: 'scroll' }}><div className="simplebar-content" style={{ padding: '0px 0px 24px' }}>
                                     <ul>
                                         {localNav.map((item, index) => (
@@ -183,7 +182,6 @@ export default function Main() {
                                         ))}
                                     </ul>
                                 </div>
-
                                 </div>
                             </div>
                             </div>
@@ -198,7 +196,6 @@ export default function Main() {
                             </div>
                         </div>
                     </div>
-
 
                     <div className='main-content' style={{ width: '100%', background: '#f9f9f9' }}>
                         <div className='shadow-1xl flex justify-between px-5 py-3' style={{ background: '#fff', alignItems: 'center' }}>
@@ -219,12 +216,12 @@ export default function Main() {
                                             <span></span>
                                             <span></span>
                                         </button>
-                                        <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={tytLogo} />
+                                        <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={armyLogo} />
                                         <div className='text-black  md:text-md lg:text-lg'>Army Vehicle Tracking</div>
                                     </h1>
                             }
                             <div className='flex items-center gap-x-3 cursor-pointer' style={{ color: Colors.BLACK }}>
-                                <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={()=>setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
+                                <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={() => setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
                                 </div>
 
                             </div>
@@ -245,11 +242,9 @@ export default function Main() {
                             }
                             <PanelRoutes />
                         </div>
-
                     </div>
-
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }

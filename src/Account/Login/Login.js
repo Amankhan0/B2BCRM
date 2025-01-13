@@ -14,7 +14,7 @@ import ChangePassword from '../ChangePassword';
 import { setTrackYourTransportUser } from '../../Storage/Storage';
 import CryptoJS from 'crypto-js';
 import ForgetPassword from '../ForgetPassword/ForgetPassword';
-
+import armyLogo from '../../Images/armyLogo.jpg';
 
 
 function Login() {
@@ -121,12 +121,12 @@ function Login() {
 
     return (
         <div>
-            <div className="flex min-h-100vh grow bg-slate-50 dark:bg-navy-900">
+            <div className="flex min-h-100vh grow bg-white dark:bg-navy-900">
                 <div className="fixed top-0 hidden p-6 lg:block lg:px-12">
                     <div className="flex items-center space-x-2">
                         <img
                             className="h-11 w-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                            src="https://play-lh.googleusercontent.com/e9LsfVvW11r0W0ONb0clg_Q4j_KBvfxlU8N6gCnqBxqy49XKLH5ZVkxwul-nyuFBGw"
+                            src={armyLogo}
                             alt="logo"
                         />
                         <p className="text-xl font-semibold uppercase text-slate-700 dark:text-navy-100">
