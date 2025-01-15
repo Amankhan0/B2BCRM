@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import MyPagination from './MyPagination';
 import { Colors } from '../Colors/color';
 
-function DataTable({ th, td, api, hidePagination,totalPages }) {
+function DataTable({ th, td, api, hidePagination, totalPages }) {
 
     const PaginationReducer = useSelector(state => state.PaginationReducer)
 
@@ -11,8 +11,8 @@ function DataTable({ th, td, api, hidePagination,totalPages }) {
 
     return (
         <div>
-            <div className='card'>
-                <table className='w-full'>
+            <div style={{ width: '100%', overflowX: 'auto', scrollbarColor: 'red', scrollbarWidth: 'thin', }}>
+                <table style={{ width: '180%' }}>  {/* Set a width for the table to make it wider than the container */}
                     <thead>
                         <tr style={{ background: Colors.ThemeBlue }} className='rounded-tl-xl rounded-tr-xl text-white'>
                             {
@@ -41,6 +41,7 @@ function DataTable({ th, td, api, hidePagination,totalPages }) {
                 }
             </div>
         </div>
+
     )
 }
 

@@ -7,13 +7,13 @@ const TollPlaza = ({ tollsArr, data }) => {
     var lastToll = tollsArr[tollsArr?.length - 1]
     var lastTollTime = new Date(lastToll?.readerReadTime).getTime()
     if (lastTollTime) {
-        var endDate = data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity
+        var endDate = data?.[0]?.status?.[0]?.timestamp
         var totalDistance = (data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[0]?.tollsArr?.summary?.distance?.value) / 1000 - (lastToll?.arrival?.distance ? lastToll?.arrival?.distance : lastToll?.end?.arrival?.distance) / 1000
         const timeDifferenceInMs = endDate - lastTollTime;
         const timeDifferenceInHours = timeDifferenceInMs / (1000 * 60 * 60);
         totalspeed = totalDistance / timeDifferenceInHours;
     }
-
+    
     return (
         <div className="w-full p-6">
             <div id="demo-list" className="steps-list-looped">

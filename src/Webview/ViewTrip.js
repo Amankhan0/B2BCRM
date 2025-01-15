@@ -156,7 +156,9 @@ function ViewTrip() {
 
   return (
     <div className='m-10'>
+     
       <ViewTripFilter fetchData={fetchData} fetchDataBySearch={fetchDataBySearch} />
+       
       <DataTable td={TD} th={th} totalPages={TripReducer?.doc?.totalPages} api={fetchData} />
     </div>
   )

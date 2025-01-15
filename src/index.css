@@ -283,9 +283,10 @@ table tr {
 input[type="password"]::-ms-reveal {
   display: none;
 }
-/* 
-* {
+
+/* * {
   scrollbar-color: #0885a6 lightblue;
+  scrollbar-width: 'thin';
 } */
 
 /* #acknowledge_card {
