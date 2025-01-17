@@ -53,7 +53,6 @@ function ShareTripModal({ moda, setModal, data }) {
                     <div className='mt-10'>
                     <p className='mt-1 text-black'>Share by mobile or email</p>
                     <div className='flex'>
-                        
                         <select onChange={(e) => setType(e.target.value)} className='w-24 border-slate-200 p-2 bg-slate-300 rounded-l-xl'>
                             <option selected={type === 'Mobile'}>Mobile</option>
                             <option selected={type === 'Email'}>Email</option>

@@ -6,7 +6,7 @@ import LocationInformation from './LocationInformation';
 import MyVehicleTypeInput from '../Component/MyVehicleTypeInput';
 import DatePicker from '../Component/DatePicker';
 import MyButton from '../Component/MyButton';
-import { ApiHit, finalCancelCreateJson, finalCreateJson } from '../utils';
+import { ApiHit, finalCancelCreateJson, finalCreateJson, regexVehicle } from '../utils';
 import GMap from './GMap';
 import { CreateTripApi, UpdateTrip } from '../Constants/Constants';
 import { getTrackYourTransportUser } from '../Storage/Storage';
@@ -32,6 +32,9 @@ function CreateTrip() {
       }
       else if(!ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleNumber){
         toast.error('Vehicle number is required')
+      }
+      else if(!regexVehicle?.test(ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleNumber)){
+        toast.error('Invalid vehicle number')
       }
       else if(!ApiReducer?.createTripJson?.driverDetails?.[0]?.vehicleType){
         toast.error('Vehicle type is required')
@@ -121,7 +124,7 @@ function CreateTrip() {
       }
     });;
     if (confirmation) {
-      setLoader(true)
+      setLoader('cancel')
       var json = {
         "status": {
           msg: 'Trip Cancel',
@@ -151,15 +154,17 @@ function CreateTrip() {
       "_id": window.location.pathname.split('/')[4]
     }
     console.log('json',json);
-    ApiHit(json, UpdateTrip).then(result => {
-      setLoader(false)
-      if (result?.status === 404) {
-        toast.error('Vehicle already in a trip')
-      } else if (result?.status === 200) {
-        window.location.pathname = '/army/trip/view'
-      }
-    })
+    // ApiHit(json, UpdateTrip).then(result => {
+    //   setLoader(false)
+    //   if (result?.status === 404) {
+    //     toast.error('Vehicle already in a trip')
+    //   } else if (result?.status === 200) {
+    //     window.location.pathname = '/army/trip/view'
+    //   }
+    // })
   }
+
+  console.log('loader',loader);
 
   return (
     <div className=' m-5'>
@@ -170,7 +175,7 @@ function CreateTrip() {
           </div>
           <div className='grid grid-cols-2 gap-6 p-3 bg-white rounded-b-xl'>
             <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='genratedDate' title={'Trip start date & time (ETD)'} placeholder={'Trip start date & time (ETD)'} currentTime={true} />
-            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Trip end date and time (ETA)'} placeholder={'Trip end date and time (ETA)'} important={true} MidNight={true} />
+            <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Trip end date & time (ETA)'} placeholder={'Trip end date and time (ETA)'} important={true} MidNight={true} />
             <MyInput createTripJson name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
             <MyInput createTripJson name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
             <MyInput uppercase={true} important={true} disable={editPage === 'edit'} createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
@@ -195,7 +200,7 @@ function CreateTrip() {
         }
         {
           editPage === 'edit' &&
-          <MyButton bg={'gray'} type={loader ? 'loader' : ''} onClick={() => onClickCancel()} width={'24'} title={'Cancel Trip'} />
+          <MyButton bg={'gray'} type={loader === 'cancel' ? 'loader' : ''} onClick={() => onClickCancel()} width={'24'} title={'Cancel Trip'} />
         }
       </div>
     </div>
