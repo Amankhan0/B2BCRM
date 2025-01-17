@@ -6,6 +6,7 @@ import { ApiHit } from "../utils";
 import CreateTrip from "./CreateTrip";
 import { setDataAction } from "../Store/Action/SetDataAction";
 import { SET_API_JSON, SET_CREATE_TRIP_JSON } from "../Store/ActionName/ActionName";
+import { backIcon, personIcon } from "../SVG/Icons";
 
 const EditTrip = () => {
 
@@ -37,9 +38,6 @@ const EditTrip = () => {
             ref: splitRef ? splitRef : ''
         }
         ApiHit(json, GetTripWithGeo).then(res => {
-
-            console.log('res', res);
-
             if (res?.message === 'Success' && res?.status === 200 && res?.doc?.docs?.length === 1) {
                 var apiJson = ApiReducer?.apiJson
                 Object.assign(apiJson, res.doc.docs[0]?.originalId?.eWayBillDetails[0])
@@ -51,16 +49,21 @@ const EditTrip = () => {
                 dispatch(setDataAction(apiJson, SET_API_JSON))
                 var createTripJson = ApiReducer?.createTripJson
                 Object.assign(createTripJson, { driverDetails: res.doc.docs[0]?.originalId?.driverDetails })
-                dispatch(setDataAction(createTripJson,SET_CREATE_TRIP_JSON))
+                dispatch(setDataAction(createTripJson, SET_CREATE_TRIP_JSON))
                 setFill(true)
             }
-
             console.log('ApiReducer', ApiReducer);
         })
     }
 
     return (
-        <CreateTrip />
+        fill&&
+        <div>
+            <div className="ml-5 mt-5">
+                <p onClick={()=>window.location.pathname='/army/trip/view'} className="cursor-pointer w-max p-1.5 text-base flex bg-gray-300 items-center gap-2 rounded-lg px-2">{backIcon}Back</p>
+            </div>
+            <CreateTrip />
+        </div>
     )
 }
 

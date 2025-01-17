@@ -13,6 +13,8 @@ import { getTrackYourTransportUser } from '../Storage/Storage';
 import toast from 'react-hot-toast';
 import { setDataAction } from '../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../Store/ActionName/ActionName';
+import { confirmAlert } from 'react-confirm';
+import Swal from 'sweetalert2';
 
 function CreateTrip() {
 
@@ -24,7 +26,7 @@ function CreateTrip() {
   var user = getTrackYourTransportUser()
   const dispatch = useDispatch()
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
       if(!ApiReducer?.apiJson?.eWayBillValidity){
         toast.error('Trip end date and time (ETA) is required')
       }
@@ -46,7 +48,20 @@ function CreateTrip() {
       else{
         let confirmation = false
         if(!ApiReducer?.apiJson?.genratedDate){
-          confirmation = window.confirm('bla bla')
+          await Swal.fire({
+            title: 'Confirmation',
+            text: "Please Note: Current date and time would be considered as start date and time of the trip?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: Colors.ThemeBlue,
+            cancelButtonColor: '#808080',
+          }).then((result) => {
+            if (result.isConfirmed) {
+             confirmation = true
+            }
+          });;
         }else{
           confirmation = true
         }
@@ -89,8 +104,22 @@ function CreateTrip() {
 
   console.log('ApiReducer?.createTripJson---', ApiReducer);
 
-  const onClickCancel = () => {
-    var confirmation = window.confirm('Are you sure to cancel this trip ?')
+  const onClickCancel = async () => {
+    let confirmation = false
+    await Swal.fire({
+      title: 'Confirmation',
+      text: "Are you sure to cancel trip?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Ok',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: Colors.ThemeBlue,
+      cancelButtonColor: '#808080',
+    }).then((result) => {
+      if (result.isConfirmed) {
+       confirmation = true
+      }
+    });;
     if (confirmation) {
       setLoader(true)
       var json = {
@@ -144,7 +173,7 @@ function CreateTrip() {
             <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Trip end date and time (ETA)'} placeholder={'Trip end date and time (ETA)'} important={true} MidNight={true} />
             <MyInput createTripJson name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
             <MyInput createTripJson name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
-            <MyInput important={true} disable={editPage === 'edit'} createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
+            <MyInput uppercase={true} important={true} disable={editPage === 'edit'} createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
             <MyVehicleTypeInput editpage={editPage === 'edit'} createTripJson name={'vehicleType'} />
           </div>
           <LocationInformation editPage={editPage === 'edit'} />

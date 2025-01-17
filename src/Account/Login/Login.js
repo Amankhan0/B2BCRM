@@ -15,6 +15,7 @@ import { setTrackYourTransportUser } from '../../Storage/Storage';
 import CryptoJS from 'crypto-js';
 import ForgetPassword from '../ForgetPassword/ForgetPassword';
 import armyLogo from '../../Images/armyLogo.jpg';
+import toast from 'react-hot-toast';
 
 
 function Login() {
@@ -28,13 +29,11 @@ function Login() {
     const [message ,setMessage] = useState('')
 
     const ApiReducer = useSelector((state) => state.ApiReducer);
-    console.log("ApiReducer", ApiReducer);
 
     const handleVerify = (type) => {
         ApiReducer.apiJsonError = {};
         dispatch(setDataAction({}, SET_API_JSON_ERROR));
         VerifyEamilValidation(ApiReducer).then((error) => {
-            console.log("res__________", error);
             dispatch(setDataAction(error, SET_API_JSON_ERROR));
             if (Object.keys(error).length === 0) {
                 let json = ApiReducer?.apiJson;
@@ -51,7 +50,6 @@ function Login() {
 
                 if (type === 'login') {
                     apiToHit = login;
-
                     if (ApiReducer.apiJson.password) {
                         const encryption = CryptoJS.AES.encrypt(
                             JSON.stringify(json?.password),
@@ -62,12 +60,8 @@ function Login() {
                 }
 
                 ApiHit(json, apiToHit).then((res) => {
-                    console.log("json", json);
-                    console.log("res++++++++++++++ssss", res?.doc?.message);
-                    console.log("res++++++++++++++ssss", res);
-
                     if (res?.message === 'No Data Found') {
-                        dispatch(setDataAction({ email: 'email not found' }, SET_API_JSON_ERROR));
+                        dispatch(setDataAction({ email: 'User not found' }, SET_API_JSON_ERROR));
                     } else if (res?.doc?.message === "PasswordTab") {
                         setPasswordTab(true);
                     } else if (res?.message === "Wrong credentials") {
@@ -75,7 +69,7 @@ function Login() {
                     } else if (res?.doc?.message === "OTPTab") {
                         setOtpTab(true);
                     } else if (res?.doc?.message === "Logged in successfully") {
-                        alert(res?.doc?.message);
+                        toast.success('Logged in successfully')
                         setTrackYourTransportUser(res?.doc?.finalDoc);
                         window.location.reload();
                     } else if (res.message === 'Invalid OTP') {
@@ -100,24 +94,6 @@ function Login() {
             handleVerify('otpverify');
         }
     };
-
-    const handleForgetPassword = () => {
-        var json ={
-            email: ApiReducer.apiJson.email,
-            action: 'generate',
-        }
-        ApiHit(json,forgotPassword).then((res)=>{
-            console.log("res",res);
-
-            if(res?.status === 200){
-                setShowForgetPassword(true)
-                setMessage(res?.message)
-            }
-            
-        })
-        // setShowForgetPassword(true)
-
-}
 
     return (
         <div>

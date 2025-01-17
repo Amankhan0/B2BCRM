@@ -11,6 +11,8 @@ import { Colors } from '../Colors/color'
 import toast from 'react-hot-toast'
 import MyLoader from '../Component/MyLoader'
 import ViewTripFilter from '../Component/ViewTripFilter'
+import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName'
+import { setDataAction } from '../Store/Action/SetDataAction'
 
 function ViewTrip() {
 
@@ -84,6 +86,16 @@ function ViewTrip() {
     }
   }
 
+  const nullredux = () =>{
+    dispatch(setDataAction({},SET_API_JSON))
+    dispatch(setDataAction({
+        driverDetails: [],
+        epod: [
+            { documents: [''] },
+        ]
+    },SET_CREATE_TRIP_JSON))
+  }
+
   console.log('TripReducer', TripReducer);
   const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Trip end date and time (ETA)', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
 
@@ -136,7 +148,7 @@ function ViewTrip() {
               }
               {
                 element?.status?.[0]?.value === 'Running' &&
-                <NavLink to={`/trip/edit/${element?._id}/${index}`} className="relative ml-5">
+                <NavLink onClick={()=>nullredux()} to={`/trip/edit/${element?._id}/${index}`} className="relative ml-5">
                   <div className="text-center rounded-md cursor-pointer text-[#0885a6]">
                     <center>{editIcon}</center>
                     <p style={{ fontSize: '10px' }}>Edit Trip</p>

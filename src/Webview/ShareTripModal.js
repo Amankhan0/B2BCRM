@@ -48,7 +48,7 @@ function ShareTripModal({ moda, setModal, data }) {
                         <p><span className='text-black'>Trip start date & time (ETD) :</span> {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.genratedDate)}</p>
                         <p><span className='text-black'>Trip end date & time (ETA) :</span> {GetFullYearWithTime(data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity)}</p>
                         <p><span className='text-black'>Source Location :</span> {data?.[0]?.locationDetails?.[0]?.sourceLocation?.formatted_address}</p>
-                        <p><span className='text-black'>Source Location :</span> {data?.[0]?.locationDetails?.[0]?.destinationLocation?.formatted_address}</p>
+                        <p><span className='text-black'>Destination Location :</span> {data?.[0]?.locationDetails?.[0]?.destinationLocation?.formatted_address}</p>
                     </div>
                     <div className='mt-10'>
                     <p className='mt-1 text-black'>Share by mobile or email</p>

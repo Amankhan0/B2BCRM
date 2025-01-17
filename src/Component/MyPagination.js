@@ -30,13 +30,14 @@ function MyPagination({ api,totalPages }) {
         const limit = Number(value);
         if (limit) {
             var tj = PaginationReducer.pagination
-
-            if (tj.page !== 1) {
-                tj.limit = 6
-                setError(true)
-            } else {
-                tj.limit = limit
-            }
+            tj.limit = limit
+            tj.page = 1
+            // if (tj.page !== 1) {
+            //     tj.limit = 6
+            //     setError(true)
+            // } else {
+            //     tj.limit = limit
+            // }
             dispatch(setPagination(tj))
             if (api !== undefined) { api() }
         }
