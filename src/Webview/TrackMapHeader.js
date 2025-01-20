@@ -36,7 +36,7 @@ const TrackMapHeader = ({ data }) => {
                 </p>
             </div>
             <div className="ml-5">
-                <p className="text-black">Trip end date and time (ETA)</p>
+                <p className="text-black">Trip end date & time (ETA)</p>
                 {/* <p>{GetFullYear(data?.[0]?.eWayBillDetails?.[0]?.eWayBillValidity)}</p> */}
 
                 <p className="w-24">

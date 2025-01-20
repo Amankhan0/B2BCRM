@@ -97,7 +97,7 @@ function ViewTrip() {
   }
 
   console.log('TripReducer', TripReducer);
-  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Trip end date and time (ETA)', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
+  const th = ["#", 'Trip Ref Number', 'Trip created at', 'Trip start date & time (ETD)', 'Trip end date & time (ETA)', 'Trip Status', 'Source Location', 'Destination Location', 'Vehicle Number', 'Driver Name', 'Driver Contact', 'Action']
 
   let TD;
   if (TripReducer?.doc !== null) {
