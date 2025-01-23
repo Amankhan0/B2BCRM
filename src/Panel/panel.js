@@ -220,10 +220,9 @@ export default function Main() {
                                         <div className='text-black  md:text-md lg:text-lg'>Army Vehicle Tracking</div>
                                     </h1>
                             }
-                            <div className='flex items-center gap-x-3 cursor-pointer' style={{ color: Colors.BLACK }}>
+                            <div className='items-center gap-x-3 cursor-pointer mr-5' style={{ color: Colors.BLACK }}>
                                 <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={() => setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
                                 </div>
-
                             </div>
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >

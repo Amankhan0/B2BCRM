@@ -86,14 +86,14 @@ function ViewTrip() {
     }
   }
 
-  const nullredux = () =>{
-    dispatch(setDataAction({},SET_API_JSON))
+  const nullredux = () => {
+    dispatch(setDataAction({}, SET_API_JSON))
     dispatch(setDataAction({
-        driverDetails: [],
-        epod: [
-            { documents: [''] },
-        ]
-    },SET_CREATE_TRIP_JSON))
+      driverDetails: [],
+      epod: [
+        { documents: [''] },
+      ]
+    }, SET_CREATE_TRIP_JSON))
   }
 
   console.log('TripReducer', TripReducer);
@@ -121,7 +121,6 @@ function ViewTrip() {
             <td className='p-2 border'>{element?.driverDetails?.[0]?.vehicleNumber ? element?.driverDetails?.[0]?.vehicleNumber : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverName ? element?.driverDetails?.[0]?.driverName : '-'}</td>
             <td className='p-2 border'>{element?.driverDetails?.[0]?.driverContact ? element?.driverDetails?.[0]?.driverContact : '-'}</td>
-
             <td className='p-2 border flex gap-2 justify-center'>
               <NavLink to={`/track/map/${element?._id}/${index}`} className="relative ml-5">
                 <div className={`text-center rounded-md cursor-pointer text-green-600`}>
@@ -148,14 +147,13 @@ function ViewTrip() {
               }
               {
                 element?.status?.[0]?.value === 'Running' &&
-                <NavLink onClick={()=>nullredux()} to={`/trip/edit/${element?._id}/${index}`} className="relative ml-5">
+                <NavLink onClick={() => nullredux()} to={`/trip/edit/${element?._id}/${index}`} className="relative ml-5">
                   <div className="text-center rounded-md cursor-pointer text-[#0885a6]">
                     <center>{editIcon}</center>
                     <p style={{ fontSize: '10px' }}>Edit Trip</p>
                   </div>
                 </NavLink>
               }
-
             </td>
           </tr>
         )
@@ -167,13 +165,11 @@ function ViewTrip() {
   }
 
   return (
-    <div className='m-10'>
-     
+    <div>
       <ViewTripFilter fetchData={fetchData} fetchDataBySearch={fetchDataBySearch} />
-       
       <DataTable td={TD} th={th} totalPages={TripReducer?.doc?.totalPages} api={fetchData} />
     </div>
   )
 }
 
-export default ViewTrip
+export default ViewTrip;

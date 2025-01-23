@@ -14,7 +14,7 @@ function ShareTripModal({ moda, setModal, data }) {
     var tripIndex = window.location.pathname.split('/')[5]
 
     const copyLink = () => {
-        navigator.clipboard.writeText('https://trackyourtransport.in/army/track/map/share/' + tripId + '/' + tripIndex)
+        navigator.clipboard.writeText('https://trackyourtransport.in/army/GOULIP/track/map/share/' + tripId + '/' + tripIndex)
             .then(() => {
                 toast.success('Share trip link copied!');
             })
@@ -65,7 +65,7 @@ function ShareTripModal({ moda, setModal, data }) {
                         <p className='mb-1 text-black'>Copy link to share publicly</p>
                         <div onClick={() => copyLink()} className='flex justify-between border p-2'>
                             <div className='flex'>
-                                {earthIcon} <span className="ml-1 text-black">Public URL :</span> <span className="ml-5">https://trackyourtransport.in/army/track/map/share/{tripId}/{tripIndex}</span>
+                                {earthIcon} <span className="ml-1 text-black">Public URL :</span> <span className="ml-5">https://trackyourtransport.in/army/GOULIP/track/map/share/{tripId}/{tripIndex}</span>
                             </div>
                             <div>
                                 {Smallclipboard}

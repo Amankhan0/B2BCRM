@@ -21,7 +21,7 @@ function ViewTripFilter({ fetchData, fetchDataBySearch }) {
     }
 
     return (
-        <div className='flex gap-4'>
+        <div className='flex gap-4 ml-10 mt-10'>
             <div>
                 <p className='text-black ml-1'>Search here</p>
                 <input onChange={(e) => onChange(e.target.value, 'search')} className='p-2 rounded-xl border-slate-300 mb-2' placeholder='Search here...' />

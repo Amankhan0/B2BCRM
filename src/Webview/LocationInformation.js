@@ -184,7 +184,7 @@ const LocationInformation = ({ editPage }) => {
                                                     {ApiReducer?.createTripJson?.driverDetails?.map((item, index) => (
                                                         <div key={index} className="mb-2 flex items-center gap-5 p-2 bg-slate-100">
                                                             <p>{truckicon}</p>
-                                                            <p className="text-sm text-black"><span className="font-semibold">Vehicle :</span> {item?.vehicleNumber}</p>
+                                                            <p className="text-sm text-black uppercase"><span className="font-semibold">Vehicle :</span> {item?.vehicleNumber}</p>
                                                             <p className="text-sm text-black"><span className="font-semibold">Total number of toll plazas :</span> {item?.tollInfo?.routes?.[j]?.tolls?.length}</p>
                                                         </div>
                                                     ))}

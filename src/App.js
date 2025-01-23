@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="App">
       {
-        url.includes('/army/track/map/share') ?
+        url.includes('/army/GOULIP/track/map/share') ?
           <div className='absolute w-11/12 ml-16 mt-10'>
             <div className="flex items-center gap-x-3">
               <img src={logo} className="h-8 lg:h-10 xl:h-12" alt="logo" />

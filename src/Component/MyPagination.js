@@ -48,13 +48,11 @@ function MyPagination({ api,totalPages }) {
 
     return (
         <div className='my-5'>
-
-
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
                 <div className="appearance-none bg-white border border-gray-100 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:border-blue-500 flex flex-row justify-between">
                     <label className='block text-sm font-medium text-gray-700'>Limit : &nbsp;</label>
                     <select
-                        className='bg-transparent border border-gray-300 rounded-md w-12 pl-1'
+                        className='bg-transparent border border-gray-300 rounded-md w-14 pl-1'
                         onChange={(e) => onChangeLimit(e.target.value)}
                         value={PaginationReducer.pagination.limit}
                     >

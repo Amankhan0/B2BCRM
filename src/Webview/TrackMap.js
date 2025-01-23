@@ -20,10 +20,8 @@ const TrackMap = () => {
     const [simLocation, setSimlocation] = useState(null);
     const [openShareModal, setOpenShareModal] = useState(false);
 
-
-
     var url = window.location.pathname
-    var splitUrl = url.split('/')[4]
+    var splitUrl = url.includes('/army/GOULIP/track/map/share') ? url.split('/')[6] : url.split('/')[4]
 
     useEffect(() => {
         if (data === null) {
@@ -173,11 +171,9 @@ const TrackMap = () => {
     console.log('data----', data);
 
     const sharetrip = () => {
-
         setOpenShareModal(true)
-
         // console.log(url.split('/')[5]);
-        // var shareTripUrl = 'https://trackyourtransport.in/army/track/map/share/'+url.split('/')[4]+'/'+url.split('/')[5]
+        // var shareTripUrl = 'https://trackyourtransport.in/army/GOULIP/track/map/share/'+url.split('/')[4]+'/'+url.split('/')[5]
         // navigator.clipboard.writeText(shareTripUrl)
         //     .then(() => {
         //         toast.success('Share trip link copied!');
@@ -191,7 +187,7 @@ const TrackMap = () => {
     return (
         data !== null ?
             <div className="m-10">
-                {openShareModal && <ShareTripModal data={data} modal={openShareModal} setModal={setOpenShareModal}/>}
+                {openShareModal && <ShareTripModal data={data} modal={openShareModal} setModal={setOpenShareModal} />}
                 {/* ******* map Header ******* */}
                 <TrackMapHeader data={data} />
                 <div className="mt-7 mb-10 flex justify-between">
@@ -208,7 +204,7 @@ const TrackMap = () => {
                         </select>
                     </div>
                     {
-                        url.split('/')[4] !== 'share' &&
+                        url.split('/')[5] !== 'share' &&
                         <div onClick={() => sharetrip()} className="flex self-center items-center gap-2 px-3 h-10 cursor-pointer rounded-lg" style={{ background: Colors.ThemeBlue, color: 'white' }}>
                             <p className="text-sm">Share Trip</p>
                             <span>{shareSmallIcon}</span>
@@ -216,7 +212,6 @@ const TrackMap = () => {
                     }
                 </div>
                 {/* ******* map Header ******* */}
-
                 <GMap
                     routeArr={data?.[0]?.geometry?.[0]?.routeArr}
                     simLocationArr={data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[vehicleToDisplayTolls]?.simLocation}
@@ -226,10 +221,7 @@ const TrackMap = () => {
                     srcName={data?.[0]?.locationDetails[0]?.sourceLocation?.formatted_address}
                     desName={data?.[0]?.locationDetails[0]?.destinationLocation?.formatted_address}
                 />
-
                 <TollPlaza data={data} tollsArr={data?.[0]?.geometry?.[0]?.vehicleInformationWithToll?.[vehicleToDisplayTolls]?.tollsArr?.tolls} />
-                
-
             </div>
             :
             <h2 style={{ fontSize: 20, color: 'black', margin: 20 }}>

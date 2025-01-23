@@ -6,13 +6,16 @@ import { Colors } from '../Colors/color';
 function DataTable({ th, td, api, hidePagination, totalPages }) {
 
     const PaginationReducer = useSelector(state => state.PaginationReducer)
+    const SidebarReducer = useSelector(state => state.SidebarReducer)
 
-    console.log('totalPages', totalPages);
+    console.log('SidebarReducer', SidebarReducer?.doc);
+
+    var width = window.innerWidth
 
     return (
-        <div>
-            <div style={{ width: '100%', overflowX: 'auto', scrollbarColor: 'red', scrollbarWidth: 'thin', }}>
-                <table style={{ width: '180%' }}>  {/* Set a width for the table to make it wider than the container */}
+        <div className='ml-10' style={{marginRight:width<1500?SidebarReducer?.doc!=="is-sidebar-open"?'':'5%':'2%'}}>
+            <div className='overflow-scroll'>
+                <table className='w-[160%]'>  {/* Set a width for the table to make it wider than the container */}
                     <thead>
                         <tr style={{ background: Colors.ThemeBlue }} className='rounded-tl-xl rounded-tr-xl text-white'>
                             {

@@ -6,14 +6,11 @@ import LocationInformation from './LocationInformation';
 import MyVehicleTypeInput from '../Component/MyVehicleTypeInput';
 import DatePicker from '../Component/DatePicker';
 import MyButton from '../Component/MyButton';
-import { ApiHit, finalCancelCreateJson, finalCreateJson, regexVehicle } from '../utils';
+import { ApiHit, finalCreateJson, regexVehicle } from '../utils';
 import GMap from './GMap';
 import { CreateTripApi, UpdateTrip } from '../Constants/Constants';
 import { getTrackYourTransportUser } from '../Storage/Storage';
 import toast from 'react-hot-toast';
-import { setDataAction } from '../Store/Action/SetDataAction';
-import { SET_API_JSON } from '../Store/ActionName/ActionName';
-import { confirmAlert } from 'react-confirm';
 import Swal from 'sweetalert2';
 
 function CreateTrip() {
@@ -24,7 +21,6 @@ function CreateTrip() {
   var editPage = window.location.pathname.split('/')[3]
 
   var user = getTrackYourTransportUser()
-  const dispatch = useDispatch()
 
   const onSubmit = async () => {
       if(!ApiReducer?.apiJson?.eWayBillValidity){
@@ -154,14 +150,14 @@ function CreateTrip() {
       "_id": window.location.pathname.split('/')[4]
     }
     console.log('json',json);
-    // ApiHit(json, UpdateTrip).then(result => {
-    //   setLoader(false)
-    //   if (result?.status === 404) {
-    //     toast.error('Vehicle already in a trip')
-    //   } else if (result?.status === 200) {
-    //     window.location.pathname = '/army/trip/view'
-    //   }
-    // })
+    ApiHit(json, UpdateTrip).then(result => {
+      setLoader(false)
+      if (result?.status === 404) {
+        toast.error('Vehicle already in a trip')
+      } else if (result?.status === 200) {
+        window.location.pathname = '/army/trip/view'
+      }
+    })
   }
 
   console.log('loader',loader);
@@ -178,7 +174,7 @@ function CreateTrip() {
             <DatePicker dateOption={{ enableTime: true, time_24hr: false }} name='eWayBillValidity' title={'Trip end date & time (ETA)'} placeholder={'Trip end date & time (ETA)'} important={true} MidNight={true} />
             <MyInput createTripJson name={'driverName'} title={'Driver Name'} placeholder={'Driver Name'} />
             <MyInput createTripJson name={'driverContact'} title={'Driver Contact'} placeholder={'Driver Contact'} />
-            <MyInput uppercase={true} important={true} disable={editPage === 'edit'} createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
+            <MyInput uppercase={true} important={true}  createTripJson name={'vehicleNumber'} title={'Vehicle Number'} placeholder={'Vehicle Number'} />
             <MyVehicleTypeInput editpage={editPage === 'edit'} createTripJson name={'vehicleType'} />
           </div>
           <LocationInformation editPage={editPage === 'edit'} />
