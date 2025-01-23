@@ -25,8 +25,8 @@ function Login() {
     const [otp, setOtp] = useState('');
     const [otpError, setOtpError] = useState('');
     const [changePassword, setChangePassword] = useState(false);
-    const [showForgetPassword, setShowForgetPassword] = useState(false); 
-    const [message ,setMessage] = useState('')
+    const [showForgetPassword, setShowForgetPassword] = useState(false);
+    const [message, setMessage] = useState('')
 
     const ApiReducer = useSelector((state) => state.ApiReducer);
 
@@ -38,49 +38,60 @@ function Login() {
             if (Object.keys(error).length === 0) {
                 let json = ApiReducer?.apiJson;
                 let apiToHit = verifyUser;
-
-                if (type === 'otpverify') {
-                    apiToHit = login;
-                    json = {
-                        OTP: otp,
-                        email: ApiReducer?.apiJson?.email,
-                        action: 'fto',
-                    };
+                if (ApiReducer?.apiJson?.email && !ApiReducer?.apiJson?.password && !passwordTab) {
+                    if (type === 'otpverify') {
+                        apiToHit = login;
+                        json = {
+                            OTP: otp,
+                            email: ApiReducer?.apiJson?.email,
+                            action: 'fto',
+                        };
+                    }
+                    hitApi(json,apiToHit)
                 }
-
-                if (type === 'login') {
-                    apiToHit = login;
-                    if (ApiReducer.apiJson.password) {
-                        const encryption = CryptoJS.AES.encrypt(
-                            JSON.stringify(json?.password),
-                            secretKey
-                        ).toString();
-                        json.password = encryption;
+                else if (!ApiReducer?.apiJson?.password) {
+                    Object.assign(ApiReducer.apiJsonError, { password: "Password cannot be empty" });
+                    dispatch(setDataAction(ApiReducer.apiJsonError, SET_API_JSON_ERROR));
+                }
+                else {
+                    if (type === 'login') {
+                        apiToHit = login;
+                        if (ApiReducer.apiJson.password) {
+                            const encryption = CryptoJS.AES.encrypt(
+                                JSON.stringify(json?.password),
+                                secretKey
+                            ).toString();
+                            json.password = encryption;
+                        }
+                        hitApi(json,apiToHit)
                     }
                 }
 
-                ApiHit(json, apiToHit).then((res) => {
-                    if (res?.message === 'No Data Found') {
-                        dispatch(setDataAction({ email: 'User not found' }, SET_API_JSON_ERROR));
-                    } else if (res?.doc?.message === "PasswordTab") {
-                        setPasswordTab(true);
-                    } else if (res?.message === "Wrong credentials") {
-                        dispatch(setDataAction({ password: res?.message }, SET_API_JSON_ERROR));
-                    } else if (res?.doc?.message === "OTPTab") {
-                        setOtpTab(true);
-                    } else if (res?.doc?.message === "Logged in successfully") {
-                        toast.success('Logged in successfully')
-                        setTrackYourTransportUser(res?.doc?.finalDoc);
-                        window.location.reload();
-                    } else if (res.message === 'Invalid OTP') {
-                        setOtpError('Invalid OTP');
-                    } else if (res?.doc?.message === "Approved") {
-                        setChangePassword(true);
-                    }
-                });
             }
         });
     };
+
+    const hitApi = (json, apiToHit) => {
+        ApiHit(json, apiToHit).then((res) => {
+            if (res?.message === 'No Data Found') {
+                dispatch(setDataAction({ email: 'User not found' }, SET_API_JSON_ERROR));
+            } else if (res?.doc?.message === "PasswordTab") {
+                setPasswordTab(true);
+            } else if (res?.message === "Wrong credentials") {
+                dispatch(setDataAction({ password: 'Invalid Credentials' }, SET_API_JSON_ERROR));
+            } else if (res?.doc?.message === "OTPTab") {
+                setOtpTab(true);
+            } else if (res?.doc?.message === "Logged in successfully") {
+                toast.success('Logged in successfully')
+                setTrackYourTransportUser(res?.doc?.finalDoc);
+                window.location.reload();
+            } else if (res.message === 'Invalid OTP') {
+                setOtpError('Invalid OTP');
+            } else if (res?.doc?.message === "Approved") {
+                setChangePassword(true);
+            }
+        });
+    }
 
     const handleLogin = () => {
         handleVerify('login');
@@ -139,7 +150,7 @@ function Login() {
                         </div>
                         <div className="mt-16">
                             {showForgetPassword ? (
-                                <ForgetPassword  message={message}/>
+                                <ForgetPassword message={message} />
                             ) : (
                                 <div>
                                     {changePassword ? (
@@ -160,7 +171,7 @@ function Login() {
                                             {passwordTab && (
                                                 <>
                                                     <LoginInput
-                                                    type={'password'}
+                                                        type={'password'}
                                                         imp={true}
                                                         label={'Password'}
                                                         name={'password'}

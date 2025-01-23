@@ -8,6 +8,7 @@ import { SET_API_JSON_ERROR } from '../Store/ActionName/ActionName';
 import { VerifyPasswordValidation } from '../ValidationScheema/PasswordValidate';
 import { login } from '../Constants/Constants';
 import CryptoJS from 'crypto-js';
+import toast from 'react-hot-toast';
 
 
 function ChangePassword() {
@@ -40,7 +41,7 @@ function ChangePassword() {
                     console.log("res", res);
 
                     if (res?.doc?.message === "Password changed successfully") {
-                        alert(res?.doc?.message)
+                        toast.success('Password Updated Successfully')
                         setTimeout(() => {
                             window.location.reload()
                         }, 1000)
