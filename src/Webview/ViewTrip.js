@@ -23,8 +23,10 @@ function ViewTrip() {
   const dispatch = useDispatch()
   var user = getTrackYourTransportUser()
   useEffect(() => {
-    fetchData()
-  }, [])
+    if(TripReducer?.doc === null){
+      fetchData()
+    }
+  }, [TripReducer?.doc])
 
   const fetchData = (search) => {
     var json = {
