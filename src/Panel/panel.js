@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-// import { ChevronDown, ChevronRight } from '../Icons/Icon';
 import Links from './NavLinks';
 import { setSidebar } from '../Store/Action/SidebarAction';
 import PanelRoutes from './Routes';
@@ -13,7 +12,7 @@ import { getTrackYourTransportUser } from '../Storage/Storage';
 import { MdOutlineCancel } from "react-icons/md";
 import AccordionSide from '../Component/AccordionSide';
 import { useEffect } from 'react';
-import { IoIosArrowDropleftCircle, IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
 import armyLogo from '../Images/armyLogo.jpg'
 import { getHeadingFromPathname } from '../utils';
 import Profile from '../Account/Profile/Profile';
