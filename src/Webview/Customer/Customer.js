@@ -11,6 +11,7 @@ import { NavLink } from 'react-router-dom';
 import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import LeadProductsView from '../Lead/LeadProductsView';
 import CustomerBillingAddressView from './CustomerBillingAddressView';
+import CustomerShippingAddressView from './CustomerShippingAdddressView';
 // import LeadProductsView from './LeadProductsView';
 
 function Customer() {
@@ -20,7 +21,8 @@ function Customer() {
 
   const dispatch = useDispatch()
 
-  const [showListInModal, setShowListInModal] = useState(null)
+  const [showBillingAddress, setShowBillingAddress] = useState(null)
+  const [showShippingAddress, setShowShippingAddress] = useState(null)
 
   useLayoutEffect(() => {
     if (customerReducer?.doc === null) {
@@ -56,12 +58,11 @@ function Customer() {
             <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
             <td className='p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
             <td className='p-2 border text-black'>
-              <MyButton onClick={() => setShowListInModal(i)} icon={smallEyeIcon} title={'View Billing Addresses'} className={'h-7 text-xs w-max'} />
+              <MyButton onClick={() => setShowBillingAddress(i)} icon={smallEyeIcon} title={'View Billing Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.phone || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
+            <td className='p-2 border text-black'>
+              <MyButton onClick={() => setShowShippingAddress(i)} icon={smallEyeIcon} title={'View Shipping Addresses'} className={'h-7 text-xs w-max'} />
+            </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
                 <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
@@ -78,7 +79,7 @@ function Customer() {
     }
   }
 
-  console.log('customerReducer', customerReducer?.doc?.content[showListInModal || 0]?.billingAddresses, showListInModal);
+  console.log('customerReducer', customerReducer?.doc?.content[showBillingAddress || 0]?.billingAddresses, showBillingAddress);
 
 
   return (
@@ -95,8 +96,12 @@ function Customer() {
         <DataTable th={th} td={td} totalPages={customerReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {
-        showListInModal !== null &&
-        <CustomerBillingAddressView onCloseClick={() => setShowListInModal(null)} addressesArr={customerReducer?.doc?.content[showListInModal || 0]?.billingAddresses} />
+        showBillingAddress !== null &&
+        <CustomerBillingAddressView onCloseClick={() => setShowBillingAddress(null)} addressesArr={customerReducer?.doc?.content[showBillingAddress || 0]?.billingAddresses} />
+      }
+      {
+        showShippingAddress !== null &&
+        <CustomerShippingAddressView onCloseClick={() => setShowShippingAddress(null)} addressesArr={customerReducer?.doc?.content[showShippingAddress || 0]?.shippingAddresses} />
       }
     </div>
   )
