@@ -7,6 +7,7 @@ import Quotation from "../Webview/Quotation/Quotation";
 import CreateQuotation from "../Webview/Quotation/CreateQuotation";
 import Order from "../Webview/Order/Order";
 import CreateOrder from "../Webview/Order/CreateOrder";
+import Customer from "../Webview/Customer/Customer";
 
 const PanelRoutes = () => {
 
@@ -20,6 +21,8 @@ const PanelRoutes = () => {
           <Route path="/create-quotation/:id" exact element={<CreateQuotation />} />
           <Route path="/order" exact element={<Order />} />
           <Route path="/create-order/:id" exact element={<CreateOrder />} />
+          <Route path="/customer" exact element={<Customer />} />
+          <Route path="/create-customer" exact element={<CreateOrder />} />
         </Routes>
     </>
   );
