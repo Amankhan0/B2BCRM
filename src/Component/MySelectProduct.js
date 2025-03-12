@@ -1,0 +1,146 @@
+import React, { useEffect, useState } from "react";
+import MySelect from "./MySelect";
+import { ApiHit } from "../utils";
+import { searchProduct } from "../Constants/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { setDataAction } from "../Store/Action/SetDataAction";
+import { SET_API_JSON } from "../Store/ActionName/ActionName";
+import MyInput from "./MyInput";
+import Title from "./Title";
+import { deleteIcon, plusIcon } from "../Icons/Icon";
+import { Colors } from "../Colors/color";
+import MyButton from "./MyButton";
+import toast from "react-hot-toast";
+
+const MySelectProduct = ({ isQuotation }) => {
+
+    const PaginationReducer = useSelector(state => state.PaginationReducer)
+    const ApiReducer = useSelector(state => state.ApiReducer)
+
+    const [products, setProducts] = useState(null)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (products === null) {
+            fetchData()
+        }
+    }, [products])
+
+    const fetchData = () => {
+        var json = {
+            page: PaginationReducer.pagination.page,
+            limit: PaginationReducer.pagination.limit,
+            search: {
+
+            }
+        }
+        ApiHit(json, searchProduct).then(res => {
+            if (res?.content) {
+                setProducts(res?.content)
+            }
+        })
+    }
+
+    const onChange = (value, index, name) => {
+        var oldJson = ApiReducer?.apiJson
+        if (name === 'productVarient') {
+            var _id = oldJson.products[index].product_id._id
+            var selectedItem = products.find((ele, i) => ele._id === _id)
+            var selectedVarient = selectedItem.varients.find((ele, i) => ele.varientName + ele.varientUnit === value)
+            oldJson.products[index][name] = selectedVarient
+        } else if (name === 'product_id') {
+            var selectedItem = products.find((ele, i) => ele._id === value)
+            oldJson.products[index][name] = selectedItem
+        } else if (name === 'price') {
+            const varientOne = oldJson.products[index].product_id.varients.find(v => v.varientName === oldJson.products[index].productVarient.varientName);
+            oldJson.products[index].cgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(value) / 200
+            oldJson.products[index].sgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(value) / 200
+            oldJson.products[index][name] = value
+        }else if (name === 'qty') {
+            const varientOne = oldJson.products[index].product_id.varients.find(v => v.varientName === oldJson.products[index].productVarient.varientName);
+            oldJson.products[index].cgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(oldJson.products[index].price) / 200
+            oldJson.products[index].sgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(oldJson.products[index].price) / 200
+            oldJson.products[index][name] = value
+        }
+        else{
+            oldJson.products[index][name] = value
+        }
+        dispatch(setDataAction(oldJson, SET_API_JSON))
+    }
+
+    const onAddProduct = () => {
+        var oldJson = ApiReducer?.apiJson
+        if (!oldJson.products) {
+            oldJson.products = [{}];
+            dispatch(setDataAction(oldJson, SET_API_JSON))
+        }
+        else {
+            if (!oldJson.products[oldJson.products.length - 1].product_id || !oldJson.products[oldJson.products.length - 1].varient || !oldJson.products[oldJson.products.length - 1].qty || !oldJson.products[oldJson.products.length - 1].price) {
+                toast.error('Please fill previous product detail')
+            } else {
+                oldJson.products.push({});
+                dispatch(setDataAction(oldJson, SET_API_JSON))
+            }
+        }
+
+    }
+
+    const onRemoveProduct = (index) => {
+        var oldJson = ApiReducer?.apiJson
+        oldJson.products.splice(index, 1)
+        dispatch(setDataAction(oldJson, SET_API_JSON))
+    }
+
+    console.log('APired', ApiReducer);
+
+
+    return (
+        <div className="p-5">
+            <div onClick={() => onAddProduct()} className="w-max flex items-center gap-1 text-black hover:text-themeBlue hover:underline cursor-pointer">
+                <Title title={'Add Product'} size={'xl'} />
+                <i>{plusIcon}</i>
+            </div>
+            {
+                ApiReducer?.apiJson?.products &&
+                <div>
+                    {
+                        ApiReducer?.apiJson?.products?.map?.((ele, index) => {
+                            return (
+                                <div className="grid grid-cols-4 gap-4 my-5">
+                                    <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
+                                    {
+                                        ele.product_id && ele.product_id.varients &&
+                                        <MySelect disable={isQuotation && true} selectedValue={ele.productVarient?.varientName} onChange={(e) => onChange(e.target.value, index, 'productVarient')} title={'Varient'} options={ele.product_id && ele.product_id.varients?.map((item, i) => item)} keyName='varientName' />
+                                    }
+                                    {
+                                        isQuotation &&
+                                        <>
+                                            <MyInput disable={true} value={ele.cgst || '0'} title={'CGST'} name={'cgst'} placeholder={'Enter CGST'} />
+                                            <MyInput disable={true} value={ele.sgst || '0'} title={'SGCT'} name={'sgst'} placeholder={'Enter SGCT'} />
+                                        </>
+                                    }
+                                    {
+                                        ele.product_id &&
+                                        <>
+                                            <MyInput value={ele.qty} onChange={(e) => onChange(e.target.value, index, 'qty')} title={'Quantity'} name={'qty'} placeholder={'Enter Quantity'} />
+                                            <MyInput value={ele.price !== null ? ele.price : '0'} onChange={(e) => onChange(e.target.value, index, 'price')} title={'Price'} name={'price'} placeholder={'Enter Price'} />
+                                        </>
+                                    }
+                                    {
+                                        index > 0 &&
+                                        <div className="flex items-center mt-5">
+                                            <MyButton onClick={() => onRemoveProduct(index)} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
+                                        </div>
+                                    }
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            }
+        </div>
+    )
+}
+
+export default MySelectProduct;

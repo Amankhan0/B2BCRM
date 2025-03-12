@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast"
 import Cookies from "universal-cookie"
 import { setDataAction } from "./Store/Action/SetDataAction"
 import { SET_INTERNET_SERVICE } from "./Store/ActionName/ActionName"
-import { DashboardApi } from "./Constants/Constants"
+import { getAuthenticatedUser, getAuthToken, logOutAuthenticatedUser } from "./Storage/Storage"
 
 export const GetPageCount = (limit, page, index) => {
   var no = limit * page - limit + index + 1
@@ -409,57 +409,11 @@ export const getHeadingFromPathname = () => {
 
   const pathname = window.location.pathname;
   const segments = pathname.split('/');
-
   switch (pathname) {
-
-    case "/army/":
-      return "Dashboard"
-    case "/army/dashboard":
-      return "Dashboard"
-    case "/army/trip/create":
-      return "Create Trip"
-    case "/army/trip/view":
-      return "My Trips"
-    case "/army/shared/trip/view":
-      return "Shared Trips"
-    case "/army/trips/epod":
-      return "ePOD"
-    case "/army/book/empty/vehicle":
-      return "Book Your Carrier"
-    case "/army/shortlist/vehicles":
-      return "Shortlisted Carrier"
-    case "/army/empty/vehicle/registration":
-      return "Register Your Carrier"
-    case "/army/my/empty/vehicles":
-      return "My Registered Carrier"
-    case "/army/verify/vehicle":
-      return "Verify Your Carrier"
-    case "/army/my/vehicles":
-      return "Carrier Dashboard"
-    case "/army/verify/driver":
-      return "Verify Your Driver"
-    case "/army/my/drivers":
-      return "Driver Dashboard"
-    case "/army/e-challan":
-      return "E Challan"
-    case "/army/multimodal/tracking":
-      return "Multi Modal Cargo Tracking "
-    case "/army/toll/info":
-      return "Toll Plaza"
-    case "/army/ev/station":
-      return "EV Charging Sattions"
-    case "/army/bid/live":
-      return "Live Bid"
-    case "/army/bid/my":
-      return "My Bid"
-    case "/army/bid/dashboard":
-      return "Bid Dashboard"
-    case "/army/bid/create":
-      return "Create Bid"
-    case "/army/group/create":
-      return "Group Dashboard"
-    // /trip/create
-
+    case "/create-lead":
+      return "Create Lead"
+      case "/lead":
+      return "Lead"
   }
 
 }
@@ -558,85 +512,37 @@ const fetchPublicIPv4Address = async () => {
   return ip;
 };
 
-export const ApiHit = (json, api, token, cookie, dispatch) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const checkInternet = await noInterNetConnection();
-      const cookies = new Cookies();
-      const cookieValue = cookies.get('jwt');
-      const userAgent = navigator.userAgent;
-      const browser = Bowser.getParser(userAgent);
-      let browserName = browser?.getBrowser();
-      let os = browser?.getOS();
-      let platformType = browser?.getPlatformType();
-      let ipv4 = await fetchPublicIPv4Address();
+export const ApiHit = (json, api) => {
 
-      if (!checkInternet) {
-        if (dispatch) {
-          dispatch(setDataAction(true, SET_INTERNET_SERVICE));
-        }
-        reject('No internet connection');
-        return;
-      }
+  const MyPromise = new Promise((resolve, reject) => {
+      const user = getAuthenticatedUser()
 
       const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'cookies': cookieValue ? cookieValue : "",
-          'ipv4': ipv4,
-          "browserName": browserName?.name,
-          "OS": os?.name,
-          "platformType": platformType
-        },
-        body: JSON.stringify(json),
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: getAuthToken() ? `Bearer ${getAuthToken()}` : 'token',
+          },
+          body: JSON.stringify(json)
       };
 
-      const response = await fetch(api, requestOptions);
-      const result = await response.json();
-
-      if (result?.message === "Missing token") {
-        cookies.remove();
-        cookies.remove("jwt", { path: "/" });
-        localStorage.removeItem("trackYourTransportUser");
-        window.location.href = '/login';
-        resolve('Missing token');
-      } else if (result?.message === "jwt expired") {
-        cookies.remove();
-        cookies.remove("jwt", { path: "/" });
-        localStorage.removeItem("trackYourTransportUser");
-        window.location.reload();
-        window.location.href = '/login';
-        resolve('JWT expired');
-      } else if (result?.message === "Prohibited") {
-        cookies.remove();
-        cookies.remove("jwt", { path: "/" });
-        localStorage.removeItem("trackYourTransportUser");
-        window.location.reload();
-        window.location.href = '/login';
-        resolve('Prohibited');
-      } else {
-        resolve(result);
-      }
-    } catch (error) {
-      // Enhanced error handling
-      if (error.name === 'TypeError') {
-        // Possible fetch network error
-        console.error('Network error or resource unavailable:', error.message);
-        resolve('Network error or resource unavailable');
-      } else if (error.name === 'SyntaxError') {
-        // JSON parsing error
-        console.error('Failed to parse response JSON:', error.message);
-        resolve('Failed to parse response JSON');
-      } else {
-        // General error handling
-        console.error('An unexpected error occurred:', error.message);
-        resolve('An unexpected error occurred');
-      }
-    }
+      fetch(api, requestOptions)
+          .then(res => res.text())
+          .then(
+              (res) => {
+                  var result = JSON.parse(res)
+                  if (result?.status === 401 && result?.error === "Invalid token signature") {
+                      window.location.href = '/login'
+                      logOutAuthenticatedUser()
+                  } else {
+                      resolve(result)
+                  }
+              },
+              (error) => resolve(error)
+          )
   });
-};
+  return MyPromise;
+}
 
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {
@@ -763,42 +669,4 @@ export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhY
 
 
 
-export const ApiHitForDashboard = (json, data, setData, setTotal, setLoader, quarter, setRender) => {
-
-  ApiHit(json, DashboardApi).then(res => {
-
-    console.log('res?.doc?.[quarter]', res?.doc?.[quarter], quarter);
-
-    console.log('quarter', quarter);
-
-    if (res?.status === 200) {
-
-      if (json.quarter === true) {
-        var oldData = data
-        oldData = [
-          { data: res?.doc?.[quarter]?.months[0], count: res?.doc?.[quarter]?.count?.[0] },
-          { data: res?.doc?.[quarter]?.months[1], count: res?.doc?.[quarter]?.count?.[1] },
-          { data: res?.doc?.[quarter]?.months[2], count: res?.doc?.[quarter]?.count?.[2] }
-        ]
-        setData(oldData)
-        setRender(Date.now())
-      } else {
-        setLoader(false)
-
-        var oldData = data
-
-        oldData = res?.doc?.arr
-        setData(oldData)
-
-        var totalCount = 0;
-
-        res?.doc?.arr.forEach(obj => {
-          totalCount += parseInt(obj?.count)
-        });
-
-        setTotal(totalCount)
-      }
-
-    }
-  })
-}
+export const ObjIsEmpty = (obj) => Object.keys(obj).length === 0;

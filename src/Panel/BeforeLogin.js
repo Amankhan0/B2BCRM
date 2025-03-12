@@ -9,7 +9,6 @@ function BeforeLogin() {
     <Routes>
     <Route path="/" exact element={<Login />} />
     <Route path="/signup" exact element={<Signup />} />
-
     </Routes>
     </>
   )

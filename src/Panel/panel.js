@@ -8,14 +8,11 @@ import { dropDownIcon } from '../SVG/Icons';
 import { NavLink, useLocation } from 'react-router-dom';
 import Title from '../Component/Title';
 import { FullReduxNull } from '../Store/FullReduxNull';
-import { getTrackYourTransportUser } from '../Storage/Storage';
 import { MdOutlineCancel } from "react-icons/md";
 import AccordionSide from '../Component/AccordionSide';
 import { useEffect } from 'react';
 import { IoIosArrowDropleftCircle } from "react-icons/io";
-import armyLogo from '../Images/armyLogo.jpg'
 import { getHeadingFromPathname } from '../utils';
-import Profile from '../Account/Profile/Profile';
 
 const SidebarItem = ({ item, onClick }) => {
 
@@ -40,12 +37,11 @@ const SidebarItem = ({ item, onClick }) => {
             {
                 hasSubItems ?
                     <div>
-                        <button className="cursor-pointer nav-link flex py-2 text-sm  items-center mx-4 " style={{ color: Colors.WHITE }} onClick={handleSubMenuToggle}>
+                        <button className="cursor-pointer nav-link flex py-2 text-sm  items-center mx-4" onClick={handleSubMenuToggle}>
                             <span className="flex px-3.5 py-2 cursor-pointer">{item.icon}&nbsp;
-                                <label className='mt-0.5 ml-1 cursor-pointer'>{item.title}</label>&nbsp;
+                                <label className='mt-0.5 ml-1 cursor-pointer text-black'>{item.title}</label>&nbsp;
                                 <label className='mt-0.5 ml-5 cursor-pointer'>{dropDownIcon}</label>
                             </span>
-                            {/* {isSubMenuOpen ? ChevronDown : ChevronRight} */}
                         </button>
                         {isSubMenuOpen && (
                             <ul className='ml-10'>
@@ -57,7 +53,7 @@ const SidebarItem = ({ item, onClick }) => {
                     </div>
                     :
                     <div>
-                        <NavLink style={{ backgroundColor: url === (item.url) && Colors.WHITE, color: url === (item.url) ? Colors.BLACK : Colors.WHITE }} to={item.url} onClick={onClick} className={`${url === (item.url) ? 'bg-white text-black' : 'text-white'} px-3 nav-link flex py-2 text-sm hover:bg-[#0000004a] items-center mx-4 rounded-lg mb-3`}>
+                        <NavLink style={{ backgroundColor: url === (item.url) && Colors.ThemeBlue, color: url === (item.url) ? Colors.WHITE : Colors.BLACK }} to={item.url} onClick={onClick} className={`${url === (item.url) ? 'bg-white text-black' : 'text-white'} px-3 nav-link flex py-2 text-sm hover:bg-[#0000004a] items-center mx-4 rounded-lg mb-3`}>
                             {url === (item.url) ? item.blackIcon ? item.blackIcon : item.icon : item.icon}&nbsp;&nbsp;{item.title}
                         </NavLink>
                         {item._id === 99 ? <div className="my-3 mx-4 h-px"></div> : null}
@@ -97,7 +93,6 @@ export default function Main() {
     const [showNotification, setShowNotification] = useState(false)
     const location = useLocation();
 
-    const user = getTrackYourTransportUser();
 
 
 
@@ -117,9 +112,6 @@ export default function Main() {
     }
 
     useEffect(() => {
-        if (window.location.pathname === '/profile') {
-            setSideBarTitle('Profile');
-        }
         if (reduxSidebar?.doc === false) {
             if (isSmallScreen > 900) {
                 dispatch(setSidebar('is-sidebar-open'))
@@ -131,25 +123,16 @@ export default function Main() {
 
     let x = getHeadingFromPathname()
 
-    console.log("user", user);
 
     return (
         <div>
             <div className={reduxSidebar?.doc}>
-                {showProfile && <Profile />}
                 <div id="root" style={{ backgroundColor: Colors.HEADER }} className="min-h-100vh flex grow relative overflow-hidden" >
                     <div className="sidebar sidebar-panel">
-                        <div className={`flex h-full grow flex-col`} style={{ background: Colors.ThemeBlue }}>
+                        <div className={`flex h-full grow flex-col shadow-xl bg-white`}>
                             <div className="flex justify-between px-3 py-3 border-b-[0.5px]" >
                                 <h1 className="flex items-center gap-2" style={{ color: Colors.WHITE }}>
-                                    <div className='w-10 h-10 bg-white rounded-full'>
-                                        <div className='ml-1.5 mt-1.5'>
-                                            <img className='w-7 h-7 rounded-sm' src={armyLogo} />
-                                        </div>
-                                    </div>
-                                    <div className='mt-0.5'>
-                                        <div className='text-base -tracking-wideest'>Army Vehicle Tracking</div>
-                                    </div>
+                                    <img className='p-0.5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
                                     {isSmallScreen < 700 && <div className='px-5' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
                                 </h1>
                             </div>
@@ -158,24 +141,10 @@ export default function Main() {
                                     <ul>
                                         {localNav.map((item, index) => (
                                             <div key={index} className={item?.id === 1 ? 'p-2 w-max -ml-4 font-semibold' : 'p-0'}>
-                                                {/* <div key={index} className={item?.id === 1 ? 'p-3 w-max -ml-6 font-semibold' : 'p-0'}> */}
-
-                                                {UserReducer?.userData?.doc?.userType === 'Transporter' ? (
-                                                    <>
-                                                        {item.url ? (
-                                                            <SidebarItem item={item} onClick={() => handleItemClick(item.title)} />
-                                                        ) : (
-                                                            <SideBarDropDown item={item} onClick={() => handleItemClick(item.title)} />
-                                                        )}
-                                                    </>
+                                                {item.url ? (
+                                                    <SidebarItem item={item} onClick={() => handleItemClick(item.title)} />
                                                 ) : (
-                                                    <>
-                                                        {item.url ? (
-                                                            <SidebarItem item={item} onClick={() => handleItemClick(item.title)} />
-                                                        ) : (
-                                                            <SideBarDropDown item={item} onClick={() => handleItemClick(item.title)} />
-                                                        )}
-                                                    </>
+                                                    <SideBarDropDown item={item} onClick={() => handleItemClick(item.title)} />
                                                 )}
                                             </div>
                                         ))}
@@ -197,16 +166,16 @@ export default function Main() {
                     </div>
 
                     <div className='main-content' style={{ width: '100%', background: '#f9f9f9' }}>
-                        <div className='shadow-1xl flex justify-between px-5 py-3' style={{ background: '#fff', alignItems: 'center' }}>
+                        <div className='bg-white shadow-xl flex justify-between px-5 py-3' style={{ alignItems: 'center' }}>
                             {
                                 reduxSidebar?.doc ?
-                                    <div className='flex items-center'>
+                                    <div className='flex items-center p-1'>
                                         <button style={{ color: Colors.BLACK }} className="sidebar-toggle ml-0.5 flex h-7 w-7 flex-col justify-center space-y-1.5 outline-none focus:outline-none dark:text-accent-light/80" onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}>
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </button>
-                                        <Title title={getHeadingFromPathname()} size='base' font={'medium'} color={Colors.BLACK} />
+                                        <Title title={getHeadingFromPathname()} size='xl' font={'medium'} color={Colors.BLACK} />
                                     </div>
                                     :
                                     <h1 className="text-base ml-4 flex items-center" style={{ color: Colors.WHITE }}>
@@ -215,13 +184,15 @@ export default function Main() {
                                             <span></span>
                                             <span></span>
                                         </button>
-                                        <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={armyLogo} />
-                                        <div className='text-black  md:text-md lg:text-lg'>Army Vehicle Tracking</div>
+                                        <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
+                                        <div className='text-black '>
+                                            <img className='w-1/4 ml-5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
+                                        </div>
                                     </h1>
                             }
                             <div className='items-center gap-x-3 cursor-pointer mr-5' style={{ color: Colors.BLACK }}>
-                                <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={() => setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
-                                </div>
+                                {/* <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={() => setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
+                                </div> */}
                             </div>
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >

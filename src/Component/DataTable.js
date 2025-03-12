@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import MyPagination from './MyPagination';
 import { Colors } from '../Colors/color';
+import Title from './Title';
 
 function DataTable({ th, td, api, hidePagination, totalPages }) {
 
@@ -13,14 +14,16 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
     var width = window.innerWidth
 
     return (
-        <div className='ml-10' style={{marginRight:width<1500?SidebarReducer?.doc!=="is-sidebar-open"?'':'5%':'2%'}}>
-            <div className='overflow-scroll'>
-                <table className='w-[160%]'>  {/* Set a width for the table to make it wider than the container */}
+        <div className='bg-white'>
+            <div>
+                <table className='w-full'>
                     <thead>
                         <tr style={{ background: Colors.ThemeBlue }} className='rounded-tl-xl rounded-tr-xl text-white'>
                             {
                                 th?.map((ele, i) => {
-                                    return <th className='p-2 text-center border'>{ele}</th>
+                                    return <th className='p-2 text-center border'>
+                                        <Title title={ele} size={'xs'}/>
+                                    </th>
                                 })
                             }
                         </tr>
@@ -30,12 +33,15 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
                     </tbody>
                 </table>
                 {
-                    td?.length === 0 &&
-                    <p className='text-lg text-center p-2 text-black'>No Data Found</p>
+                    !td || td?.length === 0 ?
+                        <p className='text-lg text-center p-2 text-black border'>No Data Found</p>
+                        :
+                        ""
                 }
             </div>
-            <div>
+            <div className='mt-5 flex justify-end'>
                 {
+                    td && !hidePagination &&
                     <MyPagination
                         currentPage={PaginationReducer?.pagination?.page}
                         totalPages={totalPages}

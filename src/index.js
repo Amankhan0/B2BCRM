@@ -10,13 +10,17 @@ import { Toaster } from 'react-hot-toast';
 import SidebarReducer from './Store/Reducer/SidebarReducer';
 import ApiReducer from './Store/Reducer/ApiReducer';
 import PaginationReducer from './Store/Reducer/PaginationReducer';
-import TripReducer from './Store/Reducer/TripReducer';
+import QuotationReducer from './Store/Reducer/QuotationReducer';
+import LeadReducer from './Store/Reducer/LeadReducer';
+import OrderReducer from './Store/Reducer/OrderReducer';
 
 const rootReducer = combineReducers({
   SidebarReducer: SidebarReducer,
   ApiReducer: ApiReducer,
   PaginationReducer: PaginationReducer,
-  TripReducer: TripReducer
+  QuotationReducer:QuotationReducer,
+  LeadReducer:LeadReducer,
+  OrderReducer:OrderReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
@@ -25,7 +29,7 @@ const root = createRoot(document.getElementById("root"));
 
 root.render(
   <Provider store={store}>
-    <BrowserRouter basename='/army/'>
+    <BrowserRouter>
       <App />
       <Toaster />
     </BrowserRouter>

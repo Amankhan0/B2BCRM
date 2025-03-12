@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { ApiHit } from '../utils'
 import { getTrip } from '../Constants/Constants'
-import { getTrackYourTransportUser } from '../Storage/Storage'
 import { Colors } from '../Colors/color'
 
 const DashboardCard = ({ title, type, icon, themeColor,onClick,activeCard }) => {
 
     const [data,setData] = useState(null)
 
-    var user = getTrackYourTransportUser()
 
     useEffect(()=>{
         if(data === null){
