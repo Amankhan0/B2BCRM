@@ -27,11 +27,17 @@ function CreateCustomer() {
 
     const dispatch = useDispatch()
 
-    // useEffect(() => {
-    //     if (customers === null) {
-    //         fetchData()
-    //     }
-    // }, [])
+    useEffect(() => {
+        // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
+        //     fetchData()
+        // }
+        
+        return () => {
+            let json = ApiReducer?.apiJson;
+            json = {};
+            dispatch(setDataAction(json, SET_API_JSON));
+        }
+    }, [])
 
     const natureOfCompanyOptions = [
         { label: "Sole Proprietorship", value: "sole_proprietorship" },
@@ -211,7 +217,7 @@ function CreateCustomer() {
                             {
                                 ApiReducer?.apiJson?.billingAddresses?.map?.((ele, index) => {
                                     return (
-                                        <div className="grid grid-cols-4 gap-4 my-5">
+                                        <div className="grid grid-cols-4 gap-4 my-5" key={index}>
 
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} />
@@ -252,7 +258,7 @@ function CreateCustomer() {
                                     console.log(ele);
 
                                     return (
-                                        <div className="grid grid-cols-4 gap-4 my-5">
+                                        <div className="grid grid-cols-4 gap-4 my-5" key={index}>
 
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} />
