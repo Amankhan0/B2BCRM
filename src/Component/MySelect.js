@@ -1,46 +1,97 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setDataAction } from '../Store/Action/SetDataAction'
-import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName'
+import React, { useEffect, useRef, useState } from 'react';
 
-function MySelect({ selectedValue, name, disable, title, error, createTripJson, important, uppercase, options, onChange,keyName }) {
+function MySelect({
+  selectedValue,
+  name,
+  disable,
+  title,
+  error,
+  parent,
+  important,
+  uppercase,
+  options,
+  onChange,
+  keyName,
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+  const [isAbove, setIsAbove] = useState(false);
 
-    const ApiReducer = useSelector(state => state.ApiReducer)
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+    setIsAbove(checkIfDropdownShouldOpenAbove());
+  };
 
-    const dispatch = useDispatch()
+  const handleOptionClick = (option) => {
+    onChange(option);
+    setIsOpen(false);
+  };
 
-    const onChangeText = (value) => {
-        if (createTripJson) {
-            var oldJson = ApiReducer?.createTripJson
-            if (typeof oldJson.driverDetails[0] === 'object') {
-                oldJson.driverDetails[0][name] = value
-            } else {
-                oldJson.driverDetails[0] = { [name]: value }
-            }
-            dispatch(setDataAction(oldJson, SET_CREATE_TRIP_JSON))
-        } else {
-            var oldJson = ApiReducer?.apiJson
-            oldJson[name] = value
-            dispatch(setDataAction(oldJson, SET_API_JSON))
-        }
+  const handleClickOutside = (event) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target)
+    ) {
+      setIsOpen(false);
     }
+  };
 
-    return (
-        <div>
-            <label className='w-full text-black'>{title}{important ? <span className='text-red-600 text-base'>*</span> : ''}</label>
-            <select style={{ textTransform: uppercase ? 'uppercase' : '' }} disabled={disable} onChange={onChange ? onChange : (e) => onChangeText(e.target.value)} className={`${disable && 'bg-gray-200'} mt-1 w-full outline-none h-10 text-md rounded-lg border border-slate-400 placeholder:normal-case hover:border-slate-400 pl-2`} name={name}>
-                {!selectedValue && <option value={''}>Select Item</option>}
-                {
-                    options?.map((option, index) => {
-                        return (
-                            <option value={keyName === 'varientName'?option.varientName+option.varientUnit:option._id} selected={selectedValue === option}>{option?.[keyName]}</option>
-                        )
-                    })
-                }
-            </select>
-            <label className='w-full text-red-600'>{error ? title + ' is Required' : ''}</label>
-        </div>
-    )
+  const checkIfDropdownShouldOpenAbove = () => {
+    if (!buttonRef.current) return false;
+
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    return buttonRect.bottom + 200 > windowHeight; // 200 is an estimated dropdown height
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      <label className="block text-sm font-medium text-gray-700">
+        {title}
+        {important && <span className="text-red-600 text-base">*</span>}
+      </label>
+      <button
+        ref={buttonRef}
+        className={`mt-1 w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+          disable ? 'bg-gray-200 cursor-not-allowed' : 'cursor-pointer'
+        }`}
+        onClick={toggleDropdown}
+        disabled={disable}
+      >
+        {selectedValue ? selectedValue : `Enter ${name}`}
+      </button>
+
+      {isOpen && (
+        <ul
+          className={`absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
+            isAbove ? 'bottom-full mb-1' : 'top-full mt-1'
+          }`}
+          style={{ maxHeight: '200px', overflowY: 'auto' }}
+        >
+          {options?.map((option) => (
+            <li
+              key={option?.value}
+              onClick={() => handleOptionClick(option)}
+              className="block cursor-pointer select-none py-2 px-4 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              {option?.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
 
-export default MySelect
+export default MySelect;

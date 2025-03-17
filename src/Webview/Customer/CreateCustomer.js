@@ -9,11 +9,13 @@ import MySelectProduct from '../../Component/MySelectProduct';
 import MyButton from '../../Component/MyButton';
 import { CustomerValidation } from './CustomerValidation';
 import { ApiHit, ObjIsEmpty } from '../../utils';
-import { addLead, searchCustomer, selectClass } from '../../Constants/Constants';
+import { addCustomer, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
 import MySelect from '../../Component/MySelect';
 import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import { setCustomerApiJson } from '../../Store/Action/CustomerAction';
+import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
+import toast from 'react-hot-toast';
 
 function CreateCustomer() {
 
@@ -22,6 +24,7 @@ function CreateCustomer() {
     const [selectedCustomer, setSelectedCustomer] = useState(null)
 
     const ApiReducer = useSelector(state => state.CustomerReducer)
+    const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
 
     const dispatch = useDispatch()
 
@@ -35,20 +38,21 @@ function CreateCustomer() {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
         CustomerValidation(ApiReducer?.apiJson).then(res => {
             var error = !ObjIsEmpty(res)
-            if (error) {
+            console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
+            if (false) {
                 dispatch(setDataAction(res, SET_API_JSON_ERROR))
             } else {
-                console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
 
-                ApiHit(ApiReducer?.apiJson, addLead).then(res => {
+
+                ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
                     console.log('res', res);
 
-                    // if(res.status === 200){
-                    //   toast.success('Lead created successfully')
-                    //   window.location.pathname = '/lead'
-                    // }else{
-                    //   toast.success(res.message)
-                    // }
+                    if (res.status === 200) {
+                        toast.success('Lead created successfully')
+                        window.location.pathname = '/lead'
+                    } else {
+                        toast.success(res.message)
+                    }
                 })
             }
         })
@@ -67,28 +71,10 @@ function CreateCustomer() {
         })
     }
 
-    const onChangeCustomer = (value) => {
-        var item = customers.find((ele, i) => ele.name + ele.gstNo === value)
-        var oldJson = ApiReducer.apiJson
-        oldJson.customerDetails = {
-            name: item.name,
-            name: item.phone,
-            name: item.email,
-        }
-        oldJson.companyDetails = {
-            companyName: item.name,
-            industry: item.industry,
-            leadSource: item.leadSource,
-            companySize: item.companySize,
-        }
-    }
-
-    const onChange = (value , index, key) => {
-console.log('sdvsdvdsv')
+    const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
-     console.log(json, 'sfsdvdvf');
-        json.billingAddresses[index] = {...json?.billingAddresses[index], [key]:value};
-dispatch(setCustomerApiJson(json));
+        json[parent][index] = { ...json[parent][index], [key]: value };
+        dispatch(setCustomerApiJson(json));
 
     }
 
@@ -99,20 +85,59 @@ dispatch(setCustomerApiJson(json));
     const onAddAddress = (serverKey) => {
 
         var json = ApiReducer?.apiJson
-        if (!json[serverKey]) { json[serverKey] = [{}]; 
-        dispatch(setCustomerApiJson(json))
-    return}
+        if (!json[serverKey]) {
+            json[serverKey] = [{}];
+            dispatch(setCustomerApiJson(json))
+            return
+        }
         json[serverKey].push({});
         dispatch(setCustomerApiJson(json))
 
     }
 
-    const handleAdd = () => {
-       
+    const [state, setState] = useState(null);
+    const [city, setCity] = useState(null);
+    const [pincode, setPincode] = useState(null);
+
+    const handleChange = (e, loadType, index, parent) => {
+
+        var json = ApiReducer?.apiJson
+
+        console.log(e, loadType);
+
+        if (loadType === 'state') {
+            const state = options.find((item) => {
+                if (e.value === item?.label) {
+                    return item;
+                }
+                return false;
+            })?.state;
+
+            setState(state)
+            setCity(null)
+
+            onChange(e.value, index, 'country', parent)
+            delete json?.[parent]?.[index].state //
+
+        } else if (loadType === 'city') {
+
+            const city = state?.find((item) => {
+                return e.value === item?.label;
+
+            })?.city;
+
+            setCity(city)
+            setPincode(null)
+            onChange(e.value, index, 'state', parent)
+            delete json?.[parent]?.[index].city //
+        } else if (loadType === 'pincode') {
+            setPincode(e.pincode)
+            onChange(e.value, index, 'city', parent)
+            delete json?.[parent]?.[index].pincode //
+        }
+        dispatch(setCustomerApiJson(json))
     }
 
-
-    console.log(ApiReducer)
 
     return (
         <div className='m-10'>
@@ -172,17 +197,55 @@ dispatch(setCustomerApiJson(json));
                                 ApiReducer?.apiJson?.billingAddresses?.map?.((ele, index) => {
                                     return (
                                         <div className="grid grid-cols-4 gap-4 my-5">
-                                            <MySelect selectedValue={ele.address} onChange={(e) => onChange(e.target.value, index, 'address')} title={'Address'} options={[]} keyName={'address'} />
 
 
-                                            <MySelect selectedValue={ele.productVarient?.varientName} onChange={(e) => onChange(e.target.value, index, 'productVarient')} title={'Varient'} options={ele.product_id && ele.product_id.varients?.map((item, i) => item)} keyName='varientName' />
+                                            <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} />
+                                            <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'billingAddresses') }} />
+                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} options={options} />
+                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} options={state} />
+                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} options={city} />
+                                            <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'billingAddresses') }} />
 
-                                            <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e)=> { onhange(e.target.value, index, 'address')}} />
-                                            <MyInput value={ele.sgst || '0'} title={'SGCT'} name={'sgst'} placeholder={'Enter SGCT'} />
+                                            <div className="flex items-center mt-5">
+                                                <MyButton onClick={() => onRemoveProduct(index)} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
+                                            </div>
+                                    }
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div className='bg-white mt-5'>
+                <div style={{ background: Colors.ThemeBlue }}>
+                    <p className='text-white p-2'>Shipping Addresses</p>
+                </div>
+                <div className="p-5">
+
+                    <div onClick={() => onAddAddress('shippingAddresses')} className="w-max flex items-center gap-1 text-black hover:text-themeBlue hover:underline cursor-pointer">
+                        <Title title={'Add Shipping'} size={'xl'} />
+                        <i>{plusIcon}</i>
+                    </div>
+                    {
+                        ApiReducer?.apiJson?.shippingAddresses?.length > 0 &&
+                        <div>
+                            {
+                                ApiReducer?.apiJson?.shippingAddresses?.map?.((ele, index) => {
+
+                                    console.log(ele);
+                                    
+                                    return (
+                                        <div className="grid grid-cols-4 gap-4 my-5">
 
 
-                                            <MyInput value={ele.qty} onChange={(e) => onChange(e.target.value, index, 'qty')} title={'Quantity'} name={'qty'} placeholder={'Enter Quantity'} />
-                                            <MyInput value={ele.price !== null ? ele.price : '0'} onChange={(e) => onChange(e.target.value, index, 'price')} title={'Price'} name={'price'} placeholder={'Enter Price'} />
+                                            <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} />
+                                            <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'shippingAddresses') }} />
+                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} options={options} />
+                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} options={state} />
+                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} options={city} />
+                                            <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'shippingAddresses') }} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => onRemoveProduct(index)} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
