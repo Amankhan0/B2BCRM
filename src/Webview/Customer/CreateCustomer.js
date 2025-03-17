@@ -33,7 +33,20 @@ function CreateCustomer() {
     //     }
     // }, [])
 
-    console.log(ApiReducer?.apiJson, 'api reducer');
+    const natureOfCompanyOptions = [
+        { label: "Sole Proprietorship", value: "sole_proprietorship" },
+        { label: "Partnership", value: "partnership" },
+        { label: "Limited Liability Company (LLC)", value: "llc" },
+        { label: "Corporation", value: "corporation" },
+        { label: "Non-Profit Organization", value: "non_profit" },
+        { label: "Cooperative", value: "cooperative" },
+        { label: "Joint Venture", value: "joint_venture" },
+        { label: "Subsidiary", value: "subsidiary" },
+        { label: "Franchise", value: "franchise" },
+        { label: "Public Limited Company", value: "public_limited_company" },
+        { label: "Private Limited Company", value: "private_limited_company" },
+        { label: "Other", value: "other" },
+      ];
 
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
@@ -76,10 +89,6 @@ function CreateCustomer() {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
         dispatch(setDataAction(json, SET_API_JSON));
-
-    }
-
-    const onRemoveProduct = () => {
 
     }
 
@@ -145,7 +154,6 @@ function CreateCustomer() {
         dispatch(setDataAction(json, SET_API_JSON))
     }
 
-    console.log(ApiReducer?.apiJson?.companyDetails?.natureOfCompany, 'ApiReducer?.apiJson?.customerDetails?.natureOfCompany')
     return (
         <div className='m-10'>
 
@@ -155,7 +163,7 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={options} />
+                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} />
                     </div>
                     <div>
                         <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
@@ -264,6 +272,20 @@ function CreateCustomer() {
                             }
                         </div>
                     }
+                </div>
+            </div>
+
+            <div className='bg-white'>
+                <div style={{ background: Colors.ThemeBlue }}>
+                    <p className='text-white p-2'>Upload Documents</p>
+                </div>
+                <div className='grid grid-cols-4 gap-4 p-5'>
+                    <div>
+                        <MyInput parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
+                    </div>
+                    <div>
+                        <MyInput parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                    </div>
                 </div>
             </div>
             <div className='mt-5'>
