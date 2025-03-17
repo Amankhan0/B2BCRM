@@ -13,7 +13,6 @@ import { addCustomer, addLead, searchCustomer, selectClass } from '../../Constan
 import MySelect from '../../Component/MySelect';
 import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
-import { setCustomerApiJson } from '../../Store/Action/CustomerAction';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
 
@@ -23,7 +22,7 @@ function CreateCustomer() {
     const [customers, setCustomers] = useState(null)
     const [selectedCustomer, setSelectedCustomer] = useState(null)
 
-    const ApiReducer = useSelector(state => state.CustomerReducer)
+    const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
 
     const dispatch = useDispatch()
@@ -33,6 +32,7 @@ function CreateCustomer() {
     //         fetchData()
     //     }
     // }, [])
+console.log(ApiReducer, 'api reducer');
 
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
@@ -74,7 +74,7 @@ function CreateCustomer() {
     const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
-        dispatch(setCustomerApiJson(json));
+        dispatch(setDataAction(json, SET_API_JSON));
 
     }
 
@@ -87,11 +87,11 @@ function CreateCustomer() {
         var json = ApiReducer?.apiJson
         if (!json[serverKey]) {
             json[serverKey] = [{}];
-            dispatch(setCustomerApiJson(json))
+            dispatch(setDataAction(json, SET_API_JSON))
             return
         }
         json[serverKey].push({});
-        dispatch(setCustomerApiJson(json))
+        dispatch(setDataAction(json, SET_API_JSON))
 
     }
 
@@ -135,7 +135,7 @@ function CreateCustomer() {
             onChange(e.value, index, 'city', parent)
             delete json?.[parent]?.[index].pincode //
         }
-        dispatch(setCustomerApiJson(json))
+        dispatch(setDataAction(json, SET_API_JSON))
     }
 
 

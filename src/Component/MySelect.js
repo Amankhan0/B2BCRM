@@ -63,7 +63,7 @@ function MySelect({
       </label>
       <button
         ref={buttonRef}
-        className={`mt-1 w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+        className={`mt-1 w-full h-10 rounded-md border border-slate-400 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
           disable ? 'bg-gray-200 cursor-not-allowed' : 'cursor-pointer'
         }`}
         onClick={toggleDropdown}
