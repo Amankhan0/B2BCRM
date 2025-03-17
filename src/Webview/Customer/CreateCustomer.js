@@ -32,7 +32,8 @@ function CreateCustomer() {
     //         fetchData()
     //     }
     // }, [])
-console.log(ApiReducer, 'api reducer');
+
+    console.log(ApiReducer?.apiJson, 'api reducer');
 
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
@@ -138,7 +139,13 @@ console.log(ApiReducer, 'api reducer');
         dispatch(setDataAction(json, SET_API_JSON))
     }
 
+    const handleRemove = (index, serverKey) => {
+        var json = ApiReducer?.apiJson
+        json[serverKey].splice(index, 1)
+        dispatch(setDataAction(json, SET_API_JSON))
+    }
 
+    console.log(ApiReducer?.apiJson?.companyDetails?.natureOfCompany, 'ApiReducer?.apiJson?.customerDetails?.natureOfCompany')
     return (
         <div className='m-10'>
 
@@ -148,7 +155,7 @@ console.log(ApiReducer, 'api reducer');
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInput parent={'companyDetails'} name={'natureOfCompany'} title={'Nature Of Company'} placeholder={'Enter Nature Of Company'} error={!ApiReducer?.apiJson?.companyDetails?.natureOfCompany} />
+                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={options} />
                     </div>
                     <div>
                         <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
@@ -201,13 +208,13 @@ console.log(ApiReducer, 'api reducer');
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} />
                                             <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'billingAddresses') }} />
-                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} options={options} />
-                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} options={state} />
-                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} options={city} />
+                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} placeholder={'Enter Country'} options={options} />
+                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} placeholder={'Enter State'} options={state} />
+                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} placeholder={'Enter City'} options={city} />
                                             <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'billingAddresses') }} />
 
                                             <div className="flex items-center mt-5">
-                                                <MyButton onClick={() => onRemoveProduct(index)} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
+                                                <MyButton onClick={() => handleRemove(index, 'billingAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
                                     }
                                         </div>
@@ -235,20 +242,20 @@ console.log(ApiReducer, 'api reducer');
                                 ApiReducer?.apiJson?.shippingAddresses?.map?.((ele, index) => {
 
                                     console.log(ele);
-                                    
+
                                     return (
                                         <div className="grid grid-cols-4 gap-4 my-5">
 
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} />
                                             <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'shippingAddresses') }} />
-                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} options={options} />
-                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} options={state} />
-                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} options={city} />
+                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} placeholder={'Enter Country'} options={options} />
+                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} placeholder={'Enter State'} options={state} />
+                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} placeholder={'Enter City'} options={city} />
                                             <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'shippingAddresses') }} />
 
                                             <div className="flex items-center mt-5">
-                                                <MyButton onClick={() => onRemoveProduct(index)} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
+                                                <MyButton onClick={() => handleRemove(index, 'shippingAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
                                     }
                                         </div>
