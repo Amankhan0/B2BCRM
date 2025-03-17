@@ -7,7 +7,7 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
 import MySelectProduct from '../../Component/MySelectProduct';
 import MyButton from '../../Component/MyButton';
-import { CustomerValidation } from './CustomerValidation';
+import { SupplierValidation } from './SupplierValidation';
 import { ApiHit, ObjIsEmpty } from '../../utils';
 import { addCustomer, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
 import MySelect from '../../Component/MySelect';
@@ -21,6 +21,24 @@ function CreateCustomer() {
     const [decision, setDecision] = useState(false)
     const [customers, setCustomers] = useState(null)
     const [selectedCustomer, setSelectedCustomer] = useState(null)
+    const [state, setState] = useState(null);
+    const [city, setCity] = useState(null);
+    const [pincode, setPincode] = useState(null);
+
+    const natureOfCompanyOptions = [
+        { label: "Sole Proprietorship", value: "sole_proprietorship" },
+        { label: "Partnership", value: "partnership" },
+        { label: "Limited Liability Company (LLC)", value: "llc" },
+        { label: "Corporation", value: "corporation" },
+        { label: "Non-Profit Organization", value: "non_profit" },
+        { label: "Cooperative", value: "cooperative" },
+        { label: "Joint Venture", value: "joint_venture" },
+        { label: "Subsidiary", value: "subsidiary" },
+        { label: "Franchise", value: "franchise" },
+        { label: "Public Limited Company", value: "public_limited_company" },
+        { label: "Private Limited Company", value: "private_limited_company" },
+        { label: "Other", value: "other" },
+      ];
 
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
@@ -39,24 +57,9 @@ function CreateCustomer() {
         }
     }, [])
 
-    const natureOfCompanyOptions = [
-        { label: "Sole Proprietorship", value: "sole_proprietorship" },
-        { label: "Partnership", value: "partnership" },
-        { label: "Limited Liability Company (LLC)", value: "llc" },
-        { label: "Corporation", value: "corporation" },
-        { label: "Non-Profit Organization", value: "non_profit" },
-        { label: "Cooperative", value: "cooperative" },
-        { label: "Joint Venture", value: "joint_venture" },
-        { label: "Subsidiary", value: "subsidiary" },
-        { label: "Franchise", value: "franchise" },
-        { label: "Public Limited Company", value: "public_limited_company" },
-        { label: "Private Limited Company", value: "private_limited_company" },
-        { label: "Other", value: "other" },
-      ];
-
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
-        CustomerValidation(ApiReducer?.apiJson).then(res => {
+        SupplierValidation(ApiReducer?.apiJson).then(res => {
             var error = !ObjIsEmpty(res)
             console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
             if (false) {
@@ -110,10 +113,6 @@ function CreateCustomer() {
         dispatch(setDataAction(json, SET_API_JSON))
 
     }
-
-    const [state, setState] = useState(null);
-    const [city, setCity] = useState(null);
-    const [pincode, setPincode] = useState(null);
 
     const handleChange = (e, loadType, index, parent) => {
 
