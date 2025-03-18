@@ -168,10 +168,10 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} />
+                        <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
                     </div>
                     <div>
-                        <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
+                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} />
                     </div>
                     <div>
                         <MyInput parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} error={!ApiReducer?.apiJson?.companyDetails?.companySize} />
@@ -278,7 +278,28 @@ function CreateCustomer() {
                     }
                 </div>
             </div>
-
+            <div className='bg-white mt-5'>
+                <div style={{ background: Colors.ThemeBlue }}>
+                    <p className='text-white p-2'>Bank Details</p>
+                </div>
+                <div className='grid grid-cols-4 gap-4 p-5'>
+                    <div>
+                        <MyInput parent={'bankDetails'} name='beneficiaryName' title={'Beneficiary Name'} placeholder={'Enter Beneficiary Name'} error={!ApiReducer?.apiJson?.bankDetails?.beneficiaryName} />
+                    </div>
+                    <div>
+                        <MyInput parent={'bankDetails'} name='bankName' title={'Bank Name'} placeholder={'Enter Bank Name'} error={!ApiReducer?.apiJson?.bankDetails?.bankName} />
+                    </div>
+                    <div>
+                        <MyInput parent={'bankDetails'} name='branchName' title={'Branch Name'} placeholder={'Enter Branch Name'} error={!ApiReducer?.apiJson?.bankDetails?.branchName} />
+                    </div>
+                    <div>
+                        <MyInput parent={'bankDetails'} name='ifscCode' title={'IFSC Code'} placeholder={'Enter IFSC Code'} error={!ApiReducer?.apiJson?.bankDetails?.ifscCode} />
+                    </div>
+                    <div>
+                        <MyInput parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} error={!ApiReducer?.apiJson?.bankDetails?.accountNo} />
+                    </div>
+                </div>
+            </div>
             <div className='bg-white'>
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Upload Documents</p>
@@ -289,6 +310,9 @@ function CreateCustomer() {
                     </div>
                     <div>
                         <MyInput parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                    </div>
+                    <div>
+                        <MyInput parent={'kycDetails'} name={'msmeNo'} title={'MSME No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
                     </div>
                 </div>
             </div>

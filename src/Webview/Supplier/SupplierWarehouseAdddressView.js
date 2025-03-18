@@ -4,7 +4,7 @@ import { crossIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import DataTable from '../../Component/DataTable';
 
-function CustomerShippingAddressView({ addressesArr, title, onCloseClick }) {
+function SupplierWarehouseAdddressView({ addressesArr, title, onCloseClick }) {
 
     const th = ['Address', 'Landmark', 'Country','State', 'City', 'Pin Code']
 
@@ -44,4 +44,4 @@ function CustomerShippingAddressView({ addressesArr, title, onCloseClick }) {
     )
 }
 
-export default CustomerShippingAddressView;
+export default SupplierWarehouseAdddressView;

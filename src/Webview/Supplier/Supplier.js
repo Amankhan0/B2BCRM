@@ -9,7 +9,6 @@ import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
 import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
-import LeadProductsView from '../Lead/LeadProductsView';
 import SupplierGstAddressView from './SupplierGstAddressView';
 import SupplierWarehouseAddressView from './SupplierWarehouseAdddressView';
 // import LeadProductsView from './LeadProductsView';
@@ -23,6 +22,7 @@ function Customer() {
 
   const [showGstAddress, setShowGstAddress] = useState(null)
   const [showWarehouseAddress, setShowWarehouseAddress] = useState(null)
+  const [showBankDetails, setshowBankDetails] = useState(null);
 
   useLayoutEffect(() => {
 
@@ -49,7 +49,7 @@ function Customer() {
     })
   }
 
-  const th = ['Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
+  const th = ['Supplier Name', 'Email Address', 'Contact', 'GST No.', 'GST Addresses', 'Warehouse Addresses', 'Bank Details', 'Action']
 
   let td;
   if (supplierReducer?.doc !== null) {
@@ -62,10 +62,13 @@ function Customer() {
             <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
             <td className='p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
             <td className='p-2 border text-black'>
-              <MyButton onClick={() => setShowGstAddress(i)} icon={smallEyeIcon} title={'View Billing Addresses'} className={'h-7 text-xs w-max'} />
+              <MyButton onClick={() => setShowGstAddress(i)} icon={smallEyeIcon} title={'View GST Addresses'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='p-2 border text-black'>
-              <MyButton onClick={() => setShowWarehouseAddress(i)} icon={smallEyeIcon} title={'View Shipping Addresses'} className={'h-7 text-xs w-max'} />
+              <MyButton onClick={() => setShowWarehouseAddress(i)} icon={smallEyeIcon} title={'View Warehouse Addresses'} className={'h-7 text-xs w-max'} />
+            </td>
+            <td className='p-2 border text-black'>
+              <MyButton onClick={() => setshowBankDetails(i)} icon={smallEyeIcon} title={'View Bank Details'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
@@ -105,6 +108,10 @@ function Customer() {
       }
       {
         showWarehouseAddress !== null &&
+        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.shippingAddresses} />
+      }
+      {
+        showBankDetails !== null &&
         <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.shippingAddresses} />
       }
     </div>
