@@ -10,7 +10,7 @@ import MyButton from '../../Component/MyButton';
 import { SupplierValidation } from './SupplierValidation';
 import { ApiHit, ObjIsEmpty } from '../../utils';
 import { addCustomer, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
-import MySelect from '../../Component/MySelect';
+import MySelectCommon from '../../Component/MySelectCommon';
 import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
@@ -172,7 +172,7 @@ function CreateCustomer() {
                         <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
                     </div>
                     <div>
-                        <MySelect selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} />
+                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} />
                     </div>
                     <div>
                         <MyInput parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} error={!ApiReducer?.apiJson?.companyDetails?.companySize} />
@@ -222,9 +222,9 @@ function CreateCustomer() {
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} />
                                             <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'billingAddresses') }} />
-                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} placeholder={'Enter Country'} options={options} />
-                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} placeholder={'Enter State'} options={state} />
-                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} placeholder={'Enter City'} options={city} />
+                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} placeholder={'Enter Country'} options={options} />
+                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} placeholder={'Enter State'} options={state} />
+                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} placeholder={'Enter City'} options={city} />
                                             <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'billingAddresses') }} />
 
                                             <div className="flex items-center mt-5">
@@ -262,9 +262,9 @@ function CreateCustomer() {
 
                                             <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} />
                                             <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'shippingAddresses') }} />
-                                            <MySelect selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} placeholder={'Enter Country'} options={options} />
-                                            <MySelect selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} placeholder={'Enter State'} options={state} />
-                                            <MySelect selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} placeholder={'Enter City'} options={city} />
+                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} placeholder={'Enter Country'} options={options} />
+                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} placeholder={'Enter State'} options={state} />
+                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} placeholder={'Enter City'} options={city} />
                                             <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'shippingAddresses') }} />
 
                                             <div className="flex items-center mt-5">
