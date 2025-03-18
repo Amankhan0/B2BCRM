@@ -6,7 +6,7 @@ import DataTable from '../../Component/DataTable';
 
 function QuotationProductsView({ productsArr, title, onCloseClick }) {
 
-    const th = ['Product Name', 'HSN No', 'Make', 'Varient Name', 'Varient Unit', 'GST']
+    const th = ['Product Name', 'HSN No', 'Make', 'Varient Name','Price','Quantity','CGST','SGST', 'GST']
 
     let td;
     td = productsArr.map((ele, i) => {
@@ -15,8 +15,12 @@ function QuotationProductsView({ productsArr, title, onCloseClick }) {
                 <td className='p-2 border text-black'>{ele?.product_id?.productName || '-'}</td>
                 <td className='p-2 border text-black'>{ele?.product_id?.hsnNo || '-'}</td>
                 <td className='p-2 border text-black'>{ele?.product_id?.make || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.productVarient?.varientName || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.productVarient?.varientUnit || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit || '-'}</td>
+                {/* <td className='p-2 border text-black'>{ele?.productVarient?.varientUnit || '-'}</td> */}
+                <td className='p-2 border text-black'>{ele?.price || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.qty || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.cgst || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.sgst || '-'}</td>
                 <td className='p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>
             </tr>
         )

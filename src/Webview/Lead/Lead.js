@@ -37,7 +37,7 @@ function Lead() {
     }
     ApiHit(json, searchLead).then(res => {
       if (res?.content) {
-        dispatch(setLead(localLeadData))
+        dispatch(setLead(res))
       }
     })
   }

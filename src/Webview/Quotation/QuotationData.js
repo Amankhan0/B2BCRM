@@ -6,6 +6,8 @@ export const QuotationData = {
     "content": [
         {
             "quotationRefNo": "001",
+            "lead_id":"",
+            "user_id":"",
             "_id": "67d03093a23e2730e46d1831",
             "customerDetails": {
                 "name": "Headsup",

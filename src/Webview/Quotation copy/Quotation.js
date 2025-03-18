@@ -15,7 +15,7 @@ import QuotationProductsView from './QuotationProductsView';
 import { localLeadData } from '../Lead/localLeadData';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import QuotaionPDF from './QuotaionPDF';
+import QuotaionPDF from '../Quotation/QuotaionPDF';
 import MyInput from '../../Component/MyInput';
 import toast from 'react-hot-toast';
 
@@ -23,7 +23,6 @@ function Quotation() {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
     const QuotationReducer = useSelector(state => state.QuotationReducer)
-    const PaginationReducer = useSelector(state => state.PaginationReducer)
 
     const dispatch = useDispatch()
 
@@ -35,42 +34,43 @@ function Quotation() {
     const [name, setName] = useState(null)
     const [contact, setContact] = useState(null)
 
+
+
     useEffect(() => {
         if (leadData === null) {
             fetchData()
-        } else if (QuotationReducer?.doc === null && selectedLead!==null) {
+        } else if (QuotationReducer?.doc === null) {
             fetchQuotationData()
         }
-    }, [leadData,selectedLead])
+    }, [leadData])
 
     const fetchData = () => {
         var json = {
             page: 1,
             limit: 100,
-            search: {
-
-            }
+            search: {}
         }
         ApiHit(json, searchLead).then(res => {
             if (res?.content) {
-                setLeadData(res)
+                setLeadData(localLeadData)
             }
         })
     }
 
     const fetchQuotationData = () => {
-       var json = {
-            page: PaginationReducer.pagination.page,
-            limit: PaginationReducer.pagination.limit,
-            search: {
-                lead_id: selectedLead._id
-            }
-        }
-        ApiHit(json, searchQuotation).then(res => {
-            if (res?.content) {
-                dispatch(setQuotation(res))
-            }
-        })
+        dispatch(setQuotation(QuotationData))
+        // var json = {
+        //     page: PaginationReducer.pagination.page,
+        //     limit: PaginationReducer.pagination.limit,
+        //     search: {
+
+        //     }
+        //   }
+        //   ApiHit(json, searchQuotation).then(res => {
+        //     if (res?.content) {
+        //       dispatch(setQuotation(QuotationData))
+        //     }
+        //   })
     }
 
     const th = ['Quotation Ref No', 'Lead Source', 'Company Name', 'Company Size', 'Industry', 'Customer Name', 'Customer Contact', 'Customer Email', 'Products', 'Action']
@@ -97,7 +97,7 @@ function Quotation() {
                                 <div onClick={() => setQuotationPdf(ele)} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                     {downloadIcon}
                                 </div>
-                                <NavLink to={'/create-order/'+ele._id}>
+                                <NavLink to={'/create-order'}>
                                     <MyButton icon={plusIcon} title={'Create Order'} className={'h-7 text-xs w-max'} />
                                 </NavLink>
                             </div>
@@ -107,9 +107,6 @@ function Quotation() {
             })
         }
     }
-
-    console.log('selectedLead',selectedLead);
-    
 
     const onClickNext = () => {
         if (!ApiReducer?.apiJson?.quotationDate || ApiReducer?.apiJson?.quotationDate === '') {

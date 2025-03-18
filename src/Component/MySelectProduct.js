@@ -76,7 +76,9 @@ const MySelectProduct = ({ isQuotation }) => {
             dispatch(setDataAction(oldJson, SET_API_JSON))
         }
         else {
-            if (!oldJson.products[oldJson.products.length - 1].product_id || !oldJson.products[oldJson.products.length - 1].varient || !oldJson.products[oldJson.products.length - 1].qty || !oldJson.products[oldJson.products.length - 1].price) {
+            console.log('oldJson',oldJson);
+            
+            if (!oldJson.products[oldJson.products.length - 1].product_id || !oldJson.products[oldJson.products.length - 1].productVarient || !oldJson.products[oldJson.products.length - 1].qty || !oldJson.products[oldJson.products.length - 1].price) {
                 toast.error('Please fill previous product detail')
             } else {
                 oldJson.products.push({});
@@ -107,7 +109,7 @@ const MySelectProduct = ({ isQuotation }) => {
                     {
                         ApiReducer?.apiJson?.products?.map?.((ele, index) => {
                             return (
-                                <div className="grid grid-cols-4 gap-4 my-5">
+                                <div className="grid grid-cols-6 gap-4 my-5">
                                     <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
                                     {
                                         ele.product_id && ele.product_id.varients &&

@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
-import { ApiHit } from '../../utils';
+import { ApiHit, updateProductId } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchLead } from '../../Constants/Constants';
+import { addQuotation, searchLead } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
-// import LeadProductsView from './LeadProductsView';
-import { localLeadData } from '../Lead/localLeadData';
 import MyCheckBox from '../../Component/MyCheckBox';
 import MyInput from '../../Component/MyInput';
 import MySelectProduct from '../../Component/MySelectProduct';
 import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../Store/ActionName/ActionName';
 import { CrossMark } from '../../SVG/Icons';
+import toast from 'react-hot-toast';
 
 function CreateQuotation() {
 
@@ -38,8 +37,13 @@ function CreateQuotation() {
         }
         ApiHit(json, searchLead).then(res => {
             if (res?.content) {
-                setLeadData(localLeadData)
-                dispatch(setDataAction(localLeadData?.content?.[0], SET_API_JSON))
+                var compileRes = res
+                delete compileRes.content[0].leadRefNo
+                compileRes.content[0].lead_id = compileRes.content[0]._id
+                delete compileRes?.content?.[0]?._id
+                console.log('compileRes', compileRes);
+                dispatch(setDataAction(compileRes?.content?.[0], SET_API_JSON))
+                setLeadData(compileRes)
             }
         })
     }
@@ -78,17 +82,27 @@ function CreateQuotation() {
     }
 
     const onSubmit = () => {
-        console.log('call',ApiReducer.apiJson);
+        var json = updateProductId(ApiReducer?.apiJson)
+        console.log('json', json);
+        json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
+        ApiHit(json, addQuotation).then(res => {
+            if (res.status === 200) {
+                toast.success('Quotation created successfully')
+                window.location.pathname = '/quotation'
+            } else {
+                toast.error(res.message)
+            }
+        })
     }
 
-    const onChangetermsAndConditions = (i) =>{
+    const onChangetermsAndConditions = (i) => {
         var oldJson = ApiReducer.apiJson
-        if(oldJson.termsAndConditions[i].status){
+        if (oldJson.termsAndConditions[i].status) {
             oldJson.termsAndConditions[i].status = false
-        }else{
+        } else {
             oldJson.termsAndConditions[i].status = true
         }
-        dispatch(setDataAction(oldJson,SET_API_JSON))
+        dispatch(setDataAction(oldJson, SET_API_JSON))
     }
 
     return (
@@ -135,7 +149,7 @@ function CreateQuotation() {
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Products Details</p>
                 </div>
-                <MySelectProduct isQuotation={true}/>
+                <MySelectProduct isQuotation={true} />
             </div>
             <div className='mt-5'>
                 <MyButton title={'Submit'} onClick={() => onClickSubmit()} />
@@ -147,7 +161,7 @@ function CreateQuotation() {
                     <div className={`relative rounded-lg card w-[80%] text-center transition-opacity duration-300`}>
                         <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2 text-white" style={{ background: Colors.ThemeBlue }} onClick={() => setPrivacyPolicy(false)}>
                             <div>
-                                Privacy Policy
+                                Terms And Conditions
                             </div>
                             <div>
                                 {CrossMark}
@@ -159,13 +173,22 @@ function CreateQuotation() {
                                     return (
                                         <div className='flex gap-2 p-1'>
                                             <div>
-                                                <MyCheckBox onChange={()=>onChangetermsAndConditions(i)} checked={ele.status} />
+                                                <MyCheckBox onChange={() => onChangetermsAndConditions(i)} checked={ele.status} />
                                             </div>
                                             <p className='mt-3 text-black'>{ele.title}</p>
                                         </div>
                                     )
                                 })
                             }
+                            <div className='mt-5'>
+                                <p className='text-black font-bold'>Additional Notes:</p>
+                                <p>
+                                    The delivery schedule offered or committed is merely an indicative time of delivery which is not firm
+                                    and the same may vary or change depending upon various factors relating to the Contract. Therefore, the
+                                    Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
+                                    the time schedule.
+                                </p>
+                            </div>
                             <div className='mt-10'>
                                 <MyButton title={'Submit'} onClick={() => onSubmit(true)} />
                             </div>

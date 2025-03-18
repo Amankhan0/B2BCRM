@@ -1,12 +1,12 @@
 // development
-export const Protocol = 'https://'
+export const Protocol = 'http://'
 // export const IP = '10.0.0.237'
-// export const IP = '192.168.1.29:9090' //local
+export const IP = '192.168.1.29:9090' //local
 // export const BASEURL = Protocol + IP
 
 // production
 // export const Protocol = 'https://'
-export const IP = 'api-crm.headsupb2b.com'
+// export const IP = 'api-crm.headsupb2b.com'
 
 export const BASEURL = Protocol + IP
 
@@ -14,7 +14,7 @@ export const UserMicroService = `${Protocol}${IP}/userheadsup/api/`
 export const OrderMicroService = `${Protocol}${IP}/orderheadsup/api/`
 export const HelperMicroService = `${Protocol}${IP}/helperheadsup/api/`
 export const PlantMicroService = `${Protocol}${IP}/plantheadsup/api/`
-export const uploadMicroService = `${Protocol}${IP}/upload/api/`
+export const uploadMicroService = `${Protocol}${IP}/uploadheadsup/api/`
 
 
 export const login = BASEURL + '/auth/login'
@@ -98,6 +98,20 @@ export const addQuotation = OrderMicroService + 'addQuotation'
 export const searchQuotation = OrderMicroService + 'searchQuotation'
 export const updateQuotation = OrderMicroService + 'updateQuotation'
 
+// PO
+export const addPO = OrderMicroService + 'addPO'
+export const searchPO = OrderMicroService + 'searchPO'
+export const updatePO = OrderMicroService + 'updatePO'
+
+// Dispatch
+export const addDispatch = OrderMicroService + 'addDispatch'
+export const searchDispatch = OrderMicroService + 'searchDispatch'
+export const updateDispatch = OrderMicroService + 'updateDispatch'
+
+// PO
+export const addPI = OrderMicroService + 'addPI'
+export const searchPI = OrderMicroService + 'searchPI'
+export const updatePI = OrderMicroService + 'updatePI'
 
 //Build Version
 export const buildVersion = 1.01

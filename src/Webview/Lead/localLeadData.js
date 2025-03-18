@@ -66,7 +66,9 @@ export const localLeadData = {
                             "varientUnit": "mm"
                         },
                         "price": null,
-                        "qty": "5"
+                        "qty": "5",
+                        "cgst":"28",
+                        "sgst":"28"
                     }
                 ],
                 "user_id": null,

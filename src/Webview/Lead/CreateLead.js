@@ -8,7 +8,7 @@ import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionN
 import MySelectProduct from '../../Component/MySelectProduct';
 import MyButton from '../../Component/MyButton';
 import { LeadValidation } from './LeadValidation';
-import { ApiHit, ObjIsEmpty } from '../../utils';
+import { ApiHit, ObjIsEmpty, updateProductId } from '../../utils';
 import toast from 'react-hot-toast';
 import { addLead, searchCustomer, selectClass } from '../../Constants/Constants';
 
@@ -43,17 +43,14 @@ function CreateLead() {
       if (error) {
         dispatch(setDataAction(res, SET_API_JSON_ERROR))
       } else {
-        console.log('ApiReducer?.apiJson',ApiReducer?.apiJson);
-        
+        var json = updateProductId(ApiReducer?.apiJson)
         ApiHit(ApiReducer?.apiJson,addLead).then(res=>{
-          console.log('res',res);
-          
-          // if(res.status === 200){
-          //   toast.success('Lead created successfully')
-          //   window.location.pathname = '/lead'
-          // }else{
-          //   toast.success(res.message)
-          // }
+          if(res.status === 200){
+            toast.success('Lead created successfully')
+            window.location.pathname = '/lead'
+          }else{
+            toast.error(res.message)
+          }
         })
       }
     })
@@ -73,19 +70,22 @@ function CreateLead() {
   }
 
   const onChangeCustomer = (value) =>{
-      var item = customers.find((ele,i)=>ele.name+ele.gstNo === value)
+      var item = customers.find((ele,i)=>ele._id === value)
+      console.log('item',item);
+      
       var oldJson = ApiReducer.apiJson
       oldJson.customerDetails = {
         name:item.name,
-        name:item.phone,
-        name:item.email,
+        phone:item.contact,
+        email:item.email,
+        companyName:item.companyName,
+        billingAddress:item.billingAddresses,
+        pancardNo:item.pancardNo,
+        shippingAddress:item.shippingAddresses,
+        isDecisionTaker: true
       }
-      oldJson.companyDetails = {
-        companyName:item.name,
-        industry:item.industry,
-        leadSource:item.leadSource,
-        companySize:item.companySize,
-      }
+      setSelectedCustomer(item)
+      dispatch(setDataAction(oldJson,SET_API_JSON))      
   }
   
 
@@ -95,10 +95,11 @@ function CreateLead() {
         <p>Choose Customer if already added</p>
         <div className='grid grid-cols-5'>
           <select onChange={(e)=>onChangeCustomer(e.target.value)} className={selectClass}>
+          <option selected={selectedCustomer===null}>Select Customer</option>
             {
               customers?.map((ele, i) => {
                 return (
-                  ele.name !== null && <option value={ele.name+ele.gstNo}>{ele.name}</option>
+                  ele.name !== null && <option value={ele._id}>{ele.name}</option>
                 )
               })
             }
@@ -111,16 +112,16 @@ function CreateLead() {
         </div>
         <div className='grid grid-cols-4 gap-4 p-5'>
           <div>
-            <MyInput parent={'companyDetails'} name={'leadSource'} title={'Lead Source'} placeholder={'Enter Lead Source'} error={!ApiReducer?.apiJson?.companyDetails?.leadSource} />
+            <MyInput parent={'customerDetails'} name={'leadSource'} title={'Lead Source'} placeholder={'Enter Lead Source'} error={!ApiReducer?.apiJson?.companyDetails?.leadSource} />
           </div>
           <div>
-            <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
+            <MyInput parent={'customerDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
           </div>
           <div>
-            <MyInput parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} error={!ApiReducer?.apiJson?.companyDetails?.companySize} />
+            <MyInput parent={'customerDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} error={!ApiReducer?.apiJson?.companyDetails?.companySize} />
           </div>
           <div>
-            <MyInput parent={'companyDetails'} name={'industry'} title={'Industry'} placeholder={'Enter Industry'} error={!ApiReducer?.apiJson?.companyDetails?.industry} />
+            <MyInput parent={'customerDetails'} name={'industry'} title={'Industry'} placeholder={'Enter Industry'} error={!ApiReducer?.apiJson?.companyDetails?.industry} />
           </div>
         </div>
       </div>

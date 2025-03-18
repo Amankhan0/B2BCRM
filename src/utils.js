@@ -408,13 +408,29 @@ export const STROGNPASSWORD = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).*$/
 export const getHeadingFromPathname = () => {
 
   const pathname = window.location.pathname;
-  const segments = pathname.split('/');
-  switch (pathname) {
-    case "/create-lead":
-      return "Create Lead"
-      case "/lead":
-      return "Lead"
+  const segments = pathname.split('/')[1];
+  if (segments === 'lead' || segments === 'create-lead') {
+    return "Lead"
+  } else if (segments === 'quotation' || segments === 'create-quotation') {
+    return "Quotation"
   }
+  else if (segments === 'order' || segments === 'create-order') {
+    return "Order"
+  }
+  // switch (segments) {
+  //   case "/create-lead":
+  //     return "Create Lead"
+  //   case "/lead":
+  //     return "Lead"
+  //   case "/create-order":
+  //     return "Create Order"
+  //   case "/create-quotation":
+  //     return "Create Quotation"
+  //   case "/order":
+  //     return "Order"
+  //   case "/quotation":
+  //     return "Quotation"
+  // }
 
 }
 
@@ -515,34 +531,57 @@ const fetchPublicIPv4Address = async () => {
 export const ApiHit = (json, api) => {
 
   const MyPromise = new Promise((resolve, reject) => {
-      const user = getAuthenticatedUser()
+    const user = getAuthenticatedUser()
 
-      const requestOptions = {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              Authorization: getAuthToken() ? `Bearer ${getAuthToken()}` : 'token',
-          },
-          body: JSON.stringify(json)
-      };
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: getAuthToken() ? `Bearer ${getAuthToken()}` : 'token',
+      },
+      body: JSON.stringify(json)
+    };
 
-      fetch(api, requestOptions)
-          .then(res => res.text())
-          .then(
-              (res) => {
-                  var result = JSON.parse(res)
-                  if (result?.status === 401 && result?.error === "Invalid token signature") {
-                      window.location.href = '/login'
-                      logOutAuthenticatedUser()
-                  } else {
-                      resolve(result)
-                  }
-              },
-              (error) => resolve(error)
-          )
+    fetch(api, requestOptions)
+      .then(res => res.text())
+      .then(
+        (res) => {
+          var result = JSON.parse(res)
+          if (result?.status === 401 && result?.error === "Invalid token signature") {
+            window.location.href = '/login'
+            logOutAuthenticatedUser()
+          } else {
+            resolve(result)
+          }
+        },
+        (error) => resolve(error)
+      )
   });
   return MyPromise;
 }
+
+export const ApiHitUploadData = (formData, api) => {
+  return new Promise((resolve, reject) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: getAuthToken() ? `Bearer ${getAuthToken()}` : 'token',
+      },
+      body: formData
+    };
+
+    fetch(api, requestOptions)
+      .then(res => res.text())
+      .then(
+        (res) => {
+          var result = JSON.parse(res)
+          console.log('result', result);
+          resolve(result)
+        },
+        (error) => resolve(error)
+      )
+  })
+};
 
 export const finalCreateJson = (data, user) => {
   return new Promise(function (resolve, reject) {
@@ -670,3 +709,101 @@ export const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWZhY
 
 
 export const ObjIsEmpty = (obj) => Object.keys(obj).length === 0;
+
+
+export function updateProductId(data) {
+  if (!data.products || !Array.isArray(data.products)) {
+    return data;
+  }
+
+  data.products = data.products.map(product => {
+    return {
+      ...product,
+      product_id: product.product_id._id
+    };
+  });
+
+  return data;
+}
+
+export function updateProductIdWithPO(data,keyName) {
+  if (!data.products || !Array.isArray(data.products)) {
+    return data;
+  }
+
+  data.products = data.products.map(product => {
+    const availablePO = [...(product?.[keyName] || [])]; // Create a new array
+    const availableQty = availablePO.reduce((acc, num) => acc + Number(num), 0);
+    const qty = product.useQty ? product.useQty : availableQty === 0 ? product.qty : availableQty;
+    
+
+    if(qty){
+      availablePO.push(String(product.useQty?qty:Number(product.qty)-availableQty));
+    }
+
+    return {
+      ...product,
+      product_id: product.product_id._id,
+      oldqty: product.qty,
+      [keyName]: availablePO, // Assigning the new array
+      qty: product.useQty?qty:Number(product.qty)-availableQty,
+    };
+  });
+
+  return data;
+}
+
+
+export function updateProductPOAvailableOrNot(data,keyName) {
+  if (!data.products || !Array.isArray(data.products)) {
+    return data;
+  }
+
+  data.products = data.products.filter(product => {
+    if (!Array.isArray(product[keyName])) {
+      return true; // Agar availablePO array nahi hai to product ko rakhna hai
+    }
+
+    // availablePO array ka sum calculate karna
+    const availablePOSum = product[keyName].reduce((sum, val) => sum + Number(val), 0);
+
+    // Agar sum product.qty ke barabar hai to isko hata dena
+    return availablePOSum !== Number(product.qty);
+  });
+
+  return data;
+}
+
+
+export function updateAvaialblePO(data) {
+  if (!data.products || !Array.isArray(data.products)) {
+    return data;
+  }
+
+  data.products = data.products.map(product => {
+    return {
+      ...product,
+      qty: product.oldqty
+    };
+  });
+
+  return data;
+}
+
+export function updateProductIdWithAvailablePOPIDispatch(data) {
+  if (!data.products || !Array.isArray(data.products)) {
+    return data;
+  }
+
+  data.products = data.products.map(product => {
+    return {
+      ...product,
+      product_id: product.product_id._id,
+      availablePO: [],
+      availablePI: [],
+      availableDispatch: [],
+    };
+  });
+
+  return data;
+}

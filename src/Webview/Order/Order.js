@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchOrder} from '../../Constants/Constants';
+import { searchOrder } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
-import { smallEyeIcon } from '../../Icons/Icon';
+import { crossIcon, smallEyeIcon } from '../../Icons/Icon';
 import OrderProductsView from './OrderProductsView';
 import { setOrder } from '../../Store/Action/OrderAction';
-import { OrderData } from './OrderData';
 import { Colors } from '../../Colors/color';
+import PI from './PI';
+import AddPO from './PurchaseOrder/AddPO';
+import AddDispatch from './Dispatch/AddDispatch';
+import AddPI from './ProformaInvoice/AddPI';
 
 function Order() {
 
@@ -18,6 +21,8 @@ function Order() {
     const dispatch = useDispatch()
 
     const [showProducts, setShowProducts] = useState(null)
+    const [modal, setModal] = useState(null)
+    const [singleOrderData, setSingleOrderData] = useState(null)
 
     useEffect(() => {
         if (OrderReducer.doc === null) {
@@ -33,7 +38,7 @@ function Order() {
         }
         ApiHit(json, searchOrder).then(res => {
             if (res?.content) {
-                dispatch(setOrder(OrderData))
+                dispatch(setOrder(res))
             }
         })
     }
@@ -59,14 +64,14 @@ function Order() {
                         </td>
                         <td className='p-2 border text-black'>
                             <div className='flex gap-2'>
-                                <div className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className={`p-2 rounded-lg w-10 `} style={{border:`1px solid ${Colors.ThemeBlue}`}}>PO</p>
+                                <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                    <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
                                 </div>
-                                <div className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className='p-2 rounded-lg w-10' style={{border:`1px solid ${Colors.ThemeBlue}`}}>PI</p>
+                                <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                    <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
                                 </div>
-                                <div className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className='p-2 rounded-lg' style={{border:`1px solid ${Colors.ThemeBlue}`}}>Dispatch</p>
+                                <div onClick={() => setModalType('Dispatch', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                    <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Dispatch</p>
                                 </div>
                             </div>
                         </td>
@@ -74,6 +79,11 @@ function Order() {
                 )
             })
         }
+    }
+
+    const setModalType = (type, data) => {
+        setModal(type)
+        setSingleOrderData(data)
     }
 
     return (
@@ -85,29 +95,31 @@ function Order() {
                 showProducts !== null &&
                 <OrderProductsView onCloseClick={() => setShowProducts(null)} productsArr={OrderReducer?.doc?.content?.[showProducts]?.products} title={`Order Ref No ${OrderReducer?.doc?.content?.[showProducts]?.orderRefNo}`} />
             }
-            {/* {
-                quotationPdf !== null &&
+            {
+                modal !== null && singleOrderData !== null &&
                 <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
                     <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
-                    <div className={`relative rounded-lg card w-[60%] p-8 transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
+                    <div className={`relative rounded-lg card w-[80%] transition-opacity duration-300`}>
+                        <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2 text-white" style={{ background: Colors.ThemeBlue }}>
+                            <div>
+                                <Title size={'lg'} title={modal + ' Details'} />
+                            </div>
+                            <div onClick={() => setModal(null)}>
+                                {crossIcon}
+                            </div>
+                        </div>
                         {
-                            quotationDate !== null && name !== null && contact !== null ?
-                                <QuotaionPDF data={quotationPdf} quotationDate={quotationDate} name={name} contact={contact} /> :
-                                <div>
-                                    <MyInput important={true} name={'quotationDate'} title={'Quotation Generated Date'} placeholder={'Enter Quotation Generated Date'} />
-                                    <p className='my-2 text-gray-400'>Example : Jan 01, 2025</p>
-                                    <MyInput important={true} name={'name'} title={'Name'} placeholder={'Enter Name'} />
-                                    <div className='mt-5'>
-                                        <MyInput important={true} name={'contact'} title={'Contact'} placeholder={'Enter Contact'} />
-                                    </div>
-                                    <div className='mt-5'>
-                                        <MyButton className={'px-5'} onClick={() => onClickNext()} title={'Next'} />
-                                    </div>
-                                </div>
+                            modal === 'PO' ?
+                                <AddPO orderData={singleOrderData} />
+                                :
+                                modal === 'PI' ?
+                                    <AddPI orderData={singleOrderData} />
+                                    :
+                                    <AddDispatch orderData={singleOrderData} />
                         }
                     </div>
                 </div>
-            } */}
+            }
         </div>
     )
 }
