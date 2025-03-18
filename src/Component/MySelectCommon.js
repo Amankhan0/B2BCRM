@@ -77,7 +77,7 @@ function MySelect({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+console.log(error, title, ApiReducer.apiJsonError)
   return (
     <div ref={dropdownRef} className="relative">
       <label className="block text-sm font-medium text-gray-700">
@@ -114,6 +114,7 @@ function MySelect({
           ))}
         </ul>
       )}
+      <p className='w-full text-red-600'>{error&&ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</p>
     </div>
   );
 }
