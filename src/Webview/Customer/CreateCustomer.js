@@ -15,6 +15,7 @@ import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
+import MyFileUpload from '../../Component/MyFileUpload';
 
 function CreateCustomer() {
 
@@ -289,7 +290,13 @@ function CreateCustomer() {
                         <MyInput parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
                     </div>
                     <div>
+                        <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.kycDetails?.pancard} uppercase fileType={"application/pdf"}/>
+                    </div>
+                    <div>
                         <MyInput parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                    </div>
+                    <div>
+                        <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.kycDetails?.gst} uppercase />
                     </div>
                 </div>
             </div>

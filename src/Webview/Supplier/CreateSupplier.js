@@ -15,6 +15,7 @@ import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
+import MyFileUpload from '../../Component/MyFileUpload';
 
 function CreateCustomer() {
 
@@ -298,6 +299,9 @@ function CreateCustomer() {
                     <div>
                         <MyInput parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} error={!ApiReducer?.apiJson?.bankDetails?.accountNo} />
                     </div>
+                    <div>
+                        <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.kycDetails?.cancelledCheque} uppercase />
+                    </div>
                 </div>
             </div>
             <div className='bg-white'>
@@ -309,10 +313,22 @@ function CreateCustomer() {
                         <MyInput parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
                     </div>
                     <div>
+                        <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.kycDetails?.pancard} uppercase />
+                    </div>
+                    <div>
                         <MyInput parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
                     </div>
                     <div>
-                        <MyInput parent={'kycDetails'} name={'msmeNo'} title={'MSME No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                        <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.kycDetails?.gst} uppercase />
+                    </div>
+                    <div>
+                        <MyInput parent={'kycDetails'} name={'msmeNo'} title={'MSME No.'} placeholder={'Enter MSME No.'} error={!ApiReducer?.apiJson?.kycDetails?.msmeNo} />
+                    </div>
+                    <div>
+                        <MyFileUpload name={'msme'} title={'Upload MSME Doc'} error={!ApiReducer?.apiJson?.kycDetails?.msme} uppercase />
+                    </div>
+                    <div>
+                        <MyFileUpload name={'tdstcs'} title={'Upload TDS & TCS Doc'} error={!ApiReducer?.apiJson?.kycDetails?.tdstcs} uppercase />
                     </div>
                 </div>
             </div>
