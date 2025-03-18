@@ -10,16 +10,16 @@ export const LeadValidation = (json) => {
       if (!json.customerDetails||!json.customerDetails.email || json.customerDetails.email === '') {
         Object.assign(errorJson, { email: 'vehicle number is required' })
       }
-      if (!json.companyDetails || !json.companyDetails.companyName || json.customerDetails.companyName === '') {
+      if (!json.customerDetails || !json.customerDetails.companyName || json.customerDetails.companyName === '') {
         Object.assign(errorJson, { companyName: 'vehicle number is required' })
       }
-      if (!json.companyDetails ||!json.companyDetails.industry || json.companyDetails.industry === '') {
+      if (!json.customerDetails ||!json.customerDetails.industry || json.customerDetails.industry === '') {
         Object.assign(errorJson, { industry: 'vehicle number is required' })
       }
-      if (!json.companyDetails ||!json.companyDetails.leadSource || json.companyDetails.leadSource === '') {
+      if (!json.customerDetails ||!json.customerDetails.leadSource || json.customerDetails.leadSource === '') {
         Object.assign(errorJson, { leadSource: 'vehicle number is required' })
       }
-      if (!json.companyDetails ||!json.companyDetails.companySize || json.companyDetails.companySize === '') {
+      if (!json.customerDetails ||!json.customerDetails.companySize || json.customerDetails.companySize === '') {
         Object.assign(errorJson, { companySize: 'vehicle number is required' })
       }
       resolve(errorJson)

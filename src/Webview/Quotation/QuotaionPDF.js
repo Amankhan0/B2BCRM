@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { Colors } from "../Colors/color";
-import signature from '../Image/signature.jpeg';
+import { Colors } from "../../Colors/color";
+import signature from '../../Image/signature.jpeg';
 
 const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
     const pdfRef = useRef();
@@ -71,7 +71,7 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                         <p className="text-xs p-0.5">PAN : AARCA3767A</p>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                        <p className="text-sm mt-2">A-4 Second Floor </p>
+                        <p className="text-sm mt-2">A-4 Second Floor</p>
                         <p className="text-sm">Sarvodaya Enclave</p>
                         <p>New Delhi 110017, India</p>
                     </div>

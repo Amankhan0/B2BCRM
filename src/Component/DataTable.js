@@ -22,7 +22,7 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
                             {
                                 th?.map((ele, i) => {
                                     return <th className='p-2 text-center border'>
-                                        <Title title={ele} size={'xs'}/>
+                                        <Title title={ele} size={'xs'} />
                                     </th>
                                 })
                             }
@@ -39,16 +39,16 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
                         ""
                 }
             </div>
-            <div className='mt-5 flex justify-end'>
-                {
-                    td && !hidePagination &&
+            {
+                td && !hidePagination &&
+                <div className='mt-5 flex justify-end'>
                     <MyPagination
                         currentPage={PaginationReducer?.pagination?.page}
                         totalPages={totalPages}
                         api={api}
                     />
-                }
-            </div>
+                </div>
+            }
         </div>
 
     )
