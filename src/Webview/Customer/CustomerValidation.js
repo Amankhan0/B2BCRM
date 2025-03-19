@@ -16,7 +16,6 @@ export const CustomerValidation = (json) => {
 
             Object.assign(errorJson, { address: 'address is required' })
           }
-
           if (!element||!element.country || element.country === '') {
             Object.assign(errorJson, { country: 'country is required' })
           }
@@ -29,9 +28,21 @@ export const CustomerValidation = (json) => {
           if (!element||!element.landmark || element.landmark === '') {
             Object.assign(errorJson, { landmark: 'landmark is required' })
           }
-          if (!element||!element.pincode || element.pincode === '') {
-            Object.assign(errorJson, { pincode: 'pincode is required' })
-          }
+
+
+          // if (!element||!element.pincode || element.pincode === '') {
+          //   if(!(element?.pincode?.length > 6 ||  element?.pincode?.length < 6)){
+              
+          //     Object.assign(errorJson, { pincode: 'pincode is incorrect' })
+          //   }
+          //   else if ( Number(element?.pincode)){
+          //     Object.assign(errorJson, { pincode: 'pincode should be number' })
+          //   }
+          //   else{
+
+          //     Object.assign(errorJson, { pincode: 'pincode is required' })
+          //   }
+          // }
           
         });
       }
@@ -60,7 +71,10 @@ export const CustomerValidation = (json) => {
           if (!element||!element?.landmark || element?.landmark === '') {
             Object.assign(errorJson, { landmark: 'landmark is required' })
           }
-          if (!element||!element?.pincode || element?.pincode === '') {
+          if (!element|| !element?.pincode || element?.pincode === '' || element?.pincode?.length < 6 ||  element?.pincode?.length > 6 || Number(element?.pincode)!==NaN) {
+            
+console.log('inside pincode')
+       
             Object.assign(errorJson, { pincode: 'pincode is required' })
           }
           

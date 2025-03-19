@@ -17,6 +17,7 @@ function MySelect({
   onChange,
   keyName,
   placeholder,
+  errorMsg,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -77,7 +78,7 @@ function MySelect({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-console.log(error, title, ApiReducer.apiJsonError)
+// console.log(error, title, ApiReducer.apiJsonError)
   return (
     <div ref={dropdownRef} className="relative">
       <label className="block text-sm font-medium text-gray-700">
@@ -114,7 +115,8 @@ console.log(error, title, ApiReducer.apiJsonError)
           ))}
         </ul>
       )}
-      <p className='w-full text-red-600'>{error&&ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</p>
+      {!errorMsg && <p className='w-full text-red-600'>{error && ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</p>}
+      {errorMsg && <p className='w-full text-red-600'>{errorMsg}</p>}
     </div>
   );
 }

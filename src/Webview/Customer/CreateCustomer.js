@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
-import MyInput from '../../Component/MyInput';
+import MyInputCommon from '../../Component/MyInputCommon';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
@@ -14,6 +14,8 @@ import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
 import MyFileUpload from '../../Component/MyFileUpload';
+import * as Yup from 'yup';
+import useYupValidation from '../../Hooks/useYupValidation';
 
 function CreateCustomer() {
 
@@ -23,6 +25,52 @@ function CreateCustomer() {
 
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
+
+    const validationSchema = Yup.object().shape({
+        companyDetails: Yup.object().shape({
+          natureOfCompany: Yup.string().required('Nature of company is required'),
+          companyName: Yup.string().required('Company name is required'),
+          companySize: Yup.string().required('Company size is required'),
+          industry: Yup.string().required('Industry is required'),
+        }),
+        customerDetails: Yup.object().shape({
+          designation: Yup.string().required('Designation is required'),
+          name: Yup.string().required('Name is required'),
+          phone: Yup.string().min(10, 'Phone no. should be of 10 digit').max(10, 'Phone no. should be of 10 digit').required('Phone is required'),
+          email: Yup.string().email('Invalid email').required('Email is required'),
+        }),
+        billingAddresses: Yup.array().of(
+          Yup.object().shape({
+            address: Yup.string().required('Address is required'),
+            landmark: Yup.string().required('Landmark is required'),
+            country: Yup.string().required('Country is required'),
+            state: Yup.string().required('State is required'),
+            city: Yup.string().required('City is required'),
+            pincode: Yup.string()
+              .matches(/^\d{6}$/, 'Pincode must be a 6-digit number')
+              .required('Pincode is required'),
+          })
+        ),
+        shippingAddresses: Yup.array().of(
+          Yup.object().shape({
+            address: Yup.string().required('Address is required'),
+            landmark: Yup.string().required('Landmark is required'),
+            country: Yup.string().required('Country is required'),
+            state: Yup.string().required('State is required'),
+            city: Yup.string().required('City is required'),
+            pincode: Yup.string()
+              .matches(/^\d{6}$/, 'Pincode must be a 6-digit number')
+              .required('Pincode is required'),
+          })
+        ),
+        kycDetails: Yup.object().shape({
+          pancardNo: Yup.string().required('PAN card number is required'),
+          gstNo: Yup.string().required('GST number is required'),
+        }),
+      });
+
+    const { errors, validateJson, validateField } = useYupValidation(validationSchema);
+
 
     const dispatch = useDispatch()
 
@@ -53,8 +101,10 @@ function CreateCustomer() {
         { label: "Other", value: "other" },
       ];
 
+      console.log('errors', errors);
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
+        validateJson(ApiReducer?.apiJson);
         CustomerValidation(ApiReducer?.apiJson).then(res => {
             var error = !ObjIsEmpty(res)
             console.log('apiJson', ApiReducer?.apiJson);
@@ -64,16 +114,16 @@ function CreateCustomer() {
             } else {
 
 
-                ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
-                    console.log('res', res);
+                // ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
+                //     console.log('res', res);
 
-                    if (res.status === 200) {
-                        toast.success('Lead created successfully')
-                        window.location.pathname = '/lead'
-                    } else {
-                        toast.success(res.message)
-                    }
-                })
+                //     if (res.status === 200) {
+                //         toast.success('Lead created successfully')
+                //         window.location.pathname = '/lead'
+                //     } else {
+                //         toast.success(res.message)
+                //     }
+                // })
             }
         })
     }
@@ -94,6 +144,7 @@ function CreateCustomer() {
     const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
+        validateField(`${parent}.${index}.${key}`, value);
         dispatch(setDataAction(json, SET_API_JSON));
 
     }
@@ -170,16 +221,16 @@ function CreateCustomer() {
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
                         <MySelectCommon selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions}  
-                        error={!ApiReducer?.apiJson?.companyDetails?.natureOfCompany}/>
+                        validate={validateField} errorMsg={errors[`companyDetails.natureOfCompany`]}/>
                     </div>
                     <div>
-                        <MyInput parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} error={!ApiReducer?.apiJson?.companyDetails?.companyName} />
+                        <MyInputCommon parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyDetails.companyName`]} />
                     </div>
                     <div>
-                        <MyInput parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} error={!ApiReducer?.apiJson?.companyDetails?.companySize} />
+                        <MyInputCommon parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companyDetails.companySize`]} />
                     </div>
                     <div>
-                        <MyInput parent={'companyDetails'} name={'industry'} title={'Industry'} placeholder={'Enter Industry'} error={!ApiReducer?.apiJson?.companyDetails?.industry} />
+                        <MyInputCommon parent={'companyDetails'} name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`companyDetails.industry`]} />
                     </div>
                 </div>
             </div>
@@ -189,16 +240,16 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInput parent={'customerDetails'} name='designation' title={'Designation'} placeholder={'Enter Designation'} error={!ApiReducer?.apiJson?.customerDetails?.designation} />
+                        <MyInputCommon parent={'customerDetails'} name='designation' title={'Designation'} placeholder={'Enter Designation'} validate={validateField} errorMsg={errors[`customerDetails.designation`]} />
                     </div>
                     <div>
-                        <MyInput parent={'customerDetails'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} error={!ApiReducer?.apiJson?.customerDetails?.name} />
+                        <MyInputCommon parent={'customerDetails'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} validate={validateField} errorMsg={errors[`customerDetails.name`]} />
                     </div>
                     <div>
-                        <MyInput parent={'customerDetails'} name='phone' title={'Contact Number'} placeholder={'Enter Contact Number'} error={!ApiReducer?.apiJson?.customerDetails?.phone} />
+                        <MyInputCommon parent={'customerDetails'} name='phone' title={'Contact Number'} placeholder={'Enter Contact Number'} validate={validateField} errorMsg={errors[`customerDetails.phone`]} />
                     </div>
                     <div>
-                        <MyInput parent={'customerDetails'} name='email' title={'Email Address'} placeholder={'Enter Email Address'} error={!ApiReducer?.apiJson?.customerDetails?.email} />
+                        <MyInputCommon parent={'customerDetails'} name='email' title={'Email Address'} placeholder={'Enter Email Address'} validate={validateField} errorMsg={errors[`customerDetails.email`]} />
                     </div>
                 </div>
             </div>
@@ -219,14 +270,12 @@ function CreateCustomer() {
                                 ApiReducer?.apiJson?.billingAddresses?.map?.((ele, index) => {
                                     return (
                                         <div className="grid grid-cols-4 gap-4 my-5" key={index}>
-
-
-                                            <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} error={!ApiReducer?.apiJson?.billingAddresses[index]?.address}/>
-                                            <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'billingAddresses') }} error={!ApiReducer?.apiJson?.billingAddresses[index]?.landmark}/>
-                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} placeholder={'Enter Country'} options={options} error={!ApiReducer?.apiJson?.billingAddresses[index]?.country} />
-                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} placeholder={'Enter State'} options={state} error={!ApiReducer?.apiJson?.billingAddresses[index]?.state} />
-                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} placeholder={'Enter City'} options={city} error={!ApiReducer?.apiJson?.billingAddresses[index]?.city} />
-                                            <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'billingAddresses') }} error={!ApiReducer?.apiJson?.billingAddresses[index]?.pincode} />
+                                            <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'billingAddresses') }} errorMsg={errors[`billingAddresses.${index}.address`]}/>
+                                            <MyInputCommon value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'billingAddresses') }} errorMsg={errors[`billingAddresses.${index}.landmark`]}/>
+                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'billingAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`billingAddresses.${index}.country`]} />
+                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'billingAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`billingAddresses.${index}.state`]} />
+                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'billingAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`billingAddresses.${index}.city`]} />
+                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'billingAddresses') }} errorMsg={errors[`billingAddresses.${index}.pincode`]} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'billingAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -261,12 +310,12 @@ function CreateCustomer() {
                                     return (
                                         <div className="grid grid-cols-4 gap-4 my-5" key={index}>
 
-                                            <MyInput value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.address} />
-                                            <MyInput value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.landmark}/>
+                                            <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.address} />
+                                            <MyInputCommon value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.landmark}/>
                                             <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'shippingAddresses')} placeholder={'Enter Country'} options={options} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.country} />
                                             <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'shippingAddresses')} placeholder={'Enter State'} options={state} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.state} />
                                             <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'shippingAddresses')} placeholder={'Enter City'} options={city} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.city} />
-                                            <MyInput value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.pincode} />
+                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'shippingAddresses') }} error={!ApiReducer?.apiJson?.shippingAddresses[index]?.pincode} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'shippingAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -287,14 +336,13 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        {console.log('ApiReducer?.apiJson?.kycDetails?.pancardNo' ,ApiReducer?.apiJson?.kycDetails?.pancardNo)}
-                        <MyInput parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
+                        <MyInputCommon parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
                     </div>
                     <div>
                         <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.pancard} uppercase fileType={"application/pdf"}/>
                     </div>
                     <div>
-                        <MyInput parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                        <MyInputCommon parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
                     </div>
                     <div>
                         <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.gst} uppercase />
