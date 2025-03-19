@@ -18,6 +18,7 @@ function MySelect({
   keyName,
   placeholder,
   errorMsg,
+  validate,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -66,8 +67,14 @@ function MySelect({
     const newJson = ApiReducer.apiJson;
     if (parent) {
       newJson[parent] = { ...newJson[parent], [name]: value };
+      if(validate){
+        validate(`${parent}.${name}`, value);
+      }
     } else {
       newJson[name] = value;
+      if(validate){
+        validate(`${name}`, value);
+      }
     }
     dispatch(setDataAction(newJson, SET_API_JSON));
   };

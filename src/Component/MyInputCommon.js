@@ -13,12 +13,18 @@ function MyInput({ placeholder, name, disable, title, error, important, uppercas
         const newJson = ApiReducer.apiJson;
         if (parent) {
             newJson[parent] = { ...newJson[parent], [name]: value };
+
+            if(validate){
+                validate(`${parent}.${name}`, value);
+            }
         } else {
             newJson[name] = value;
+
+            if(validate){
+                validate(`${name}`, value);
+            }
         }
-        if(validate){
-            validate(`${parent}.${name}`, value);
-        }
+        
         dispatch(setDataAction(newJson, SET_API_JSON));
     };
 
