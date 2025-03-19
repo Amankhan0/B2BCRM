@@ -36,7 +36,7 @@ function CreateCustomer() {
         customerDetails: Yup.object().shape({
           designation: Yup.string().required('Designation is required'),
           name: Yup.string().required('Name is required'),
-          phone: Yup.string().min(10, 'Phone no. should be of 10 digit').max(10, 'Phone no. should be of 10 digit').required('Phone is required'),
+          contact: Yup.string().min(10, 'Phone no. should be of 10 digit').max(10, 'Phone no. should be of 10 digit').required('Phone is required'),
           email: Yup.string().email('Invalid email').required('Email is required'),
         }),
         billingAddresses: Yup.array().of(
@@ -220,17 +220,17 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany} parent={'companyDetails'} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions}  
+                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.companyDetails?.natureOfCompany}  name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions}  
                         validate={validateField} errorMsg={errors[`companyDetails.natureOfCompany`]}/>
                     </div>
                     <div>
-                        <MyInputCommon parent={'companyDetails'} name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyDetails.companyName`]} />
+                        <MyInputCommon name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyDetails.companyName`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'companyDetails'} name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companyDetails.companySize`]} />
+                        <MyInputCommon name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companyDetails.companySize`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'companyDetails'} name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`companyDetails.industry`]} />
+                        <MyInputCommon  name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`companyDetails.industry`]} />
                     </div>
                 </div>
             </div>
@@ -240,16 +240,16 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon parent={'customerDetails'} name='designation' title={'Designation'} placeholder={'Enter Designation'} validate={validateField} errorMsg={errors[`customerDetails.designation`]} />
+                        <MyInputCommon  name='designation' title={'Designation'} placeholder={'Enter Designation'} validate={validateField} errorMsg={errors[`customerDetails.designation`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'customerDetails'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} validate={validateField} errorMsg={errors[`customerDetails.name`]} />
+                        <MyInputCommon  name='name' title={'Full Name'} placeholder={'Enter Full Name'} validate={validateField} errorMsg={errors[`customerDetails.name`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'customerDetails'} name='phone' title={'Contact Number'} placeholder={'Enter Contact Number'} validate={validateField} errorMsg={errors[`customerDetails.phone`]} />
+                        <MyInputCommon  name='contact' title={'Contact Number'} placeholder={'Enter Contact Number'} validate={validateField} errorMsg={errors[`customerDetails.contact`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'customerDetails'} name='email' title={'Email Address'} placeholder={'Enter Email Address'} validate={validateField} errorMsg={errors[`customerDetails.email`]} />
+                        <MyInputCommon  name='email' title={'Email Address'} placeholder={'Enter Email Address'} validate={validateField} errorMsg={errors[`customerDetails.email`]} />
                     </div>
                 </div>
             </div>
@@ -336,13 +336,13 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon parent={'kycDetails'} name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
+                        <MyInputCommon  name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} error={!ApiReducer?.apiJson?.kycDetails?.pancardNo} />
                     </div>
                     <div>
                         <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.pancard} uppercase fileType={"application/pdf"}/>
                     </div>
                     <div>
-                        <MyInputCommon parent={'kycDetails'} name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
+                        <MyInputCommon  name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} error={!ApiReducer?.apiJson?.kycDetails?.gstNo} />
                     </div>
                     <div>
                         <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.gst} uppercase />

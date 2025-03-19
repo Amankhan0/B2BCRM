@@ -15,6 +15,7 @@ import LeadReducer from './Store/Reducer/LeadReducer';
 import OrderReducer from './Store/Reducer/OrderReducer';
 import CustomerReducer from './Store/Reducer/CustomerReducer'
 import SupplierReducer from './Store/Reducer/SupplierReducer';
+import ProductReducer from './Store/Reducer/ProductReducer';
 
 const rootReducer = combineReducers({
   SidebarReducer: SidebarReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   OrderReducer:OrderReducer,
   CustomerReducer:CustomerReducer,
   SupplierReducer:SupplierReducer,
+  ProductReducer:ProductReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))

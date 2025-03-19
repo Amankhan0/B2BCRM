@@ -1,7 +1,7 @@
 // development
 export const Protocol = 'http://'
 // export const IP = '10.0.0.237'
-export const IP = '192.168.1.29:9090' //local
+export const IP = '192.168.1.21:9090' //local
 // export const BASEURL = Protocol + IP
 
 // production
