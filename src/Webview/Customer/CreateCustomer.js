@@ -113,21 +113,19 @@ function CreateCustomer() {
             var error = !ObjIsEmpty(res)
             console.log('apiJson', ApiReducer?.apiJson);
             console.log('ApiReducer?.apiJson Error', error);
-            if (error) {
+            if (error && Object.keys(errors)?.length > 0) {
                 dispatch(setDataAction(res, SET_API_JSON_ERROR))
             } else {
+                ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
+                    console.log('res', res);
 
-
-                // ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
-                //     console.log('res', res);
-
-                //     if (res.status === 200) {
-                //         toast.success('Lead created successfully')
-                //         window.location.pathname = '/lead'
-                //     } else {
-                //         toast.success(res.message)
-                //     }
-                // })
+                    if (res.status === 200) {
+                        toast.success('Lead created successfully')
+                        window.location.pathname = '/lead'
+                    } else {
+                        toast.success(res.message)
+                    }
+                })
             }
         })
     }
