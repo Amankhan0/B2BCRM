@@ -23,18 +23,21 @@ function CreateProduct() {
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
 
     const validationSchema = object().shape({
-        name: string().required('Name is required'),
+        productName: string().required('Product name is required'),
         make: string().required('Make is required'),
-        hsnNo: string().required('HSN number is required'),
+        hsnNo: string()
+        .required('HSN number is required')
+          .matches(/^[0-9]{4,8}$/, 'Invalid HSN number format. Must be 4 to 8 digits.'),
         variants: array().of(
           object().shape({
-            name: string().required('Variant name is required'),
-            price: string().required('Price is required'), // Consider using number() if it's a numeric price
-            unit: string().required('Unit is required'),
-            minQty: string().required('Minimum quantity is required'), // Consider using number() if it's a number
-            gst: string().required('GST is required'), // Consider number() or a specific format if needed.
+            variantName: string().required('Variant name is required'),
+            variantUnit: string().required('Variant unit is required'),
+            price: string().required('Price is required'), // Consider using .number() if it's a number
+            priceUnit: string().required('Price unit is required'),
+            minQty: string().required('Minimum quantity is required'), // Consider .number()
+            gst: string().required('GST is required'), // Consider a specific format if needed
           })
-        ),
+        ).required('At least one variant is required'),
       });
 
     const { errors, validateJson, validateField } = useYupValidation(validationSchema);
@@ -54,7 +57,7 @@ function CreateProduct() {
         }
     }, [])
 
-      console.log('errors', errors);
+    console.log('errors', errors);
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
         validateJson(ApiReducer?.apiJson);
@@ -172,13 +175,13 @@ function CreateProduct() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon name={'name'} title={'Product Name'} placeholder={'Enter Product Name'} validate={validateField} errorMsg={errors[`name`]} />
+                        <MyInputCommon name={'productName'} title={'Product Name'} placeholder={'Enter Product Name'} validate={validateField} errorMsg={errors[`productName`]} />
                     </div>
                     <div>
                         <MyInputCommon name={'make'} title={'Make'} placeholder={'Enter Make'} validate={validateField} errorMsg={errors[`make`]} />
                     </div>
                     <div>
-                        <MyInputCommon name={'hsnNo'} title={'HSN No.'} placeholder={'Enter HSN No.'} validate={validateField} errorMsg={errors[`hsnNo`]}  />
+                        <MyInputCommon name={'hsnNo'} title={'HSN No.'} placeholder={'Enter HSN No.'} validate={validateField} errorMsg={errors[`hsnNo`]} />
                     </div>
                 </div>
             </div>
@@ -187,9 +190,9 @@ function CreateProduct() {
                     <p className='text-white p-2'>Product Gallery</p>
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
-                <div>
-                    <MyFileUpload name={'product images'} title={'Upload Product Images'} error={!ApiReducer?.apiJson?.pancard} uppercase />
-                </div>
+                    <div>
+                        <MyFileUpload name={'productImages'} title={'Upload Product Image'} error={!ApiReducer?.apiJson?.productImages} fileType={'array'} uppercase />
+                    </div>
                 </div>
             </div>
             <div className='bg-white mt-5'>
@@ -209,16 +212,20 @@ function CreateProduct() {
                                 ApiReducer?.apiJson?.variants?.map?.((ele, index) => {
                                     return (
                                         <div className="grid grid-cols-4 gap-4 my-5" key={index}>
-                                            <MyInputCommon value={ele.name} title={'Variant Name'} name={'name'} placeholder={'Enter Variant Name'} onChange={(e) => { onChange(e.target.value, index, 'name', 'variants') }} errorMsg={errors[`variants[${index}].name`]}/>
-                                            <MyInputCommon value={ele.price} title={'Price'} name={'price'} placeholder={'Enter Price'} onChange={(e) => { onChange(e.target.value, index, 'price', 'variants') }} errorMsg={errors[`variants[${index}].price`]}/>
-                                            <MyInputCommon value={ele.unit} title={'Unit'} name={'unit'} placeholder={'Enter Unit'} onChange={(e) => { onChange(e.target.value, index, 'unit', 'variants') }} errorMsg={errors[`variants[${index}].unit`]} />
+                                            <span style={{ display: 'flex' }}>
+                                                <MyInputCommon className={'rounded-r-none'} value={ele.name} title={'Variant Name'} name={'variantName'} placeholder={'Enter Variant Name'} onChange={(e) => { onChange(e.target.value, index, 'variantName', 'variants') }} errorMsg={errors[`variants[${index}].variantName`]} />
+                                                <MyInputCommon className={'rounded-l-none'} value={ele.name} title={'Variant Unit'} name={'variantUnit'} placeholder={'Enter Variant Unit'} onChange={(e) => { onChange(e.target.value, index, 'variantUnit', 'variants') }} errorMsg={errors[`variants[${index}].variantUnit`]} />
+                                            </span>
+                                            <span style={{ display: 'flex' }}>
+                                                <MyInputCommon className={'rounded-r-none'} value={ele.price} title={'Price'} name={'price'} placeholder={'Enter Price'} onChange={(e) => { onChange(e.target.value, index, 'price', 'variants') }} errorMsg={errors[`variants[${index}].price`]} />
+                                                <MyInputCommon className={'rounded-l-none'} value={ele.priceUnit} title={'Price Unit'} name={'priceUnit'} placeholder={'Enter Unit'} onChange={(e) => { onChange(e.target.value, index, 'priceUnit', 'variants') }} errorMsg={errors[`variants[${index}].priceUnit`]} />
+                                            </span>
                                             <MyInputCommon value={ele.minQty} title={'Min. Qty'} name={'minQty'} placeholder={'Enter Minimum Qunatity'} onChange={(e) => { onChange(e.target.value, index, 'minQty', 'variants') }} errorMsg={errors[`variants[${index}].minQty`]} />
                                             <MyInputCommon value={ele.gst} title={'GST (%)'} name={'gst'} placeholder={'Enter GST'} onChange={(e) => { onChange(e.target.value, index, 'gst', 'variants') }} errorMsg={errors[`variants[${index}].gst`]} />
-
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'variants')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
-                                    }
+
                                         </div>
                                     )
                                 })

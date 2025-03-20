@@ -165,7 +165,7 @@ export const CustomerValidationSchema = Yup.object().shape({
       country: Yup.string().required('Billing country is required'),
       state: Yup.string().required('Billing state is required'),
       city: Yup.string().required('Billing city is required'),
-      pincode: Yup.string()
+      pinCode: Yup.string()
         .required('Billing pincode is required')
         .matches(/^[1-9][0-9]{5}$/, 'Billing pincode must be 6 digits'),
     })
@@ -177,7 +177,7 @@ export const CustomerValidationSchema = Yup.object().shape({
       country: Yup.string().required('Shipping country is required'),
       state: Yup.string().required('Shipping state is required'),
       city: Yup.string().required('Shipping city is required'),
-      pincode: Yup.string()
+      pinCode: Yup.string()
         .required('Shipping pincode is required')
         .matches(/^[1-9][0-9]{5}$/, 'Shipping pincode must be 6 digits'),
     })
@@ -188,12 +188,13 @@ export const CustomerValidationSchema = Yup.object().shape({
   gstNo: Yup.string()
     .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
     .required('GST number is required'),
-  gst: Yup.object().shape({
-    title: Yup.string().required('GST title is required'),
-    url: Yup.string().required('GST URL is required'),
-  }),
-  pancard: Yup.object().shape({
+  gst: Yup.array().of(
+    Yup.object().shape({
+      title: Yup.string().required('GST title is required'),
+      url: Yup.string().required('GST URL is required'),
+    })),
+  pancard: Yup.array().of(Yup.object().shape({
     title: Yup.string().required('PAN card title is required'),
     url: Yup.string().required('PAN card URL is required'),
-  }),
+  })),
 });

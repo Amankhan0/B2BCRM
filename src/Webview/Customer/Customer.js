@@ -7,7 +7,7 @@ import { searchCustomer } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import LeadProductsView from '../Lead/LeadProductsView';
 import CustomerBillingAddressView from './CustomerBillingAddressView';
@@ -18,6 +18,8 @@ function Customer() {
 
   const PaginationReducer = useSelector(state => state.PaginationReducer)
   const customerReducer = useSelector(state => state.CustomerReducer)
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch()
 
@@ -65,7 +67,7 @@ function Customer() {
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-customer/${ele?._id}`) }}>
                   {editIcon}
                 </div>
                 <div className='cursor-pointer' style={{ color: Colors.RED }}>

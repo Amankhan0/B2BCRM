@@ -145,16 +145,16 @@ function CreateCustomer() {
                 dispatch(setDataAction(res, SET_API_JSON_ERROR))
             } else {
 
-                ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
-                    console.log('res', res);
+                // ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
+                //     console.log('res', res);
 
-                    if (res.status === 200) {
-                        toast.success('Lead created successfully')
-                        window.location.pathname = '/lead'
-                    } else {
-                        toast.success(res.message)
-                    }
-                })
+                //     if (res.status === 200) {
+                //         toast.success('Lead created successfully')
+                //         window.location.pathname = '/lead'
+                //     } else {
+                //         toast.success(res.message)
+                //     }
+                // })
             }
         })
     }
@@ -308,7 +308,6 @@ function CreateCustomer() {
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'gstAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
-                                    }
                                         </div>
                                     )
                                 })
@@ -348,7 +347,6 @@ function CreateCustomer() {
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'warehouseAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
-                                    }
                                         </div>
                                     )
                                 })
@@ -378,7 +376,7 @@ function CreateCustomer() {
                         <MyInputCommon parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} validate={validateField} errorMsg={errors[`bankDetails.accountNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.kycDetails?.cancelledCheque} uppercase />
+                        <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.kycDetails?.cancelledCheque} fileType={'array'} uppercase />
                     </div>
                 </div>
             </div>
@@ -391,22 +389,22 @@ function CreateCustomer() {
                         <MyInputCommon name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} validate={validateField} errorMsg={errors[`pancardNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.kycDetails?.pancard} uppercase />
+                        <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.pancard} fileType={'array'} uppercase />
                     </div>
                     <div>
                         <MyInputCommon name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} validate={validateField} errorMsg={errors[`gstNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.kycDetails?.gst} uppercase />
+                        <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.gst} fileType={'array'} uppercase />
                     </div>
                     <div>
                         <MyInputCommon name={'msmeNo'} title={'MSME No.'} placeholder={'Enter MSME No.'} validate={validateField} errorMsg={errors[`msmeNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'msme'} title={'Upload MSME Doc'} error={!ApiReducer?.apiJson?.kycDetails?.msme} uppercase />
+                        <MyFileUpload name={'msme'} title={'Upload MSME Doc'} error={!ApiReducer?.apiJson?.msme} fileType={'array'} uppercase />
                     </div>
                     <div>
-                        <MyFileUpload name={'tdstcs'} title={'Upload TDS & TCS Doc'} error={!ApiReducer?.apiJson?.kycDetails?.tdstcs} uppercase />
+                        <MyFileUpload name={'tdstcs'} title={'Upload TDS & TCS Doc'} error={!ApiReducer?.apiJson?.tdstcs} fileType={'array'} uppercase />
                     </div>
                 </div>
             </div>

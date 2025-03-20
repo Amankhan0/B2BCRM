@@ -1,12 +1,12 @@
 // development
-export const Protocol = 'http://'
+// export const Protocol = 'http://'
 // export const IP = '10.0.0.237'
-export const IP = '192.168.1.21:9090' //local
+// export const IP = '192.168.1.21:9090' //local
 // export const BASEURL = Protocol + IP
 
 // production
-// export const Protocol = 'https://'
-// export const IP = 'api-crm.headsupb2b.com'
+export const Protocol = 'https://'
+export const IP = 'api-crm.headsupb2b.com'
 
 export const BASEURL = Protocol + IP
 
