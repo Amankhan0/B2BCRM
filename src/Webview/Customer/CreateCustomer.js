@@ -14,7 +14,7 @@ import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
 import MyFileUpload from '../../Component/MyFileUpload';
-import * as Yup from 'yup';
+import { CustomerValidationSchema } from './CustomerValidation';
 import useYupValidation from '../../Hooks/useYupValidation';
 
 function CreateCustomer() {
@@ -26,54 +26,7 @@ function CreateCustomer() {
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
 
-    const validationSchema = Yup.object().shape({
-        natureOfCompany: Yup.string().required('Nature of company is required'),
-        companyName: Yup.string().required('Company name is required'),
-        companySize: Yup.string().required('Company size is required'),
-        industry: Yup.string().required('Industry is required'),
-        designation: Yup.string().required('Designation is required'),
-        name: Yup.string().required('Name is required'),
-        contact: Yup.string()
-          .matches(/^[0-9]{10}$/, 'Contact must be 10 digits')
-          .required('Contact is required'),
-        email: Yup.string().email('Invalid email format').required('Email is required'),
-        billingAddresses: Yup.array().of(
-          Yup.object().shape({
-            address: Yup.string().required('Billing address is required'),
-            landmark: Yup.string().required('Billing landmark is required'),
-            country: Yup.string().required('Billing country is required'),
-            state: Yup.string().required('Billing state is required'),
-            city: Yup.string().required('Billing city is required'),
-            pincode: Yup.string()
-              .required('Billing pincode is required')
-              .matches(/^[1-9][0-9]{5}$/, 'Billing pincode must be 6 digits'),
-          })
-        ),
-        shippingAddresses: Yup.array().of(
-          Yup.object().shape({
-            address: Yup.string().required('Shipping address is required'),
-            landmark: Yup.string().required('Shipping landmark is required'),
-            country: Yup.string().required('Shipping country is required'),
-            state: Yup.string().required('Shipping state is required'),
-            city: Yup.string().required('Shipping city is required'),
-            pincode: Yup.string()
-              .required('Shipping pincode is required')
-              .matches(/^[1-9][0-9]{5}$/, 'Shipping pincode must be 6 digits'),
-          })
-        ),
-        pancardNo: Yup.string().required('PAN card number is required'),
-        gstNo: Yup.string().required('GST number is required'),
-        gst: Yup.object().shape({
-          title: Yup.string().required('GST title is required'),
-          url: Yup.string().required('GST URL is required'),
-        }),
-        pancard: Yup.object().shape({
-          title: Yup.string().required('PAN card title is required'),
-          url: Yup.string().required('PAN card URL is required'),
-        }),
-      });
-
-    const { errors, validateJson, validateField } = useYupValidation(validationSchema);
+    const { errors, validateJson, validateField } = useYupValidation(CustomerValidationSchema);
 
 
     const dispatch = useDispatch()

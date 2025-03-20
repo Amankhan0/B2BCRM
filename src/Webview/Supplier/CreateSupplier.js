@@ -36,66 +36,72 @@ function CreateCustomer() {
         designation: Yup.string().required('Designation is required'),
         name: Yup.string().required('Name is required'),
         contact: Yup.string()
-          .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
-          .required('Phone number is required'),
+            .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+            .required('Phone number is required'),
         email: Yup.string().email('Invalid email format').required('Email is required'),
         gstAddresses: Yup.array().of(
-          Yup.object().shape({
-            address: Yup.string().required('GST address is required'),
-            landmark: Yup.string().required('GST landmark is required'),
-            country: Yup.string().required('GST country is required'),
-            state: Yup.string().required('GST state is required'),
-            city: Yup.string().required('GST city is required'),
-            pincode: Yup.string()
-              .matches(/^[1-9][0-9]{5}$/, 'GST pincode must be 6 digits')
-              .required('GST pincode is required'),
-          })
+            Yup.object().shape({
+                address: Yup.string().required('GST address is required'),
+                landmark: Yup.string().required('GST landmark is required'),
+                country: Yup.string().required('GST country is required'),
+                state: Yup.string().required('GST state is required'),
+                city: Yup.string().required('GST city is required'),
+                pincode: Yup.string()
+                    .matches(/^[1-9][0-9]{5}$/, 'GST pincode must be 6 digits')
+                    .required('GST pincode is required'),
+            })
         ),
         warehouseAddresses: Yup.array().of(
-          Yup.object().shape({
-            address: Yup.string().required('Warehouse address is required'),
-            landmark: Yup.string().required('Warehouse landmark is required'),
-            country: Yup.string().required('Warehouse country is required'),
-            state: Yup.string().required('Warehouse state is required'),
-            city: Yup.string().required('Warehouse city is required'),
-            pincode: Yup.string()
-              .matches(/^[1-9][0-9]{5}$/, 'Warehouse pincode must be 6 digits')
-              .required('Warehouse pincode is required'),
-          })
+            Yup.object().shape({
+                address: Yup.string().required('Warehouse address is required'),
+                landmark: Yup.string().required('Warehouse landmark is required'),
+                country: Yup.string().required('Warehouse country is required'),
+                state: Yup.string().required('Warehouse state is required'),
+                city: Yup.string().required('Warehouse city is required'),
+                pincode: Yup.string()
+                    .matches(/^[1-9][0-9]{5}$/, 'Warehouse pincode must be 6 digits')
+                    .required('Warehouse pincode is required'),
+            })
         ),
         bankDetails: Yup.object().shape({
-          beneficiaryName: Yup.string().required('Beneficiary name is required'),
-          bankName: Yup.string().required('Bank name is required'),
-          branchName: Yup.string().required('Branch name is required'),
-          ifscCode: Yup.string().required('IFSC code is required'),
-          accountNo: Yup.string().required('Account number is required'),
+            beneficiaryName: Yup.string().required('Beneficiary name is required'),
+            bankName: Yup.string().required('Bank name is required'),
+            branchName: Yup.string().required('Branch name is required'),
+            ifscCode: Yup.string().required('IFSC code is required'),
+            accountNo: Yup.string().required('Account number is required'),
         }),
         cancelledCheque: Yup.object().shape({
-          title: Yup.string().required('Cancelled cheque title is required'),
-          url: Yup.string().required('Cancelled cheque URL is required'),
+            title: Yup.string().required('Cancelled cheque title is required'),
+            url: Yup.string().required('Cancelled cheque URL is required'),
         }),
-        pancardNo: Yup.string().required('PAN card number is required'),
-        gstNo: Yup.string().required('GST number is required'),
+        pancardNo: Yup.string()
+            .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
+            .required('PAN card number is required'),
+        gstNo: Yup.string()
+            .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
+            .required('GST number is required'),
         pancard: Yup.object().shape({
-          title: Yup.string().required('PAN card title is required'),
-          url: Yup.string().required('PAN card URL is required'),
+            title: Yup.string().required('PAN card title is required'),
+            url: Yup.string().required('PAN card URL is required'),
         }),
         gst: Yup.object().shape({
-          title: Yup.string().required('GST title is required'),
-          url: Yup.string().required('GST URL is required'),
+            title: Yup.string().required('GST title is required'),
+            url: Yup.string().required('GST URL is required'),
         }),
-        msmeNo: Yup.string().required('MSME number is required'),
+        msmeNo: Yup.string()
+            .matches(/^UDYAM-[A-Z0-9]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
+            .required('MSME number is required'),
         msme: Yup.object().shape({
-          title: Yup.string().required('MSME title is required'),
-          url: Yup.string().required('MSME URL is required'),
+            title: Yup.string().required('MSME title is required'),
+            url: Yup.string().required('MSME URL is required'),
         }),
         tdstcs: Yup.object().shape({
-          title: Yup.string().required('TDS/TCS title is required'),
-          url: Yup.string().required('TDS/TCS URL is required'),
+            title: Yup.string().required('TDS/TCS title is required'),
+            url: Yup.string().required('TDS/TCS URL is required'),
         }),
-      });
+    });
 
-      const {errors, validateField, validateJson} = useYupValidation(validationSchema);
+    const { errors, validateField, validateJson } = useYupValidation(validationSchema);
 
     const natureOfCompanyOptions = [
         { label: "Sole Proprietorship", value: "sole_proprietorship" },
@@ -110,7 +116,7 @@ function CreateCustomer() {
         { label: "Public Limited Company", value: "public_limited_company" },
         { label: "Private Limited Company", value: "private_limited_company" },
         { label: "Other", value: "other" },
-      ];
+    ];
 
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
@@ -241,16 +247,16 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon  name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyName`]} />
+                        <MyInputCommon name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyName`]} />
                     </div>
                     <div>
-                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.natureOfCompany}  name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} validate={validateField} errorMsg={errors[`natureOfCompany`]} />
+                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.natureOfCompany} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} validate={validateField} errorMsg={errors[`natureOfCompany`]} />
                     </div>
                     <div>
-                        <MyInputCommon  name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companySize`]} />
+                        <MyInputCommon name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companySize`]} />
                     </div>
                     <div>
-                        <MyInputCommon  name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`industry`]} />
+                        <MyInputCommon name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`industry`]} />
                     </div>
                 </div>
             </div>
@@ -260,16 +266,16 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon  name='designation' title={'Designation'} placeholder={'Enter Designation'} validate={validateField} errorMsg={errors[`designation`]} />
+                        <MyInputCommon name='designation' title={'Designation'} placeholder={'Enter Designation'} validate={validateField} errorMsg={errors[`designation`]} />
                     </div>
                     <div>
-                        <MyInputCommon  name='name' title={'Full Name'} placeholder={'Enter Full Name'} validate={validateField} errorMsg={errors[`name`]} />
+                        <MyInputCommon name='name' title={'Full Name'} placeholder={'Enter Full Name'} validate={validateField} errorMsg={errors[`name`]} />
                     </div>
                     <div>
-                        <MyInputCommon  name='contact' title={'Contact Number'} placeholder={'Enter Contact Number'} validate={validateField} errorMsg={errors[`contact`]} />
+                        <MyInputCommon name='contact' title={'Contact Number'} placeholder={'Enter Contact Number'} validate={validateField} errorMsg={errors[`contact`]} />
                     </div>
                     <div>
-                        <MyInputCommon  name='email' title={'Email Address'} placeholder={'Enter Email Address'} validate={validateField} errorMsg={errors[`email`]} />
+                        <MyInputCommon name='email' title={'Email Address'} placeholder={'Enter Email Address'} validate={validateField} errorMsg={errors[`email`]} />
                     </div>
                 </div>
             </div>
@@ -292,12 +298,12 @@ function CreateCustomer() {
                                         <div className="grid grid-cols-4 gap-4 my-5" key={index}>
 
 
-                                            <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].address`]}/>
+                                            <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].address`]} />
                                             <MyInputCommon value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].landmark`]} />
                                             <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'gstAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`gstAddresses[${index}].country`]} />
                                             <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'gstAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`gstAddresses[${index}].state`]} />
                                             <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'gstAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`gstAddresses[${index}].city`]} />
-                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'gstAddresses') }}  errorMsg={errors[`gstAddresses[${index}].pincode`]}/>
+                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].pincode`]} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'gstAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -366,10 +372,10 @@ function CreateCustomer() {
                         <MyInputCommon parent={'bankDetails'} name='branchName' title={'Branch Name'} placeholder={'Enter Branch Name'} validate={validateField} errorMsg={errors[`bankDetails.branchName`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'bankDetails'} name='ifscCode' title={'IFSC Code'} placeholder={'Enter IFSC Code'} validate={validateField} errorMsg={errors[`bankDetails.ifscCode`]}/>
+                        <MyInputCommon parent={'bankDetails'} name='ifscCode' title={'IFSC Code'} placeholder={'Enter IFSC Code'} validate={validateField} errorMsg={errors[`bankDetails.ifscCode`]} />
                     </div>
                     <div>
-                        <MyInputCommon parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} validate={validateField} errorMsg={errors[`bankDetails.accountNo`]}/>
+                        <MyInputCommon parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} validate={validateField} errorMsg={errors[`bankDetails.accountNo`]} />
                     </div>
                     <div>
                         <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.kycDetails?.cancelledCheque} uppercase />
@@ -382,19 +388,19 @@ function CreateCustomer() {
                 </div>
                 <div className='grid grid-cols-4 gap-4 p-5'>
                     <div>
-                        <MyInputCommon  name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} validate={validateField} errorMsg={errors[`pancardNo`]}/>
+                        <MyInputCommon name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} validate={validateField} errorMsg={errors[`pancardNo`]} />
                     </div>
                     <div>
                         <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.kycDetails?.pancard} uppercase />
                     </div>
                     <div>
-                        <MyInputCommon  name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} validate={validateField} errorMsg={errors[`gstNo`]} />
+                        <MyInputCommon name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} validate={validateField} errorMsg={errors[`gstNo`]} />
                     </div>
                     <div>
                         <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.kycDetails?.gst} uppercase />
                     </div>
                     <div>
-                        <MyInputCommon  name={'msmeNo'} title={'MSME No.'} placeholder={'Enter MSME No.'} validate={validateField} errorMsg={errors[`msmeNo`]} />
+                        <MyInputCommon name={'msmeNo'} title={'MSME No.'} placeholder={'Enter MSME No.'} validate={validateField} errorMsg={errors[`msmeNo`]} />
                     </div>
                     <div>
                         <MyFileUpload name={'msme'} title={'Upload MSME Doc'} error={!ApiReducer?.apiJson?.kycDetails?.msme} uppercase />

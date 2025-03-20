@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchCustomer, searchLead } from '../../Constants/Constants';
+import { searchCustomer } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
