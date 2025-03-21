@@ -67,9 +67,8 @@ function CreateCustomer() {
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
         validateJson(ApiReducer?.apiJson).then(res => {
-            var error = !ObjIsEmpty(res)
             console.log('apiJson', ApiReducer?.apiJson);
-            console.log('ApiReducer?.apiJson Error', error);
+            console.log('ApiReducer?.apiJson Error', errors);
             if (res?.inner) {
                 dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
             } else {

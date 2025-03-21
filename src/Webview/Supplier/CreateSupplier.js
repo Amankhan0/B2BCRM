@@ -65,48 +65,51 @@ function CreateCustomer() {
                     .required('Warehouse pincode is required'),
             })
         ).min(1, 'At least one warehouse address is required').required('At least one warehouse address is required'),
-        bankDetails: Yup.array().of(
+        bankDetails: Yup.array().of(  // Changed to array().of() to handle the array
             Yup.object().shape({
                 beneficiaryName: Yup.string().required('Beneficiary name is required'),
                 bankName: Yup.string().required('Bank name is required'),
                 branchName: Yup.string().required('Branch name is required'),
                 ifscCode: Yup.string().required('IFSC code is required'),
                 accountNo: Yup.string().required('Account number is required'),
-                cancelledCheque: Yup.object().shape({
-                        title: Yup.string(),
-                        url: Yup.string(),
-                    }).required('Cancelled cheque is required'),
-            })).min(1, 'At least one Bank Detail is required').required('At least one Bank Detail is required'),
+                cancelledCheque: Yup.object().required('Cancelled Cheque is Required'),
+            })
+        ).min(1, 'At least one bank detail is required').required('At least one bank detail is required'),
         pancardNo: Yup.string()
             .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
             .required('PAN card number is required'),
+        pancard: Yup.array().of(
+            Yup.object().shape({
+                title: Yup.string(),
+                url: Yup.string(),
+            })
+        ).required('PAN card document is required'),
         gstNo: Yup.string()
             .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
             .required('GST number is required'),
-        pancard: Yup.array().of(
-            Yup.object().shape({
-                title: Yup.string().required('PAN card title is required'),
-                url: Yup.string().required('PAN card URL is required'),
-            })).min(1, 'At least one PAN card document is required').required('At least one PAN card document is required'),
         gst: Yup.array().of(
             Yup.object().shape({
-                title: Yup.string().required('GST title is required'),
-                url: Yup.string().required('GST URL is required'),
-            })),
+                title: Yup.string(),
+                url: Yup.string(),
+            })
+        ).required('GST document is required'),
         msmeNo: Yup.string()
             .matches(/^UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
             .required('MSME number is required'),
         msme: Yup.array().of(
             Yup.object().shape({
-                title: Yup.string().required('MSME title is required'),
-                url: Yup.string().required('MSME URL is required'),
-            })),
+                title: Yup.string(),
+                url: Yup.string(),
+            })
+        ).required('MSME document is required'),
         tdstcs: Yup.array().of(
             Yup.object().shape({
-                title: Yup.string().required('TDS/TCS is required'),
-                url: Yup.string().required('TDS/TCS URL is required'),
-            })).min(1, 'At least one TDS/TCS document is required').required('At least one TDS/TCS document is required'),
+                title: Yup.string(),
+                url: Yup.string(),
+            })
+        ).required('TDS/TCS document is required'),
     });
+    
 
 
     const { errors, validateField, validateJson } = useYupValidation(validationSchema);
