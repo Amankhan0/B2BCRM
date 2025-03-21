@@ -33,6 +33,7 @@ const PanelRoutes = () => {
           <Route path="/create-supplier" exact element={<CreateSupplier />} />
           <Route path="/product" exact element={<Product />} />
           <Route path="/create-product" exact element={<CreateProduct />} />
+          <Route path="/edit-product/:id" exact element={<CreateProduct />} />
         </Routes>
     </>
   );

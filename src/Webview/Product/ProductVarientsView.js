@@ -4,20 +4,18 @@ import { crossIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import DataTable from '../../Component/DataTable';
 
-function CustomerBillingAddressView({ addressesArr, title, onCloseClick }) {
+function ProductVarientsView({ addressesArr, title, onCloseClick }) {
 
-    const th = ['Address', 'Landmark', 'Country','State', 'City', 'Pin Code']
+    const th = ['Varient Name', 'price','Minimum Quantity', 'GST']
 
     let td;
     td = addressesArr.map((ele, i) => {
         return (
             <tr>
-                <td className='p-2 border text-black'>{ele?.address || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.landmark || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.country || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.state || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.city || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.pinCode || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.varientName + '_' + ele?.varientUnit || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.price + '_' + ele?.priceUnit|| '-'}</td>
+                <td className='p-2 border text-black'>{ele?.minQty || '-'}</td>
+                <td className='p-2 border text-black'>{ele?.gst || '-'}</td>
             </tr>
         )
     })
@@ -42,4 +40,4 @@ function CustomerBillingAddressView({ addressesArr, title, onCloseClick }) {
     )
 }
 
-export default CustomerBillingAddressView;
+export default ProductVarientsView;

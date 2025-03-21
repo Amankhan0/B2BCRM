@@ -104,19 +104,19 @@ function CreateCustomer() {
     const { errors, validateField, validateJson } = useYupValidation(validationSchema);
 
     const natureOfCompanyOptions = [
-        { label: "Sole Proprietorship", value: "sole_proprietorship" },
-        { label: "Partnership", value: "partnership" },
-        { label: "Limited Liability Company (LLC)", value: "llc" },
-        { label: "Corporation", value: "corporation" },
-        { label: "Non-Profit Organization", value: "non_profit" },
-        { label: "Cooperative", value: "cooperative" },
-        { label: "Joint Venture", value: "joint_venture" },
-        { label: "Subsidiary", value: "subsidiary" },
-        { label: "Franchise", value: "franchise" },
-        { label: "Public Limited Company", value: "public_limited_company" },
-        { label: "Private Limited Company", value: "private_limited_company" },
-        { label: "Other", value: "other" },
-    ];
+        { label: "Sole Proprietorship", value: "Sole Proprietorship" },
+        { label: "Partnership", value: "Partnership" },
+        { label: "Limited Liability Company (LLC)", value: "Limited Liability Company (LLC)" },
+        { label: "Corporation", value: "Corporation" },
+        { label: "Non-Profit Organization", value: "Non-Profit Organization" },
+        { label: "Cooperative", value: "Cooperative" },
+        { label: "Joint Venture", value: "Joint Venture" },
+        { label: "Subsidiary", value: "Subsidiary" },
+        { label: "Franchise", value: "Franchise" },
+        { label: "Public Limited Company", value: "Public Limited Company" },
+        { label: "Private Limited Company", value: "Private Limited Company" },
+        { label: "Other", value: "Other" },
+      ];
 
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries

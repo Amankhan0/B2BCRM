@@ -7,12 +7,12 @@ import { searchProduct } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import LeadProductsView from '../Lead/LeadProductsView';
-import CustomerBillingAddressView from './CustomerBillingAddressView';
 import CustomerShippingAddressView from './CustomerShippingAdddressView';
 import { setProduct } from '../../Store/Action/ProductAction';
+import ProductVarientsView from './ProductVarientsView';
 // import LeadProductsView from './LeadProductsView';
 
 function Product() {
@@ -20,9 +20,10 @@ function Product() {
   const PaginationReducer = useSelector(state => state.PaginationReducer)
   const productReducer = useSelector(state => state.ProductReducer)
 
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [showBillingAddress, setShowBillingAddress] = useState(null)
+  const [showVarients, setShowVarients] = useState(null)
   const [showShippingAddress, setShowShippingAddress] = useState(null)
 
   useLayoutEffect(() => {
@@ -46,7 +47,7 @@ function Product() {
     })
   }
 
-  const th = ['Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
+  const th = ['Product Name', 'Make', 'HSN No.', 'Varients', 'Action']
 
   let td;
   if (productReducer?.doc !== null) {
@@ -54,19 +55,15 @@ function Product() {
       td = productReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.name || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
+            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.productName || '-'} /></td>
+            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.make || '-'} /></td>
+            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.hsnNo || '-'} /></td>
             <td className='p-2 border text-black'>
-              <MyButton onClick={() => setShowBillingAddress(i)} icon={smallEyeIcon} title={'View Billing Addresses'} className={'h-7 text-xs w-max'} />
-            </td>
-            <td className='p-2 border text-black'>
-              <MyButton onClick={() => setShowShippingAddress(i)} icon={smallEyeIcon} title={'View Shipping Addresses'} className={'h-7 text-xs w-max'} />
+              <MyButton onClick={() => setShowVarients(i)} icon={smallEyeIcon} title={'View Varients'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-product/${ele?._id}`) }} >
                   {editIcon}
                 </div>
                 <div className='cursor-pointer' style={{ color: Colors.RED }}>
@@ -80,7 +77,7 @@ function Product() {
     }
   }
 
-  console.log('productReducer', productReducer?.doc?.content[showBillingAddress || 0]?.billingAddresses, showBillingAddress);
+  // console.log('productReducer', productReducer?.doc?.content[showVarients || 0]?.billingAddresses, showVarients);
 
 
   return (
@@ -97,12 +94,8 @@ function Product() {
         <DataTable th={th} td={td} totalPages={productReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {
-        showBillingAddress !== null &&
-        <CustomerBillingAddressView onCloseClick={() => setShowBillingAddress(null)} addressesArr={productReducer?.doc?.content[showBillingAddress || 0]?.billingAddresses} />
-      }
-      {
-        showShippingAddress !== null &&
-        <CustomerShippingAddressView onCloseClick={() => setShowShippingAddress(null)} addressesArr={productReducer?.doc?.content[showShippingAddress || 0]?.shippingAddresses} />
+        showVarients !== null &&
+        <ProductVarientsView onCloseClick={() => setShowVarients(null)} addressesArr={productReducer?.doc?.content[showVarients || 0]?.varients} />
       }
     </div>
   )

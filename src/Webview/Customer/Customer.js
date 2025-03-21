@@ -67,7 +67,7 @@ function Customer() {
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-customer/${ele?._id}`) }}>
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-customer/${ele?._id}`) }} >
                   {editIcon}
                 </div>
                 <div className='cursor-pointer' style={{ color: Colors.RED }}>
