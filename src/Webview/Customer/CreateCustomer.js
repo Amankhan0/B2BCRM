@@ -199,6 +199,9 @@ function CreateCustomer() {
                     <div>
                         <MyInputCommon name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`industry`]} />
                     </div>
+                    <div>
+                        <MyInputCommon name={'leadSource'} title={'Lead Source'} placeholder={'Enter Lead Source'} validate={validateField} errorMsg={errors[`leadSource`]} />
+                    </div>
                 </div>
             </div>
             <div className='bg-white mt-5'>

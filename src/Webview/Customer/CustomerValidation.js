@@ -154,6 +154,7 @@ export const CustomerValidationSchema = Yup.object().shape({
   industry: Yup.string().required('Industry is required'),
   designation: Yup.string().required('Designation is required'),
   name: Yup.string().required('Name is required'),
+  leadSource: Yup.string().required('Lead Source is required'),
   contact: Yup.string()
     .matches(/^[0-9]{10}$/, 'Contact must be 10 digits')
     .required('Contact is required'),

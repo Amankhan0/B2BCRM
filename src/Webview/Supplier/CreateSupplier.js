@@ -16,6 +16,7 @@ import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
 import MyFileUpload from '../../Component/MyFileUpload';
+import MyFileUploadCommon from '../../Component/MyFileUploadCommon';
 import * as Yup from 'yup';
 import useYupValidation from '../../Hooks/useYupValidation';
 import { useParams } from 'react-router-dom';
@@ -65,18 +66,18 @@ function CreateCustomer() {
             })
         ).min(1, 'At least one warehouse address is required').required('At least one warehouse address is required'),
         bankDetails: Yup.array().of(
-             Yup.object().shape({
-            beneficiaryName: Yup.string().required('Beneficiary name is required'),
-            bankName: Yup.string().required('Bank name is required'),
-            branchName: Yup.string().required('Branch name is required'),
-            ifscCode: Yup.string().required('IFSC code is required'),
-            accountNo: Yup.string().required('Account number is required'),
-        }).required('Bank details are required')).min(1, 'At least one Bank Detail is required').required('At least one Bank Detail is required'),
-        // cancelledCheque: Yup.array().of( 
-        //     Yup.object().shape({
-        //     title: Yup.string().required('Cancelled cheque title is required'),
-        //     url: Yup.string().required('Cancelled cheque URL is required'),
-        // })).min(1, 'At least one cancelled cheque is required').required('At least one cancelled cheque is required'),
+            Yup.object().shape({
+                beneficiaryName: Yup.string().required('Beneficiary name is required'),
+                bankName: Yup.string().required('Bank name is required'),
+                branchName: Yup.string().required('Branch name is required'),
+                ifscCode: Yup.string().required('IFSC code is required'),
+                accountNo: Yup.string().required('Account number is required'),
+                cancelledCheque:
+                    Yup.object().shape({
+                        title: Yup.string().required('Cancelled cheque title is required'),
+                        url: Yup.string().required('Cancelled cheque URL is required'),
+                    }),
+            })).min(1, 'At least one Bank Detail is required').required('At least one Bank Detail is required'),
         pancardNo: Yup.string()
             .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
             .required('PAN card number is required'),
@@ -84,28 +85,28 @@ function CreateCustomer() {
             .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
             .required('GST number is required'),
         pancard: Yup.array().of(
-             Yup.object().shape({
-            title: Yup.string().required('PAN card title is required'),
-            url: Yup.string().required('PAN card URL is required'),
-        })).min(1, 'At least one PAN card document is required').required('At least one PAN card document is required'),
+            Yup.object().shape({
+                title: Yup.string().required('PAN card title is required'),
+                url: Yup.string().required('PAN card URL is required'),
+            })).min(1, 'At least one PAN card document is required').required('At least one PAN card document is required'),
         gst: Yup.array().of(
-             Yup.object().shape({
-            title: Yup.string().required('GST title is required'),
-            url: Yup.string().required('GST URL is required'),
-        })),
+            Yup.object().shape({
+                title: Yup.string().required('GST title is required'),
+                url: Yup.string().required('GST URL is required'),
+            })),
         msmeNo: Yup.string()
             .matches(/^UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
             .required('MSME number is required'),
-        msme: Yup.array().of( 
+        msme: Yup.array().of(
             Yup.object().shape({
-            title: Yup.string().required('MSME title is required'),
-            url: Yup.string().required('MSME URL is required'),
-        })),
-        tdstcs: Yup.array().of( 
+                title: Yup.string().required('MSME title is required'),
+                url: Yup.string().required('MSME URL is required'),
+            })),
+        tdstcs: Yup.array().of(
             Yup.object().shape({
-            title: Yup.string().required('TDS/TCS is required'),
-            url: Yup.string().required('TDS/TCS URL is required'),
-        })).min(1, 'At least one TDS/TCS document is required').required('At least one TDS/TCS document is required'),
+                title: Yup.string().required('TDS/TCS is required'),
+                url: Yup.string().required('TDS/TCS URL is required'),
+            })).min(1, 'At least one TDS/TCS document is required').required('At least one TDS/TCS document is required'),
     });
 
 
@@ -124,7 +125,7 @@ function CreateCustomer() {
         { label: "Public Limited Company", value: "Public Limited Company" },
         { label: "Private Limited Company", value: "Private Limited Company" },
         { label: "Other", value: "Other" },
-      ];
+    ];
 
     const ApiReducer = useSelector(state => state.ApiReducer);
     const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
@@ -153,16 +154,16 @@ function CreateCustomer() {
     console.log(errors, 'errors');
 
     const onSubmit = () => {
-        dispatch(setDataAction({}, SET_API_JSON_ERROR))
-        validateJson(ApiReducer?.apiJson);
-        SupplierValidation(ApiReducer?.apiJson).then(res => {
+        // dispatch(setDataAction({}, SET_API_JSON_ERROR))
+        validateJson(ApiReducer?.apiJson).then(res => {
             // var error = !ObjIsEmpty(res)
+            console.log(res, ' inside on submit')
             console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
-            if (Object.keys(errors)?.length > 0) {
-                dispatch(setDataAction(res, SET_API_JSON_ERROR))
+            if (res?.inner) {
+                dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
             } else {
 
-                const api = params?.id ? updateSupplier:addSupplier;
+                const api = params?.id ? updateSupplier : addSupplier;
 
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
                     console.log('res', res);
@@ -190,7 +191,7 @@ function CreateCustomer() {
             }
         })
     }
-console.log(ApiReducer?.apiJson)
+    console.log(ApiReducer?.apiJson)
     const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
@@ -397,10 +398,14 @@ console.log(ApiReducer?.apiJson)
 
                                             <MyInputCommon value={ele?.beneficiaryName} title={'Beneficiary Name'} name={'beneficiaryName'} placeholder={'Enter Beneficiary Name'} onChange={(e) => { onChange(e.target.value, index, 'beneficiaryName', 'bankDetails') }} errorMsg={errors[`bankDetails[${index}].beneficiaryName`]} />
                                             <MyInputCommon value={ele?.bankName} title={'Bank Name'} name={'bankName'} placeholder={'Enter Bank Name'} onChange={(e) => { onChange(e.target.value, index, 'bankName', 'bankDetails') }} errorMsg={errors[`bankDetails[${index}].bankName`]} />
-                                            <MyInputCommon value={ele?.branchName} title={'Branch Name'} name={'branchName'} onChange={(e) => onChange(e.target.value, index,'branchName', 'bankDetails')} placeholder={'Enter Branch Name'} errorMsg={errors[`bankDetails[${index}].branchName`]} />
-                                            <MyInputCommon value={ele?.ifscCode} title={'IFSC Code'} name={'ifscCode'} onChange={(e) => onChange(e.target.value ,index, 'ifscCode', 'bankDetails')} placeholder={'Enter IFSC Code'} errorMsg={errors[`bankDetails[${index}].ifscCode`]} />
+                                            <MyInputCommon value={ele?.branchName} title={'Branch Name'} name={'branchName'} onChange={(e) => onChange(e.target.value, index, 'branchName', 'bankDetails')} placeholder={'Enter Branch Name'} errorMsg={errors[`bankDetails[${index}].branchName`]} />
+                                            <MyInputCommon value={ele?.ifscCode} title={'IFSC Code'} name={'ifscCode'} onChange={(e) => onChange(e.target.value, index, 'ifscCode', 'bankDetails')} placeholder={'Enter IFSC Code'} errorMsg={errors[`bankDetails[${index}].ifscCode`]} />
                                             <MyInputCommon value={ele?.accountNo} title={'Account No.'} name={'accountNo'} onChange={(e) => onChange(e.target.value, index, 'accountNo', 'bankDetails')} placeholder={'Enter Account Details'} errorMsg={errors[`bankDetails[${index}].accountNo`]} />
-                                            {/* <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.cancelledCheque} fileType={'array'} uppercase /> */}
+                                            <MyFileUploadCommon name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} onChange={(data) => {
+                                                const json = ApiReducer.apiJson;
+                                                json['bankDetails'][index] = { ...json['bankDetails'][index], ...data }
+                                                setDataAction(json, SET_API_JSON);
+                                            }} uppercase />
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'bankDetails')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
                                             </div>
