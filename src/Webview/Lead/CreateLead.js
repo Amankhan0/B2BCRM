@@ -10,13 +10,15 @@ import MyButton from '../../Component/MyButton';
 import { LeadValidation } from './LeadValidation';
 import { ApiHit, ObjIsEmpty, updateProductId } from '../../utils';
 import toast from 'react-hot-toast';
-import { addLead, searchCustomer, selectClass } from '../../Constants/Constants';
+import { Active, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
+import { getAuthenticatedUser } from '../../Storage/Storage';
 
 function CreateLead() {
 
   const [decision, setDecision] = useState(false)
   const [customers, setCustomers] = useState(null)
   const [selectedCustomer, setSelectedCustomer] = useState(null)
+  const [loader, setLoader] = useState(null)
 
   const ApiReducer = useSelector(state => state.ApiReducer)
 
@@ -37,6 +39,7 @@ function CreateLead() {
   }, [])
 
   const onSubmit = () => {
+    setLoader(true)
     dispatch(setDataAction({}, SET_API_JSON_ERROR))
     LeadValidation(ApiReducer?.apiJson).then(res => {
       var error = !ObjIsEmpty(res)
@@ -44,14 +47,19 @@ function CreateLead() {
         dispatch(setDataAction(res, SET_API_JSON_ERROR))
       } else {
         var json = updateProductId(ApiReducer?.apiJson)
-        ApiHit(ApiReducer?.apiJson,addLead).then(res=>{
-          if(res.status === 200){
-            toast.success('Lead created successfully')
-            window.location.pathname = '/lead'
-          }else{
-            toast.error(res.message)
-          }
-        })
+        if (json) {
+          json.status = Active
+          json.user_id = getAuthenticatedUser().userId;          
+          ApiHit(json, addLead).then(res => {
+            setLoader(false)
+            if (res.status === 200) {
+              toast.success('Lead created successfully')
+              window.location.pathname = '/lead'
+            } else {
+              toast.error(res.message)
+            }
+          })
+        }
       }
     })
   }
@@ -69,33 +77,32 @@ function CreateLead() {
     })
   }
 
-  const onChangeCustomer = (value) =>{
-      var item = customers.find((ele,i)=>ele._id === value)
-      console.log('item',item);
-      
-      var oldJson = ApiReducer.apiJson
-      oldJson.customerDetails = {
-        name:item.name,
-        phone:item.contact,
-        email:item.email,
-        companyName:item.companyName,
-        billingAddress:item.billingAddresses,
-        pancardNo:item.pancardNo,
-        shippingAddress:item.shippingAddresses,
-        isDecisionTaker: true
-      }
-      setSelectedCustomer(item)
-      dispatch(setDataAction(oldJson,SET_API_JSON))      
+  const onChangeCustomer = (value) => {
+    var item = customers.find((ele, i) => ele._id === value)
+    console.log('item', item);
+
+    var oldJson = ApiReducer.apiJson
+    oldJson.customerDetails = {
+      name: item.name,
+      phone: item.contact,
+      email: item.email,
+      companyName: item.companyName,
+      billingAddress: item.billingAddresses,
+      pancardNo: item.pancardNo,
+      shippingAddress: item.shippingAddresses,
+      isDecisionTaker: true
+    }
+    setSelectedCustomer(item)
+    dispatch(setDataAction(oldJson, SET_API_JSON))
   }
-  
 
   return (
     <div className='m-10'>
       <div className='mb-5'>
         <p>Choose Customer if already added</p>
         <div className='grid grid-cols-5'>
-          <select onChange={(e)=>onChangeCustomer(e.target.value)} className={selectClass}>
-          <option selected={selectedCustomer===null}>Select Customer</option>
+          <select onChange={(e) => onChangeCustomer(e.target.value)} className={selectClass}>
+            <option selected={selectedCustomer === null}>Select Customer</option>
             {
               customers?.map((ele, i) => {
                 return (
@@ -151,7 +158,7 @@ function CreateLead() {
         <MySelectProduct />
       </div>
       <div className='mt-5'>
-        <MyButton title={'Submit'} onClick={() => onSubmit()} />
+        <MyButton type={loader&&'loader'} title={'Submit'} onClick={() => onSubmit()} />
       </div>
     </div>
   )

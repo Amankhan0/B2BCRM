@@ -96,12 +96,12 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                             <h3 style={{ color: Colors.ThemeBlue }}>PURCHASE ORDER</h3>
                             <p className="text-xs p-0.5">Order Ref No: <b>{data?.orderRefNo}</b></p>
                             <p className="text-xs p-0.5">Date: <b>{quotationDate ? quotationDate : GetFullYear(Date.now())}</b></p>
-                            <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days!==null&&data.paymentTerm.days+' days'}</b></p>
+                            <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
                         </div>
                     </div>
                 </div>
 
-                {/* Client & Supplier Info */}
+                {/* Client */}
                 <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div className="grid grid-cols-2">
                         <div>
@@ -120,6 +120,19 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                         </div>
                     </div>
                 </div>
+                {/* Supplier Info */}
+                <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
+                    <div className="grid grid-cols-2">
+                        <div>
+                            <h3 style={{ color: Colors.ThemeBlue }}>Supplier Details</h3>
+                            <p className="text-xs p-0.5">Company Name : {data?.supplierDetails?.companyName}</p>
+                            <p className="text-xs p-0.5">Address : {data?.supplierDetails?.gstAddresses?.address}</p>
+                            <p className="text-xs p-0.5">{data?.supplierDetails?.gstAddresses?.city}, {data?.supplierDetails?.gstAddresses?.pinCode}</p>
+                            <p className="text-xs p-0.5">{data?.supplierDetails?.gstAddresses?.landmark}</p>
+                            <p className="text-xs p-0.5">GSTIN :{data?.supplierDetails?.gstNo}</p>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Table */}
                 <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 20 }}>
@@ -131,7 +144,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
-                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Taxable Amount</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,10 +168,10 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
 
                 {/* Total Calculation */}
                 <div style={{ marginTop: 20, textAlign: "right" }}>
-                    <h3><b>Taxable Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
+                    <h3><b>Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
                     <h3><b>CGST Amount: ₹{calculateTotal(data.products, 'cgst')}</b></h3>
                     <h3><b>SGST Amount: ₹{calculateTotal(data.products, 'sgst')}</b></h3>
-                    <h3><b>Total : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
+                    <h3><b>Taxable Total Amount : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
                 </div>
 
                 {/* Terms & Notes */}

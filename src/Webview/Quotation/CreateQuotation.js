@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
 import { ApiHit, updateProductId } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuotation, searchLead } from '../../Constants/Constants';
+import { Active, addQuotation, QuotationInitiated, searchLead, updateLead } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import MyCheckBox from '../../Component/MyCheckBox';
 import MyInput from '../../Component/MyInput';
@@ -11,11 +11,13 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../Store/ActionName/ActionName';
 import { CrossMark } from '../../SVG/Icons';
 import toast from 'react-hot-toast';
+import { getAuthenticatedUser } from '../../Storage/Storage';
 
 function CreateQuotation() {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
     const [leadData, setLeadData] = useState(null)
+    const [loader, serLoader] = useState(false)
     const [privacyPolicy, setPrivacyPolicy] = useState(false)
 
     const dispatch = useDispatch()
@@ -82,13 +84,24 @@ function CreateQuotation() {
     }
 
     const onSubmit = () => {
+        serLoader(true)
         var json = updateProductId(ApiReducer?.apiJson)
-        console.log('json', json);
         json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
+        json.status = Active
+        json.user_id = getAuthenticatedUser().userId;
         ApiHit(json, addQuotation).then(res => {
             if (res.status === 200) {
-                toast.success('Quotation created successfully')
-                window.location.pathname = '/quotation'
+                var leadJson = {
+                    _id: leadData?.content?.[0]?.lead_id,
+                    status: QuotationInitiated
+                }
+                ApiHit(leadJson, updateLead).then(result => {
+                    serLoader(false)
+                    if (result.status === 200) {
+                        toast.success('Quotation created successfully')
+                        window.location.pathname = '/quotation'
+                    }
+                })
             } else {
                 toast.error(res.message)
             }
@@ -190,7 +203,7 @@ function CreateQuotation() {
                                 </p>
                             </div>
                             <div className='mt-10'>
-                                <MyButton title={'Submit'} onClick={() => onSubmit(true)} />
+                                <MyButton type={loader&&'loader'} title={'Submit'} onClick={() => onSubmit(true)} />
                             </div>
                         </div>
                     </div>

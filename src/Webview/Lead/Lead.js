@@ -62,7 +62,9 @@ function Lead() {
               <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='p-2 border text-black'>
-              <div className='flex gap-2'>
+              {
+                ele.status === 'Active' &&
+                <div className='flex gap-2'>
                 <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                   {editIcon}
                 </div>
@@ -70,6 +72,7 @@ function Lead() {
                   {deleteIcon}
                 </div>
               </div>
+              }
             </td>
           </tr>
         )

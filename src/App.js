@@ -8,6 +8,9 @@ function App() {
 
   let user = getAuthenticatedUserWithRoles();
 
+  console.log('user',user);
+  
+
   return (
     !user ?
       <Login />

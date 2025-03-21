@@ -18,6 +18,7 @@ function AddPI({ orderData }) {
     const ApiReducer = useSelector(state => state.ApiReducer)
 
     const [data, setData] = useState(null)
+    const [loader, setLoader] = useState(null)
     const [render, setRender] = useState(Date.now())
     const [page, setPage] = useState(0)
     const [paymentTerm, setPaymentTerm] = useState(null)
@@ -155,15 +156,12 @@ function AddPI({ orderData }) {
     }
 
     const onSubmit = () => {
+        setLoader(true)
         var newData = updateProductIdWithPO(data,'availablePI')
         newData.order_id = data._id
         delete newData._id
         newData.status = 'Active'
         newData.paymentTerm = { type: paymentTerm, days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : null }
-        
-        console.log('newData',newData);
-        
-        
         ApiHit(newData, addPI).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -175,10 +173,15 @@ function AddPI({ orderData }) {
                     if (result.status === 200) {
                         toast.success('PO Generated successfully')
                         window.location.pathname = '/order'
+                        setLoader(false)
+                    }else{
+                        toast.error(res?.message)
+                        setLoader(false)
                     }
                 })
             } else {
-                toast.error(res.message)
+                setLoader(false)
+                toast.error(res?.message)
             }
         })
     }
@@ -278,7 +281,7 @@ function AddPI({ orderData }) {
                                 </div>
                                 <div className='flex gap-2 mt-10'>
                                     <MyButton className={'w-20'} title={'Back'} onClick={() => onClickBack(1)} />
-                                    <MyButton className={'w-20'} title={'Submit'} onClick={() => onSubmit()} />
+                                    <MyButton type={loader&&'loader'} className={'w-20'} title={'Submit'} onClick={() => onSubmit()} />
                                 </div>
                             </div>
                 }

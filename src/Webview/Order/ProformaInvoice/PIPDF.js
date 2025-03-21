@@ -104,19 +104,20 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 {/* Client & Supplier Info */}
                 <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div className="grid grid-cols-2">
-                        <div>
+                    <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
-                            <p className="text-xs p-0.5">Company Name : Headsup B2B</p>
-                            <p className="text-xs p-0.5">Address : A-4 Second Floor</p>
-                            <p className="text-xs p-0.5">Sarvodaya Enclave</p>
-                            <p className="text-xs p-0.5">New Delhi 110017, India</p>
-                        </div>
-                        <div>
-                            <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
                             <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
                             <p className="text-xs p-0.5">Address : {data?.customerDetails?.billingAddress?.address || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.city + ' ' + data?.customerDetails?.billingAddress?.landmark || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.state + ' ' + data?.customerDetails?.billingAddress?.pinCode || '-'}</p>
+                            <p className="text-xs p-0.5">GSTIN : {data?.customerDetails?.gstNO}</p>
+                        </div>
+                        <div>
+                            <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
+                            <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
+                            <p className="text-xs p-0.5">Address : {data?.customerDetails?.shippingAddress?.address || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.city + ' ' + data?.customerDetails?.shippingAddress?.landmark || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.state + ' ' + data?.customerDetails?.shippingAddress?.pinCode || '-'}</p>
                         </div>
                     </div>
                 </div>
@@ -131,7 +132,7 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
-                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Taxable Amount</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,10 +156,10 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
 
                 {/* Total Calculation */}
                 <div style={{ marginTop: 20, textAlign: "right" }}>
-                    <h3><b>Taxable Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
+                    <h3><b>Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
                     <h3><b>CGST Amount: ₹{calculateTotal(data.products, 'cgst')}</b></h3>
                     <h3><b>SGST Amount: ₹{calculateTotal(data.products, 'sgst')}</b></h3>
-                    <h3><b>Total : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
+                    <h3><b>Taxable Total Amount : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
                 </div>
 
                 {/* Terms & Notes */}

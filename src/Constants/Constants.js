@@ -1,7 +1,7 @@
 // development
 export const Protocol = 'http://'
 // export const IP = '10.0.0.237'
-export const IP = '192.168.1.29:9090' //local
+export const IP = '192.168.1.21:9090' //local
 // export const BASEURL = Protocol + IP
 
 // production
@@ -117,8 +117,11 @@ export const updatePI = OrderMicroService + 'updatePI'
 export const buildVersion = 1.01
 
 
+export const Active = "Active"
+export const InActive = "InActive"
+export const QuotationInitiated = "Quotation_Initiated"
+export const OrderInitiated = "Order_Initiated"
 
 
 
-
-export const selectClass = "mt-1 w-full outline-none h-10 text-md rounded-lg border border-slate-400 placeholder:normal-case hover:border-slate-400 pl-2"
+export const selectClass = "mt-1 w-full outline-none h-10 text-md rounded-lg border border-black placeholder:normal-case hover:border-slate-400 pl-2"
