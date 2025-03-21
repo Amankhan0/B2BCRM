@@ -72,11 +72,10 @@ function CreateCustomer() {
                 branchName: Yup.string().required('Branch name is required'),
                 ifscCode: Yup.string().required('IFSC code is required'),
                 accountNo: Yup.string().required('Account number is required'),
-                cancelledCheque:
-                    Yup.object().shape({
-                        title: Yup.string().required('Cancelled cheque title is required'),
-                        url: Yup.string().required('Cancelled cheque URL is required'),
-                    }),
+                cancelledCheque: Yup.object().shape({
+                        title: Yup.string(),
+                        url: Yup.string(),
+                    }).required('Cancelled cheque is required'),
             })).min(1, 'At least one Bank Detail is required').required('At least one Bank Detail is required'),
         pancardNo: Yup.string()
             .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
@@ -401,9 +400,10 @@ function CreateCustomer() {
                                             <MyInputCommon value={ele?.branchName} title={'Branch Name'} name={'branchName'} onChange={(e) => onChange(e.target.value, index, 'branchName', 'bankDetails')} placeholder={'Enter Branch Name'} errorMsg={errors[`bankDetails[${index}].branchName`]} />
                                             <MyInputCommon value={ele?.ifscCode} title={'IFSC Code'} name={'ifscCode'} onChange={(e) => onChange(e.target.value, index, 'ifscCode', 'bankDetails')} placeholder={'Enter IFSC Code'} errorMsg={errors[`bankDetails[${index}].ifscCode`]} />
                                             <MyInputCommon value={ele?.accountNo} title={'Account No.'} name={'accountNo'} onChange={(e) => onChange(e.target.value, index, 'accountNo', 'bankDetails')} placeholder={'Enter Account Details'} errorMsg={errors[`bankDetails[${index}].accountNo`]} />
-                                            <MyFileUploadCommon name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} onChange={(data) => {
+                                            <MyFileUploadCommon name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={errors[`bankDetails[${index}].cancelledCheque`]} onChange={(data) => {
                                                 const json = ApiReducer.apiJson;
                                                 json['bankDetails'][index] = { ...json['bankDetails'][index], ...data }
+                                                validateField(`bankDetails[${index}].cancelledCheque`, json['bankDetails'][index]?.cancelledCheque)
                                                 setDataAction(json, SET_API_JSON);
                                             }} uppercase />
                                             <div className="flex items-center mt-5">

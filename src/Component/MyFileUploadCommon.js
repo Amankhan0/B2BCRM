@@ -6,7 +6,7 @@ import FileRenderer from "./FileRender";
 import { setDataAction } from "../Store/Action/SetDataAction";
 import { SET_API_JSON } from "../Store/ActionName/ActionName";
 
-const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType, onChange }) => {
+const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType, validate, onChange }) => {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
@@ -37,7 +37,10 @@ const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType
                     }
                     setFileId(result.data._id)
                 }
-                    dispatch(setDataAction(oldJson, SET_API_JSON))
+                if(validate){
+                    validate(name, oldJson[name]);
+                }
+                dispatch(setDataAction(oldJson, SET_API_JSON))
             }
 
             if (result && onChange) {
@@ -57,7 +60,7 @@ const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType
                     }
                     setFileId(result.data._id)
                 }
-                    onChange(oldJson);
+                onChange(oldJson);
             }
         }
     }
@@ -69,7 +72,7 @@ const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType
             <div className="flex gap-2">
                 <input type="file" style={{ textTransform: uppercase ? 'uppercase' : '' }} onChange={(e) => onFileUpload(e)} className={`mt-1 w-full outline-none h-max p-2 text-md rounded-lg border border-slate-400 placeholder:normal-case hover:border-slate-400 pl-2`} name={name} />
             </div>
-            <label className='w-full text-red-600'>{error && ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</label>
+            <label className='w-full text-red-600'>{error}</label>
         </div>
     )
 }

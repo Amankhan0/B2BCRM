@@ -191,11 +191,11 @@ export const CustomerValidationSchema = Yup.object().shape({
     .required('GST number is required'),
   gst: Yup.array().of(
     Yup.object().shape({
-      title: Yup.string().required('GST title is required'),
-      url: Yup.string().required('GST URL is required'),
-    })),
+      title: Yup.string(),
+      url: Yup.string(),
+    })).required("GST is required"),
   pancard: Yup.array().of(Yup.object().shape({
-    title: Yup.string().required('PAN card title is required'),
-    url: Yup.string().required('PAN card URL is required'),
-  })),
+    title: Yup.string(),
+    url: Yup.string()
+  })).required('PAN card required'),
 });
