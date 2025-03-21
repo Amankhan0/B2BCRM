@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
 import MyInputCommon from '../../Component/MyInputCommon';
 import MyCheckBox from '../../Component/MyCheckBox';
@@ -9,7 +9,7 @@ import MySelectProduct from '../../Component/MySelectProduct';
 import MyButton from '../../Component/MyButton';
 import { SupplierValidation } from './SupplierValidation';
 import { ApiHit, ObjIsEmpty } from '../../utils';
-import { addCustomer, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
+import { addCustomer, addLead, addSupplier, searchCustomer, searchSupplier, selectClass, updateSupplier } from '../../Constants/Constants';
 import MySelectCommon from '../../Component/MySelectCommon';
 import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import MyFileUpload from '../../Component/MyFileUpload';
 import * as Yup from 'yup';
 import useYupValidation from '../../Hooks/useYupValidation';
+import { useParams } from 'react-router-dom';
 
 function CreateCustomer() {
 
@@ -46,11 +47,11 @@ function CreateCustomer() {
                 country: Yup.string().required('GST country is required'),
                 state: Yup.string().required('GST state is required'),
                 city: Yup.string().required('GST city is required'),
-                pincode: Yup.string()
+                pinCode: Yup.string()
                     .matches(/^[1-9][0-9]{5}$/, 'GST pincode must be 6 digits')
                     .required('GST pincode is required'),
             })
-        ),
+        ).min(1, 'At least one GST address is required').required('At least one GST address is required'),
         warehouseAddresses: Yup.array().of(
             Yup.object().shape({
                 address: Yup.string().required('Warehouse address is required'),
@@ -58,48 +59,55 @@ function CreateCustomer() {
                 country: Yup.string().required('Warehouse country is required'),
                 state: Yup.string().required('Warehouse state is required'),
                 city: Yup.string().required('Warehouse city is required'),
-                pincode: Yup.string()
+                pinCode: Yup.string()
                     .matches(/^[1-9][0-9]{5}$/, 'Warehouse pincode must be 6 digits')
                     .required('Warehouse pincode is required'),
             })
-        ),
-        bankDetails: Yup.object().shape({
+        ).min(1, 'At least one warehouse address is required').required('At least one warehouse address is required'),
+        bankDetails: Yup.array().of(
+             Yup.object().shape({
             beneficiaryName: Yup.string().required('Beneficiary name is required'),
             bankName: Yup.string().required('Bank name is required'),
             branchName: Yup.string().required('Branch name is required'),
             ifscCode: Yup.string().required('IFSC code is required'),
             accountNo: Yup.string().required('Account number is required'),
-        }),
-        cancelledCheque: Yup.object().shape({
-            title: Yup.string().required('Cancelled cheque title is required'),
-            url: Yup.string().required('Cancelled cheque URL is required'),
-        }),
+        }).required('Bank details are required')).min(1, 'At least one Bank Detail is required').required('At least one Bank Detail is required'),
+        // cancelledCheque: Yup.array().of( 
+        //     Yup.object().shape({
+        //     title: Yup.string().required('Cancelled cheque title is required'),
+        //     url: Yup.string().required('Cancelled cheque URL is required'),
+        // })).min(1, 'At least one cancelled cheque is required').required('At least one cancelled cheque is required'),
         pancardNo: Yup.string()
             .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
             .required('PAN card number is required'),
         gstNo: Yup.string()
             .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
             .required('GST number is required'),
-        pancard: Yup.object().shape({
+        pancard: Yup.array().of(
+             Yup.object().shape({
             title: Yup.string().required('PAN card title is required'),
             url: Yup.string().required('PAN card URL is required'),
-        }),
-        gst: Yup.object().shape({
+        })).min(1, 'At least one PAN card document is required').required('At least one PAN card document is required'),
+        gst: Yup.array().of(
+             Yup.object().shape({
             title: Yup.string().required('GST title is required'),
             url: Yup.string().required('GST URL is required'),
-        }),
+        })),
         msmeNo: Yup.string()
-            .matches(/^UDYAM-[A-Z0-9]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
+            .matches(/^UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
             .required('MSME number is required'),
-        msme: Yup.object().shape({
+        msme: Yup.array().of( 
+            Yup.object().shape({
             title: Yup.string().required('MSME title is required'),
             url: Yup.string().required('MSME URL is required'),
-        }),
-        tdstcs: Yup.object().shape({
-            title: Yup.string().required('TDS/TCS title is required'),
+        })),
+        tdstcs: Yup.array().of( 
+            Yup.object().shape({
+            title: Yup.string().required('TDS/TCS is required'),
             url: Yup.string().required('TDS/TCS URL is required'),
-        }),
+        })).min(1, 'At least one TDS/TCS document is required').required('At least one TDS/TCS document is required'),
     });
+
 
     const { errors, validateField, validateJson } = useYupValidation(validationSchema);
 
@@ -123,6 +131,13 @@ function CreateCustomer() {
 
     const dispatch = useDispatch()
 
+    const params = useParams();
+    useLayoutEffect(() => {
+        if (params?.id) {
+            fetchData()
+        }
+    }, [params])
+
     useEffect(() => {
         // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
         //     fetchData()
@@ -135,26 +150,30 @@ function CreateCustomer() {
         }
     }, [])
 
+    console.log(errors, 'errors');
+
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
         validateJson(ApiReducer?.apiJson);
         SupplierValidation(ApiReducer?.apiJson).then(res => {
-            var error = !ObjIsEmpty(res)
+            // var error = !ObjIsEmpty(res)
             console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
-            if (error && Object.keys(errors)?.length > 0) {
+            if (Object.keys(errors)?.length > 0) {
                 dispatch(setDataAction(res, SET_API_JSON_ERROR))
             } else {
 
-                // ApiHit(ApiReducer?.apiJson, addCustomer).then(res => {
-                //     console.log('res', res);
+                const api = params?.id ? updateSupplier:addSupplier;
 
-                //     if (res.status === 200) {
-                //         toast.success('Lead created successfully')
-                //         window.location.pathname = '/lead'
-                //     } else {
-                //         toast.success(res.message)
-                //     }
-                // })
+                ApiHit(ApiReducer?.apiJson, api).then(res => {
+                    console.log('res', res);
+
+                    if (res.status === 200) {
+                        toast.success('Supplier created successfully')
+                        window.location.pathname = '/supplier'
+                    } else {
+                        toast.success(res.message)
+                    }
+                })
             }
         })
     }
@@ -163,15 +182,15 @@ function CreateCustomer() {
         var json = {
             page: 1,
             limit: 10,
-            search: {}
+            search: { _id: params?.id }
         }
-        ApiHit(json, searchCustomer).then(res => {
-            if (res.content) {
-                setCustomers(res.content)
+        ApiHit(json, searchSupplier).then(res => {
+            if (res?.content) {
+                dispatch(setDataAction(res?.content?.[0], SET_API_JSON))
             }
         })
     }
-
+console.log(ApiReducer?.apiJson)
     const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
@@ -225,9 +244,9 @@ function CreateCustomer() {
             onChange(e.value, index, 'state', parent)
             delete json?.[parent]?.[index].city //
         } else if (loadType === 'pincode') {
-            setPincode(e.pincode)
+            setPincode(e.pinCode)
             onChange(e.value, index, 'city', parent)
-            delete json?.[parent]?.[index].pincode //
+            delete json?.[parent]?.[index].pinCode //
         }
         dispatch(setDataAction(json, SET_API_JSON))
     }
@@ -298,12 +317,12 @@ function CreateCustomer() {
                                         <div className="grid grid-cols-4 gap-4 my-5" key={index}>
 
 
-                                            <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].address`]} />
-                                            <MyInputCommon value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].landmark`]} />
-                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'gstAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`gstAddresses[${index}].country`]} />
-                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'gstAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`gstAddresses[${index}].state`]} />
-                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'gstAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`gstAddresses[${index}].city`]} />
-                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].pincode`]} />
+                                            <MyInputCommon value={ele?.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].address`]} />
+                                            <MyInputCommon value={ele?.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].landmark`]} />
+                                            <MySelectCommon selectedValue={ele?.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'gstAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`gstAddresses[${index}].country`]} />
+                                            <MySelectCommon selectedValue={ele?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'gstAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`gstAddresses[${index}].state`]} />
+                                            <MySelectCommon selectedValue={ele?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'gstAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`gstAddresses[${index}].city`]} />
+                                            <MyInputCommon value={ele?.pinCode} title={'Pin Code'} name={'pinCode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pinCode', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].pinCode`]} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'gstAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -342,7 +361,7 @@ function CreateCustomer() {
                                             <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'warehouseAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`warehouseAddresses[${index}].country`]} />
                                             <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'warehouseAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`warehouseAddresses[${index}].state`]} />
                                             <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'warehouseAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`warehouseAddresses[${index}].city`]} />
-                                            <MyInputCommon value={ele.pincode} title={'Pin Code'} name={'pincode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pincode', 'warehouseAddresses') }} errorMsg={errors[`warehouseAddresses[${index}].pincode`]} />
+                                            <MyInputCommon value={ele.pinCode} title={'Pin Code'} name={'pinCode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pinCode', 'warehouseAddresses') }} errorMsg={errors[`warehouseAddresses[${index}].pinCode`]} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'warehouseAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -356,6 +375,44 @@ function CreateCustomer() {
                 </div>
             </div>
             <div className='bg-white mt-5'>
+                <div style={{ background: Colors.ThemeBlue }}>
+                    <p className='text-white p-2'>Bank Details</p>
+                </div>
+                <div className="p-5">
+
+                    <div onClick={() => onAddAddress('bankDetails')} className="w-max flex items-center gap-1 text-black hover:text-themeBlue hover:underline cursor-pointer">
+                        <Title title={'Add Bank Details'} size={'xl'} />
+                        <i>{plusIcon}</i>
+                    </div>
+                    {
+                        ApiReducer?.apiJson?.bankDetails?.length > 0 &&
+                        <div>
+                            {
+                                ApiReducer?.apiJson?.bankDetails?.map?.((ele, index) => {
+
+                                    console.log(ele);
+
+                                    return (
+                                        <div className="grid grid-cols-4 gap-4 my-5" key={index}>
+
+                                            <MyInputCommon value={ele?.beneficiaryName} title={'Beneficiary Name'} name={'beneficiaryName'} placeholder={'Enter Beneficiary Name'} onChange={(e) => { onChange(e.target.value, index, 'beneficiaryName', 'bankDetails') }} errorMsg={errors[`bankDetails[${index}].beneficiaryName`]} />
+                                            <MyInputCommon value={ele?.bankName} title={'Bank Name'} name={'bankName'} placeholder={'Enter Bank Name'} onChange={(e) => { onChange(e.target.value, index, 'bankName', 'bankDetails') }} errorMsg={errors[`bankDetails[${index}].bankName`]} />
+                                            <MyInputCommon value={ele?.branchName} title={'Branch Name'} name={'branchName'} onChange={(e) => onChange(e.target.value, index,'branchName', 'bankDetails')} placeholder={'Enter Branch Name'} errorMsg={errors[`bankDetails[${index}].branchName`]} />
+                                            <MyInputCommon value={ele?.ifscCode} title={'IFSC Code'} name={'ifscCode'} onChange={(e) => onChange(e.target.value ,index, 'ifscCode', 'bankDetails')} placeholder={'Enter IFSC Code'} errorMsg={errors[`bankDetails[${index}].ifscCode`]} />
+                                            <MyInputCommon value={ele?.accountNo} title={'Account No.'} name={'accountNo'} onChange={(e) => onChange(e.target.value, index, 'accountNo', 'bankDetails')} placeholder={'Enter Account Details'} errorMsg={errors[`bankDetails[${index}].accountNo`]} />
+                                            {/* <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.cancelledCheque} fileType={'array'} uppercase /> */}
+                                            <div className="flex items-center mt-5">
+                                                <MyButton onClick={() => handleRemove(index, 'bankDetails')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            {/* <div className='bg-white mt-5'>
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Bank Details</p>
                 </div>
@@ -375,11 +432,8 @@ function CreateCustomer() {
                     <div>
                         <MyInputCommon parent={'bankDetails'} name='accountNo' title={'Account No.'} placeholder={'Enter Account No.'} validate={validateField} errorMsg={errors[`bankDetails.accountNo`]} />
                     </div>
-                    <div>
-                        <MyFileUpload name={'cancelledCheque'} title={'Upload Cancelled Cheque Doc'} error={!ApiReducer?.apiJson?.kycDetails?.cancelledCheque} fileType={'array'} uppercase />
-                    </div>
                 </div>
-            </div>
+            </div> */}
             <div className='bg-white'>
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Upload Documents</p>
