@@ -6,10 +6,11 @@ import signature from '../../..//Image/signature.jpeg';
 import { GetFullYear } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
+import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
 
 const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
+    
     const pdfRef = useRef();
-
     const downloadPDF = () => {
         const input = pdfRef.current;
         html2canvas(input, {
@@ -22,7 +23,6 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
             const pdf = new jsPDF("p", "mm", "a4");
             const imgWidth = pdf.internal.pageSize.width;
             const imgHeight = 50;
-
             const img = new Image();
             img.crossOrigin = "anonymous";
             img.src = watermarkUrl;
@@ -35,25 +35,18 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 ctx.globalAlpha = 0.1; // Set opacity
                 ctx.drawImage(img, 0, 0);
                 const watermarkDataURL = watermarkCanvas.toDataURL("image/png");
-
                 // Generate PDF
                 pdf.addImage(imgData, "PNG", 0, 0, 210, (canvas.height * 210) / canvas.width);
-
                 // Add watermark on all pages
                 const totalPages = pdf.internal.getNumberOfPages();
                 for (let i = 1; i <= totalPages; i++) {
                     pdf.setPage(i);
                     pdf.addImage(watermarkDataURL, "PNG", 0, (pdf.internal.pageSize.height - imgHeight) / 2, imgWidth, imgHeight);
                 }
-
                 pdf.save("Quotation.pdf");
             };
         });
     };
-
-
-
-    console.log('data', data);
 
     const calculateTotal = (products, type) => {
 
@@ -84,12 +77,13 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
             </div>
             <div ref={pdfRef} className="quotation-container" style={{ padding: 20, maxWidth: 800, margin: "auto", backgroundColor: "#fff", border: "1px solid #ddd" }}>
                 {/* Header */}
+
                 <div className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div>
                         <img className="w-1/2" src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75" />
-                        <p className="text-xs p-0.5 mt-3">GSTIN : 07AARCA3767A1ZN</p>
-                        <p className="text-xs p-0.5">CIN : U72900DL2018PTC338934</p>
-                        <p className="text-xs p-0.5">PAN : AARCA3767A</p>
+                        <p className="text-xs p-0.5 mt-3">GSTIN : {OrderInvoiceDetails.companyDetails.gstNo}</p>
+                        <p className="text-xs p-0.5">CIN : {OrderInvoiceDetails.companyDetails.cin}</p>
+                        <p className="text-xs p-0.5">PAN : {OrderInvoiceDetails.companyDetails.panNo}</p>
                     </div>
                     <div className="flex justify-end text-right">
                         <div>
@@ -106,10 +100,11 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                     <div className="grid grid-cols-2">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
-                            <p className="text-xs p-0.5">Company Name : Headsup B2B</p>
-                            <p className="text-xs p-0.5">Address : A-4 Second Floor</p>
-                            <p className="text-xs p-0.5">Sarvodaya Enclave</p>
-                            <p className="text-xs p-0.5">New Delhi 110017, India</p>
+                            <p className="text-xs p-0.5">Company Name : {OrderInvoiceDetails.companyDetails.companyName}</p>
+                            <p className="text-xs p-0.5">Address : {OrderInvoiceDetails.companyDetails.address.address}</p>
+                            <p className="text-xs p-0.5">{OrderInvoiceDetails.companyDetails.address.city}</p>
+                            <p className="text-xs p-0.5">{OrderInvoiceDetails.companyDetails.address.state} {OrderInvoiceDetails.companyDetails.address.pinCode} , {OrderInvoiceDetails.companyDetails.address.country}</p>
+                            <p className="text-xs p-0.5">GSTIN: {OrderInvoiceDetails.companyDetails.gstNo}</p>
                         </div>
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
@@ -175,7 +170,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 </div>
 
                 {/* Terms & Notes */}
-                <div style={{ marginTop: 20 }}>
+                {/* <div style={{ marginTop: 20 }}>
                     <h4 className="text-black font-bold">Terms and Conditions:</h4>
                     {
                         data?.termsAndConditions?.map((ele, index) => {
@@ -194,7 +189,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                         Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
                         the time schedule
                     </p>
-                </div>
+                </div> */}
 
                 <div className="mt-20 flex justify-between">
                     <div>

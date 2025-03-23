@@ -7,7 +7,6 @@ import MyButton from '../../Component/MyButton';
 import { localLeadData } from '../Lead/localLeadData';
 import MyCheckBox from '../../Component/MyCheckBox';
 import MyInput from '../../Component/MyInput';
-import MySelectProduct from '../../Component/MySelectProduct';
 import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../Store/ActionName/ActionName';
 import { CrossMark } from '../../SVG/Icons';
@@ -75,20 +74,20 @@ function CreateOrder() {
         })
     }
 
-    const onChnageCustomer = (value) => {        
+    const onChnageCustomer = (value) => {
         var item = customer.content.find((ele, i) => ele._id === value)
         var oldJson = ApiReducer.apiJson
         var leadSource = oldJson.customerDetails.leadSource
         oldJson.customerDetails = {
             ...item,
-            billingAddress:item.billingAddresses,
-            shippingAddress:item.shippingAddresses,
+            billingAddress: item.billingAddresses,
+            shippingAddress: item.shippingAddresses,
         }
-        console.log('oldJson',oldJson);
-        
-        if(!oldJson.customerDetails.leadSource){
+        console.log('oldJson', oldJson);
+
+        if (!oldJson.customerDetails.leadSource) {
             oldJson.customerDetails.leadSource = leadSource
-        }        
+        }
         setSelectedCustomer(item)
         dispatch(setDataAction(oldJson, SET_API_JSON))
     }
@@ -130,10 +129,10 @@ function CreateOrder() {
         }
         else {
             setLoader(true)
-            var json = ApiReducer?.apiJson            
+            var json = ApiReducer?.apiJson
             var updatedOrderJson = updateProductIdWithAvailablePOPIDispatch(json)
-            updatedOrderJson.customerDetails.billingAddress = updatedOrderJson.customerDetails.billingAddress[billingAddress]
-            updatedOrderJson.customerDetails.shippingAddress = updatedOrderJson.customerDetails.shippingAddress[shippingAddress]
+            updatedOrderJson.customerDetails.billingAddress = selectedCustomer.billingAddresses[billingAddress]
+            updatedOrderJson.customerDetails.shippingAddress = selectedCustomer.shippingAddresses[shippingAddress]
             updatedOrderJson.paymentTerm = {
                 type: paymentTerm,
                 days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : 'NA'
@@ -158,7 +157,10 @@ function CreateOrder() {
                 }
             })
         }
-    }    
+    }
+
+    console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
+
 
     return (
 

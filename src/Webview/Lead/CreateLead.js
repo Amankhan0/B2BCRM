@@ -44,21 +44,27 @@ function CreateLead() {
     LeadValidation(ApiReducer?.apiJson).then(res => {
       var error = !ObjIsEmpty(res)
       if (error) {
+        setLoader(false)
         dispatch(setDataAction(res, SET_API_JSON_ERROR))
-      } else {
-        var json = updateProductId(ApiReducer?.apiJson)
-        if (json) {
-          json.status = Active
-          json.user_id = getAuthenticatedUser().userId;          
-          ApiHit(json, addLead).then(res => {
-            setLoader(false)
-            if (res.status === 200) {
-              toast.success('Lead created successfully')
-              window.location.pathname = '/lead'
-            } else {
-              toast.error(res.message)
-            }
-          })
+      } else {        
+        if (!ApiReducer?.apiJson?.products) {
+          toast.error('Add Products')
+          setLoader(false)
+        } else {
+          var json = updateProductId(ApiReducer?.apiJson)
+          if (json) {
+            json.status = Active
+            json.user_id = getAuthenticatedUser().userId;
+            ApiHit(json, addLead).then(res => {
+              setLoader(false)
+              if (res.status === 200) {
+                toast.success('Lead created successfully')
+                window.location.pathname = '/lead'
+              } else {
+                toast.error(res.message)
+              }
+            })
+          }
         }
       }
     })
@@ -79,17 +85,11 @@ function CreateLead() {
 
   const onChangeCustomer = (value) => {
     var item = customers.find((ele, i) => ele._id === value)
-    console.log('item', item);
-
     var oldJson = ApiReducer.apiJson
     oldJson.customerDetails = {
-      name: item.name,
-      phone: item.contact,
-      email: item.email,
-      companyName: item.companyName,
-      billingAddress: item.billingAddresses,
-      pancardNo: item.pancardNo,
-      shippingAddress: item.shippingAddresses,
+      ...item,
+      billingAddress: item.billingAddresses[0],
+      shippingAddress: item.shippingAddresses[0],
       isDecisionTaker: true
     }
     setSelectedCustomer(item)
@@ -141,7 +141,7 @@ function CreateLead() {
             <MyInput parent={'customerDetails'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} error={!ApiReducer?.apiJson?.customerDetails?.name} />
           </div>
           <div>
-            <MyInput parent={'customerDetails'} name='phone' title={'Contact Number'} placeholder={'Enter Contact Number'} error={!ApiReducer?.apiJson?.customerDetails?.phone} />
+            <MyInput parent={'customerDetails'} name='contact' title={'Contact Number'} placeholder={'Enter Contact Number'} error={!ApiReducer?.apiJson?.customerDetails?.phone} />
           </div>
           <div>
             <MyInput parent={'customerDetails'} name='email' title={'Email Address'} placeholder={'Enter Email Address'} error={!ApiReducer?.apiJson?.customerDetails?.email} />
@@ -158,7 +158,7 @@ function CreateLead() {
         <MySelectProduct />
       </div>
       <div className='mt-5'>
-        <MyButton type={loader&&'loader'} title={'Submit'} onClick={() => onSubmit()} />
+        <MyButton type={loader && 'loader'} title={'Submit'} onClick={() => onSubmit()} />
       </div>
     </div>
   )

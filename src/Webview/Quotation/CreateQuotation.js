@@ -12,9 +12,11 @@ import { SET_API_JSON } from '../../Store/ActionName/ActionName';
 import { CrossMark } from '../../SVG/Icons';
 import toast from 'react-hot-toast';
 import { getAuthenticatedUser } from '../../Storage/Storage';
+import { OrderInvoiceDetails } from '../OrderInvoiceDetails';
+import ReactQuill from 'react-quill';
 
 function CreateQuotation() {
-
+    const [content, setContent] = useState(OrderInvoiceDetails.companyDetails.permissions);
     const ApiReducer = useSelector(state => state.ApiReducer)
     const [leadData, setLeadData] = useState(null)
     const [loader, serLoader] = useState(false)
@@ -50,45 +52,13 @@ function CreateQuotation() {
         })
     }
 
-    console.log('ApiReducer--', ApiReducer);
-
-    const onClickSubmit = () => {
-        setPrivacyPolicy(true)
-        var oldJson = ApiReducer.apiJson
-        oldJson.termsAndConditions = [
-            {
-                title: 'Price Validity : 5 days from receiving this quotation.',
-                status: true
-            },
-            {
-                title: 'GST/IGST : Included in the offer.',
-                status: true
-            },
-            {
-                title: 'Delivery : within 7 days from the date of Techno-commercially cleared PO and advance payment.',
-                status: true
-            },
-            {
-                title: 'Payment Terms : 60 Days against BG.',
-                status: true
-            },
-            {
-                title: 'Price Variation clause will be applicable depending upon the variation in the basic price of raw materials from the period of ordering till the date of delivery.',
-                status: true
-            },
-            {
-                title: 'Replacement/short supplied Materials Note : The Material Receipt Note (MRN) with the detail of materials received shall be issued within 24 hours (maximum) of the vehicles reaching your site/stores. No shortage/replacement claim shall be entertained thereafter.',
-                status: true
-            }
-        ]
-    }
-
     const onSubmit = () => {
         serLoader(true)
         var json = updateProductId(ApiReducer?.apiJson)
         json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
         json.status = Active
         json.user_id = getAuthenticatedUser().userId;
+        json.termsAndConditions = content
         ApiHit(json, addQuotation).then(res => {
             if (res.status === 200) {
                 var leadJson = {
@@ -106,16 +76,6 @@ function CreateQuotation() {
                 toast.error(res.message)
             }
         })
-    }
-
-    const onChangetermsAndConditions = (i) => {
-        var oldJson = ApiReducer.apiJson
-        if (oldJson.termsAndConditions[i].status) {
-            oldJson.termsAndConditions[i].status = false
-        } else {
-            oldJson.termsAndConditions[i].status = true
-        }
-        dispatch(setDataAction(oldJson, SET_API_JSON))
     }
 
     return (
@@ -148,7 +108,7 @@ function CreateQuotation() {
                         <MyInput disable={true} parent={'customerDetails'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} />
                     </div>
                     <div>
-                        <MyInput disable={true} parent={'customerDetails'} name='phone' title={'Contact Number'} placeholder={'Enter Contact Number'} />
+                        <MyInput disable={true} parent={'customerDetails'} name='contact' title={'Contact Number'} placeholder={'Enter Contact Number'} />
                     </div>
                     <div>
                         <MyInput disable={true} parent={'customerDetails'} name='email' title={'Email Address'} placeholder={'Enter Email Address'} />
@@ -165,7 +125,7 @@ function CreateQuotation() {
                 <MySelectProduct isQuotation={true} />
             </div>
             <div className='mt-5'>
-                <MyButton title={'Submit'} onClick={() => onClickSubmit()} />
+                <MyButton title={'Submit'} onClick={() =>  setPrivacyPolicy(true)} />
             </div>
             {
                 privacyPolicy &&
@@ -181,28 +141,20 @@ function CreateQuotation() {
                             </div>
                         </div>
                         <div className='p-10 text-left'>
-                            {
-                                ApiReducer?.apiJson?.termsAndConditions?.map((ele, i) => {
-                                    return (
-                                        <div className='flex gap-2 p-1'>
-                                            <div>
-                                                <MyCheckBox onChange={() => onChangetermsAndConditions(i)} checked={ele.status} />
-                                            </div>
-                                            <p className='mt-3 text-black'>{ele.title}</p>
-                                        </div>
-                                    )
-                                })
-                            }
-                            <div className='mt-5'>
-                                <p className='text-black font-bold'>Additional Notes:</p>
-                                <p>
-                                    The delivery schedule offered or committed is merely an indicative time of delivery which is not firm
-                                    and the same may vary or change depending upon various factors relating to the Contract. Therefore, the
-                                    Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
-                                    the time schedule.
-                                </p>
-                            </div>
-                            <div className='mt-10'>
+                            <ReactQuill
+                                value={content}
+                                style={{height:'60vh'}}
+                                onChange={setContent}
+                                modules={{
+                                    toolbar: [
+                                        ["bold", "italic", "underline"], // Formatting options
+                                        [{ list: "ordered" }, { list: "bullet" }], // Lists
+                                        ["link", "blockquote", "code-block"], // Other options
+                                        ["clean"], // Remove Formatting
+                                    ],
+                                }}
+                            />
+                             <div className='mt-20'>
                                 <MyButton type={loader&&'loader'} title={'Submit'} onClick={() => onSubmit(true)} />
                             </div>
                         </div>

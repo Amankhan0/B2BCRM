@@ -22,7 +22,7 @@ const MySelectProduct = ({ isQuotation }) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (products === null) {
+        if (products === null && !isQuotation) {
             fetchData()
         }
     }, [products])
@@ -57,13 +57,13 @@ const MySelectProduct = ({ isQuotation }) => {
             oldJson.products[index].cgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(value) / 200
             oldJson.products[index].sgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(value) / 200
             oldJson.products[index][name] = value
-        }else if (name === 'qty') {
+        } else if (name === 'qty') {
             const varientOne = oldJson.products[index].product_id.varients.find(v => v.varientName === oldJson.products[index].productVarient.varientName);
             oldJson.products[index].cgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(oldJson.products[index].price) / 200
             oldJson.products[index].sgst = Number(oldJson.products[index].qty) * Number(varientOne.gst) * Number(oldJson.products[index].price) / 200
             oldJson.products[index][name] = value
         }
-        else{
+        else {
             oldJson.products[index][name] = value
         }
         dispatch(setDataAction(oldJson, SET_API_JSON))
@@ -76,8 +76,8 @@ const MySelectProduct = ({ isQuotation }) => {
             dispatch(setDataAction(oldJson, SET_API_JSON))
         }
         else {
-            console.log('oldJson',oldJson);
-            
+            console.log('oldJson', oldJson);
+
             if (!oldJson.products[oldJson.products.length - 1].product_id || !oldJson.products[oldJson.products.length - 1].productVarient || !oldJson.products[oldJson.products.length - 1].qty || !oldJson.products[oldJson.products.length - 1].price) {
                 toast.error('Please fill previous product detail')
             } else {
@@ -110,10 +110,18 @@ const MySelectProduct = ({ isQuotation }) => {
                         ApiReducer?.apiJson?.products?.map?.((ele, index) => {
                             return (
                                 <div className="grid grid-cols-6 gap-4 my-5">
-                                    <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
+                                    {
+                                        !isQuotation ?
+                                            <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
+                                            :
+                                            <MyInput disable={true} value={ele.product_id.productName || '0'} title={'Product Name'} name={'productName'} placeholder={'Enter Product Name'} />
+                                    }
                                     {
                                         ele.product_id && ele.product_id.varients &&
-                                        <MySelect disable={isQuotation && true} selectedValue={ele.productVarient?.varientName} onChange={(e) => onChange(e.target.value, index, 'productVarient')} title={'Varient'} options={ele.product_id && ele.product_id.varients?.map((item, i) => item)} keyName='varientName' />
+                                            !isQuotation ?
+                                            <MySelect disable={isQuotation && true} selectedValue={ele.productVarient?.varientName} onChange={(e) => onChange(e.target.value, index, 'productVarient')} title={'Varient'} options={ele.product_id && ele.product_id.varients?.map((item, i) => item)} keyName='varientName' />
+                                            :
+                                            <MyInput disable={true} value={ele.productVarient?.varientName || '0'} title={'Product Varient'} name={'productVarient'} placeholder={'Enter Product Varient'} />
                                     }
                                     {
                                         isQuotation &&

@@ -13,6 +13,11 @@ import PaginationReducer from './Store/Reducer/PaginationReducer';
 import QuotationReducer from './Store/Reducer/QuotationReducer';
 import LeadReducer from './Store/Reducer/LeadReducer';
 import OrderReducer from './Store/Reducer/OrderReducer';
+import CustomerReducer from './Store/Reducer/CustomerReducer'
+import SupplierReducer from './Store/Reducer/SupplierReducer';
+import ProductReducer from './Store/Reducer/ProductReducer';
+import RoleReducer from './Store/Reducer/RoleReducer';
+import UserReducer from './Store/Reducer/UserReducer';
 
 const rootReducer = combineReducers({
   SidebarReducer: SidebarReducer,
@@ -20,7 +25,12 @@ const rootReducer = combineReducers({
   PaginationReducer: PaginationReducer,
   QuotationReducer:QuotationReducer,
   LeadReducer:LeadReducer,
-  OrderReducer:OrderReducer
+  OrderReducer:OrderReducer,
+  CustomerReducer:CustomerReducer,
+  SupplierReducer:SupplierReducer,
+  ProductReducer:ProductReducer,
+  RoleReducer:RoleReducer,
+  UserReducer:UserReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))

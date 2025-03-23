@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import { search } from '../../../SVG/Icons';
+import ReactQuill from 'react-quill';
 
 function AddPO({ orderData }) {
 
@@ -170,18 +171,9 @@ function AddPO({ orderData }) {
         setPage(page)
     }
 
-    const onChangetermsAndConditions = (i, value) => {
+    const onChangetermsAndConditions = (e) => {
         var oldData = data
-        if (i !== 'additionalNotes') {
-            if (oldData.termsAndConditions[i].status) {
-                oldData.termsAndConditions[i].status = false
-            } else {
-                oldData.termsAndConditions[i].status = true
-            }
-            setData(oldData)
-        } else {
-            oldData[i] = value
-        }
+        oldData.termsAndConditions = e
         setData(oldData)
         setRender(Date.now())
     }
@@ -354,7 +346,21 @@ function AddPO({ orderData }) {
                             <div>
                                 <div className='mb-1'>
                                     <Title title={'Terms and conditions'} size={'lg'} color={Colors.BLACK} />
-                                    <div className='text-left'>
+                                    <ReactQuill
+                                        value={data?.termsAndConditions}
+                                        style={{ height: '60vh' }}
+                                        onChange={(e) => onChangetermsAndConditions(e)}
+                                        modules={{
+                                            toolbar: [
+                                                ["bold", "italic", "underline"], // Formatting options
+                                                [{ list: "ordered" }, { list: "bullet" }], // Lists
+                                                ["link", "blockquote", "code-block"], // Other options
+                                                ["clean"], // Remove Formatting
+                                            ],
+                                        }}
+                                    />
+
+                                    {/* <div className='text-left'>
                                         {
                                             data?.termsAndConditions?.map((ele, i) => {
                                                 return (
@@ -370,17 +376,14 @@ function AddPO({ orderData }) {
                                         <div className='mt-5'>
                                             <MyInput title={'Additional Notes:'} onChange={(e) => onChangetermsAndConditions('additionalNotes', e.target.value)} value={data?.additionalNotes} />
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
-                                <div className='flex gap-2 mt-10'>
+                                <div className='flex gap-2 mt-20'>
                                     <MyButton className={'w-20'} title={'Back'} onClick={() => onClickBack(1)} />
                                     <MyButton type={loader && 'loader'} className={'w-20'} title={'Submit'} onClick={() => onSubmit()} />
                                 </div>
                             </div>
                 }
-
-
-                {/* <POPDF data={orderData} /> */}
             </div>
         </div>
     )

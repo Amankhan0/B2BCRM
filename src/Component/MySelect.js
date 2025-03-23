@@ -43,4 +43,4 @@ function MySelect({ selectedValue, name, disable, title, error, createTripJson, 
     )
 }
 
-export default MySelect
+export default MySelect;

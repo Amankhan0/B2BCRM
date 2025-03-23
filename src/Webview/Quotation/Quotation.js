@@ -7,13 +7,9 @@ import { OrderInitiated, searchLead, searchQuotation, selectClass } from '../../
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
-import { deleteIcon, downloadIcon, editIcon, plusIcon, smallEyeIcon } from '../../Icons/Icon';
-// import LeadProductsView from './LeadProductsView';
-import { QuotationData } from './QuotationData';
+import { downloadIcon, plusIcon, smallEyeIcon } from '../../Icons/Icon';
 import { setQuotation } from '../../Store/Action/QuotationAction';
 import QuotationProductsView from './QuotationProductsView';
-import { localLeadData } from '../Lead/localLeadData';
-import jsPDF from "jspdf";
 import "jspdf-autotable";
 import QuotaionPDF from './QuotaionPDF';
 import MyInput from '../../Component/MyInput';
@@ -58,9 +54,6 @@ function Quotation() {
         })
     }
 
-    
-    
-
     const fetchQuotationData = () => {
         var json = {
             page: PaginationReducer.pagination.page,
@@ -90,7 +83,7 @@ function Quotation() {
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.phone || '-'} /></td>
+                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
                         <td className='p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
@@ -113,9 +106,6 @@ function Quotation() {
             })
         }
     }
-
-    console.log('selectedLead', selectedLead);
-
 
     const onClickNext = () => {
         if (!ApiReducer?.apiJson?.quotationDate || ApiReducer?.apiJson?.quotationDate === '') {

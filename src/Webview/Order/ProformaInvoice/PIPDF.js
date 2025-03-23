@@ -6,6 +6,7 @@ import signature from '../../..//Image/signature.jpeg';
 import { GetFullYear } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
+import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
 
 const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
     const pdfRef = useRef();
@@ -87,16 +88,16 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 <div className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div>
                         <img className="w-1/2" src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75" />
-                        <p className="text-xs p-0.5 mt-3">GSTIN : 07AARCA3767A1ZN</p>
-                        <p className="text-xs p-0.5">CIN : U72900DL2018PTC338934</p>
-                        <p className="text-xs p-0.5">PAN : AARCA3767A</p>
+                        <p className="text-xs p-0.5 mt-3">GSTIN : {OrderInvoiceDetails.companyDetails.gstNo}</p>
+                        <p className="text-xs p-0.5">CIN : {OrderInvoiceDetails.companyDetails.cin}</p>
+                        <p className="text-xs p-0.5">PAN : {OrderInvoiceDetails.companyDetails.panNo}</p>
                     </div>
                     <div className="flex justify-end text-right">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Proforma Invoice</h3>
                             <p className="text-xs p-0.5">Order Ref No: <b>{data?.orderRefNo}</b></p>
                             <p className="text-xs p-0.5">Date: <b>{quotationDate ? quotationDate : GetFullYear(Date.now())}</b></p>
-                            <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days!==null&&data.paymentTerm.days+' days'}</b></p>
+                            <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
                         </div>
                     </div>
                 </div>
@@ -104,13 +105,15 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 {/* Client & Supplier Info */}
                 <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div className="grid grid-cols-2">
-                    <div>
+                        <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
                             <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
+                            <p className="text-xs p-0.5">Customer Name : {data?.customerDetails?.name}</p>
+                            <p className="text-xs p-0.5">Customer Contact : {data?.customerDetails?.contact}</p>
                             <p className="text-xs p-0.5">Address : {data?.customerDetails?.billingAddress?.address || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.city + ' ' + data?.customerDetails?.billingAddress?.landmark || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.state + ' ' + data?.customerDetails?.billingAddress?.pinCode || '-'}</p>
-                            <p className="text-xs p-0.5">GSTIN : {data?.customerDetails?.gstNO}</p>
+                            <p className="text-xs p-0.5">GSTIN : {data?.customerDetails?.gstNo}</p>
                         </div>
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
@@ -163,7 +166,7 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 </div>
 
                 {/* Terms & Notes */}
-                <div style={{ marginTop: 20 }}>
+                {/* <div style={{ marginTop: 20 }}>
                     <h4 className="text-black font-bold">Terms and Conditions:</h4>
                     {
                         data?.termsAndConditions?.map((ele, index) => {
@@ -182,7 +185,7 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                         Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
                         the time schedule
                     </p>
-                </div>
+                </div> */}
 
                 <div className="mt-20 flex justify-between">
                     <div>
