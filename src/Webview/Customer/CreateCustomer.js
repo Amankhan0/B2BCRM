@@ -13,7 +13,7 @@ import { deleteIcon, plusIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import useCountryStateCityOptions from '../../Hooks/useCountryStateCityoptions';
 import toast from 'react-hot-toast';
-import MyFileUpload from '../../Component/MyFileUpload';
+import MyFileUploadCommon from '../../Component/MyFileUploadCommon';
 import { CustomerValidationSchema } from './CustomerValidation';
 import useYupValidation from '../../Hooks/useYupValidation';
 import { useParams } from 'react-router-dom';
@@ -66,13 +66,11 @@ function CreateCustomer() {
     console.log('errors', errors);
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
-        validateJson(ApiReducer?.apiJson);
-        CustomerValidation(ApiReducer?.apiJson).then(res => {
-            var error = !ObjIsEmpty(res)
+        validateJson(ApiReducer?.apiJson).then(res => {
             console.log('apiJson', ApiReducer?.apiJson);
-            console.log('ApiReducer?.apiJson Error', error);
-            if (error && Object.keys(errors)?.length > 0) {
-                dispatch(setDataAction(res, SET_API_JSON_ERROR))
+            console.log('ApiReducer?.apiJson Error', errors);
+            if (res?.inner) {
+                dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
             } else {
                 const api = params?.id ? updateCustomer:addCustomer;
 
@@ -199,6 +197,9 @@ function CreateCustomer() {
                     <div>
                         <MyInputCommon name={'industry'} title={'Industry'} placeholder={'Enter Industry'} validate={validateField} errorMsg={errors[`industry`]} />
                     </div>
+                    <div>
+                        <MyInputCommon name={'leadSource'} title={'Lead Source'} placeholder={'Enter Lead Source'} validate={validateField} errorMsg={errors[`leadSource`]} />
+                    </div>
                 </div>
             </div>
             <div className='bg-white mt-5'>
@@ -304,13 +305,13 @@ function CreateCustomer() {
                         <MyInputCommon name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} validate={validateField} errorMsg={errors[`pancardNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'pancard'} title={'Upload PAN Card'} error={!ApiReducer?.apiJson?.pancard} uppercase fileType={"array"} />
+                        <MyFileUploadCommon name={'pancard'} title={'Upload PAN Card'} error={errors['pancard']} validate={validateField}  uppercase fileType={"array"} />
                     </div>
                     <div>
                         <MyInputCommon name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} validate={validateField} errorMsg={errors[`gstNo`]} />
                     </div>
                     <div>
-                        <MyFileUpload name={'gst'} title={'Upload GST Card'} error={!ApiReducer?.apiJson?.gst} fileType={'array'} uppercase />
+                        <MyFileUploadCommon name={'gst'} title={'Upload GST Card'} error={errors['gst']} validate={validateField} fileType={'array'} uppercase />
                     </div>
                 </div>
             </div>

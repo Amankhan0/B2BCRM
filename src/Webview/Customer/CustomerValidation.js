@@ -154,6 +154,7 @@ export const CustomerValidationSchema = Yup.object().shape({
   industry: Yup.string().required('Industry is required'),
   designation: Yup.string().required('Designation is required'),
   name: Yup.string().required('Name is required'),
+  leadSource: Yup.string().required('Lead Source is required'),
   contact: Yup.string()
     .matches(/^[0-9]{10}$/, 'Contact must be 10 digits')
     .required('Contact is required'),
@@ -190,11 +191,11 @@ export const CustomerValidationSchema = Yup.object().shape({
     .required('GST number is required'),
   gst: Yup.array().of(
     Yup.object().shape({
-      title: Yup.string().required('GST title is required'),
-      url: Yup.string().required('GST URL is required'),
-    })),
+      title: Yup.string(),
+      url: Yup.string(),
+    })).required("GST is required"),
   pancard: Yup.array().of(Yup.object().shape({
-    title: Yup.string().required('PAN card title is required'),
-    url: Yup.string().required('PAN card URL is required'),
-  })),
+    title: Yup.string(),
+    url: Yup.string()
+  })).required('PAN card required'),
 });

@@ -23,6 +23,10 @@ const PanelRoutes = () => {
   return (
     <>
       <Routes>
+        <Route path="/role" exact element={<Role />} />
+        <Route path="/addrole" exact element={<AddRole />} />
+        <Route path="/user" exact element={<User />} />
+        <Route path="/addUser" exact element={<AddUser />} />
         <Route path="/" exact element={<Dashboard />} />
         <Route path="/lead" exact element={<Lead />} />
         <Route path="/create-lead" exact element={<CreateLead />} />
@@ -35,14 +39,10 @@ const PanelRoutes = () => {
         <Route path="/edit-customer/:id" exact element={<CreateCustomer />} />
         <Route path="/supplier" exact element={<Supplier />} />
         <Route path="/create-supplier" exact element={<CreateSupplier />} />
+        <Route path="/edit-supplier/:id" exact element={<CreateSupplier />} />
         <Route path="/product" exact element={<Product />} />
         <Route path="/create-product" exact element={<CreateProduct />} />
         <Route path="/edit-product/:id" exact element={<CreateProduct />} />
-        <Route path="/role" exact element={<Role />} />
-        <Route path="/addrole" exact element={<AddRole />} />
-        <Route path="/user" exact element={<User />} />
-        <Route path="/addUser" exact element={<AddUser />} />
-        
       </Routes>
     </>
   );

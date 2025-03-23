@@ -11,7 +11,7 @@ export const checkAddUserValidation = (data) => {
         if(!data.lastName || data.lastName === ''){
             Object.assign(error, { lastName: "Last name is required" })
         }
-        if(!data.contact || data.contact === '' || data.contact.length === 10){
+        if(!data.contact || data.contact === '' || data.contact.length !== 10){
             Object.assign(error, { contact: "Contact is required" })
         }
         if(!data.email || data.email === '' || !regexEmail.test(data.email)){

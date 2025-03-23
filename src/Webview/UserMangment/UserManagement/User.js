@@ -48,7 +48,7 @@ const User = () => {
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.username || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.role_id?.roleName || '-'} /></td>
+                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
                         <td className='p-2 border text-black'>
                             <div className='flex gap-2'>
                                 {
@@ -70,7 +70,6 @@ const User = () => {
     }
 
     console.log(UserReducer);
-    
     
     return (
         <div>

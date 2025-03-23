@@ -5,7 +5,7 @@ import { Colors } from "../../../Colors/color";
 import MyButton from "../../../Component/MyButton";
 import toast from "react-hot-toast";
 import { ApiHit, ObjIsEmpty, regexEmail } from "../../../utils";
-import { searchRole, selectClass } from "../../../Constants/Constants";
+import { addUser, searchRole, selectClass } from "../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAddUserValidation } from "./checkAddUserValidation";
 import { setDataAction } from "../../../Store/Action/SetDataAction";
@@ -44,19 +44,28 @@ const AddUser = () => {
             toast.error('Role is required')
         } else {
             checkAddUserValidation(ApiReducer.apiJson).then(res => {
-                if (!ObjIsEmpty(res)) {
+                console.log('res', res);
+                console.log(ObjIsEmpty(res));
+
+
+                if (ObjIsEmpty(res) === false) {
                     dispatch(setDataAction(res, SET_API_JSON_ERROR))
                 } else {
                     var json = ApiReducer.apiJson
                     json.roleId = roleData?.[selectedRole]?._id
                     json.roleName = roleData?.[selectedRole]?.roleName
+                    console.log('json', json);
+                    ApiHit(json, addUser).then(res => {
+                        if (res.status === 201) {
+                            toast.success('User added successfully')
+                        }else{
+                            toast.error(res.message)
+                        }
+                    })
                 }
             })
         }
     }
-
-    console.log(ApiReducer?.apiJson);
-
 
     return (
         roleData !== null &&
@@ -77,13 +86,13 @@ const AddUser = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                     <div>
-                        <MyInput name={'firstName'} placeholder={'Enter first name'} title={'First Name'} error={ApiReducer?.apiJson?.firstName === '' ? true : !ApiReducer?.apiJson?.firstName ? true : !ApiReducer?.apiJsonError?.firstName ? true : false} />
+                        <MyInput name={'firstName'} placeholder={'Enter first name'} title={'First Name'} error={ApiReducer?.apiJson?.firstName === '' ? true : !ApiReducer?.apiJson?.firstName ? true : ApiReducer?.apiJsonError?.firstName ? true : false} />
                     </div>
                     <div>
-                        <MyInput name={'lastName'} placeholder={'Enter last name'} title={'Last Name'} error={ApiReducer?.apiJson?.lastName === '' ? true : !ApiReducer?.apiJson?.lastName ? true : !ApiReducer?.apiJsonError?.lastName ? true : false} />
+                        <MyInput name={'lastName'} placeholder={'Enter last name'} title={'Last Name'} error={ApiReducer?.apiJson?.lastName === '' ? true : !ApiReducer?.apiJson?.lastName ? true : ApiReducer?.apiJsonError?.lastName ? true : false} />
                     </div>
                     <div>
-                        <MyInput name={'contact'} placeholder={'Enter contact'} title={'Contact'} error={ApiReducer?.apiJson?.contact?.length === 10 ? false : ApiReducer?.apiJson?.contact?.length !== 10 ? true : !ApiReducer?.apiJsonError?.contact ? true : false} />
+                        <MyInput name={'contact'} placeholder={'Enter contact'} title={'Contact'} error={ApiReducer?.apiJson?.contact?.length === 10 ? false : ApiReducer?.apiJson?.contact?.length !== 10 ? true : ApiReducer?.apiJsonError?.contact ? true : false} />
                     </div>
                     <div>
                         <MyInput name={'email'} placeholder={'Enter email'} title={'Email'} error={regexEmail.test(ApiReducer?.apiJson?.email) ? false : !regexEmail.test(ApiReducer?.apiJson?.email) ? true : ApiReducer?.apiJsonError?.email ? true : false} />
@@ -113,7 +122,7 @@ const AddUser = () => {
                         <MyInput name={'password'} placeholder={'Enter password'} title={'Password'} error={ApiReducer?.apiJson?.password === '' ? true : !ApiReducer?.apiJson?.password ? true : !ApiReducer?.apiJsonError?.password ? true : false} />
                     </div>
                     <div>
-                        <MyInput name={'confirmPassword'} placeholder={'Enter confirm password'} title={'Confirm Password'} error={ApiReducer?.apiJson?.confirmPassword === '' ? true : !ApiReducer?.apiJson?.confirmPassword ? true : !ApiReducer?.apiJsonError?.confirmPassword ? true : false} />
+                        <MyInput name={'confirmPassword'} placeholder={'Enter confirm password'} title={'Confirm Password'} error={ApiReducer?.apiJson?.confirmPassword === '' ? true : !ApiReducer?.apiJson?.confirmPassword ? true : ApiReducer?.apiJson?.confirmPassword === ApiReducer?.apiJson?.password ? false : ApiReducer?.apiJsonError?.confirmPassword ? true : false} />
                     </div>
                 </div>
             </div>

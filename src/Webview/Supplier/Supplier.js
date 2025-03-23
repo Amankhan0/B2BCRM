@@ -7,7 +7,7 @@ import { searchCustomer, searchLead, searchSupplier } from '../../Constants/Cons
 import { setSupplier } from '../../Store/Action/SupplierAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import SupplierGstAddressView from './SupplierGstAddressView';
 import SupplierWarehouseAddressView from './SupplierWarehouseAdddressView';
@@ -23,6 +23,8 @@ function Customer() {
   const [showGstAddress, setShowGstAddress] = useState(null)
   const [showWarehouseAddress, setShowWarehouseAddress] = useState(null)
   const [showBankDetails, setshowBankDetails] = useState(null);
+
+  const navigate = useNavigate();
 
   useLayoutEffect(() => {
 
@@ -72,12 +74,12 @@ function Customer() {
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-supplier/${ele?._id}`) }} >
                   {editIcon}
                 </div>
-                <div className='cursor-pointer' style={{ color: Colors.RED }}>
+                {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
                   {deleteIcon}
-                </div>
+                </div> */}
               </div>
             </td>
           </tr>
@@ -104,11 +106,11 @@ function Customer() {
       </div>
       {
         showGstAddress !== null &&
-        <SupplierGstAddressView onCloseClick={() => setShowGstAddress(null)} addressesArr={supplierReducer?.doc?.content[showGstAddress || 0]?.billingAddresses} />
+        <SupplierGstAddressView onCloseClick={() => setShowGstAddress(null)} addressesArr={supplierReducer?.doc?.content[showGstAddress || 0]?.gstAddresses} />
       }
       {
         showWarehouseAddress !== null &&
-        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.shippingAddresses} />
+        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.warehouseAddresses} />
       }
       {
         showBankDetails !== null &&

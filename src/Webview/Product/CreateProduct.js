@@ -38,7 +38,7 @@ function CreateProduct() {
                 minQty: string().required('Minimum quantity is required'), // Consider .number()
                 gst: string().required('GST is required'), // Consider a specific format if needed
             })
-        ).required('At least one variant is required'),
+        ).min(1,'At least one variant is required').required('At least one variant is required'),
     });
 
     const { errors, validateJson, validateField } = useYupValidation(validationSchema);
@@ -69,12 +69,12 @@ function CreateProduct() {
     console.log('errors', errors);
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
-        validateJson(ApiReducer?.apiJson).then(() => {
+        validateJson(ApiReducer?.apiJson).then((res) => {
             var error = !ObjIsEmpty(errors)
             console.log('apiJson', ApiReducer?.apiJson);
             console.log('ApiReducer?.apiJson Error', errors);
-            if (error) {
-                dispatch(setDataAction(errors, SET_API_JSON_ERROR))
+            if (res?.inner) {
+                dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
             } else {
                 const api = params?.id ? updateProduct : addProduct;
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
