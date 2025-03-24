@@ -9,7 +9,9 @@ import { addUser, searchRole, selectClass } from "../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAddUserValidation } from "./checkAddUserValidation";
 import { setDataAction } from "../../../Store/Action/SetDataAction";
-import { SET_API_JSON_ERROR } from "../../../Store/ActionName/ActionName";
+import { SET_API_JSON, SET_API_JSON_ERROR } from "../../../Store/ActionName/ActionName";
+import MySelectCommon from '../../../Component/MySelectCommon';
+import useCountryStateCityOptions from "../../../Hooks/useCountryStateCityoptions";
 
 const AddUser = () => {
 
@@ -17,6 +19,9 @@ const AddUser = () => {
     const dispatch = useDispatch()
     const [roleData, setRoleData] = useState(null)
     const [selectedRole, setSelectedRole] = useState(null)
+    const [state, setState] = useState(null);
+    const [city, setCity] = useState(null);
+    const { options, loading, error } = useCountryStateCityOptions(['IN']); // Or empty array for all countries
 
     useEffect(() => {
         if (roleData === null) {
@@ -44,10 +49,6 @@ const AddUser = () => {
             toast.error('Role is required')
         } else {
             checkAddUserValidation(ApiReducer.apiJson).then(res => {
-                console.log('res', res);
-                console.log(ObjIsEmpty(res));
-
-
                 if (ObjIsEmpty(res) === false) {
                     dispatch(setDataAction(res, SET_API_JSON_ERROR))
                 } else {
@@ -58,13 +59,25 @@ const AddUser = () => {
                     ApiHit(json, addUser).then(res => {
                         if (res.status === 201) {
                             toast.success('User added successfully')
-                        }else{
+                        } else {
                             toast.error(res.message)
                         }
                     })
                 }
             })
         }
+    }
+
+    const handleChange = (e, keyName) => {
+        var json = ApiReducer?.apiJson
+        if(keyName === 'country'){
+            setState(e.state)
+        }else if(keyName === 'state'){
+            setCity(e.city)
+            delete json?.city
+        }
+        json[keyName] = e.value
+        dispatch(setDataAction(json,SET_API_JSON))
     }
 
     return (
@@ -84,7 +97,7 @@ const AddUser = () => {
                         }
                     </select>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                     <div>
                         <MyInput name={'firstName'} placeholder={'Enter first name'} title={'First Name'} error={ApiReducer?.apiJson?.firstName === '' ? true : !ApiReducer?.apiJson?.firstName ? true : ApiReducer?.apiJsonError?.firstName ? true : false} />
                     </div>
@@ -97,24 +110,26 @@ const AddUser = () => {
                     <div>
                         <MyInput name={'email'} placeholder={'Enter email'} title={'Email'} error={regexEmail.test(ApiReducer?.apiJson?.email) ? false : !regexEmail.test(ApiReducer?.apiJson?.email) ? true : ApiReducer?.apiJsonError?.email ? true : false} />
                     </div>
+
+                    <MySelectCommon selectedValue={ApiReducer?.apiJson?.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'country')} placeholder={'Enter Country'} options={options} error={true} errorMsg={ApiReducer?.apiJson?.country?'':ApiReducer?.apiJsonError?.country}/>
+                    <MySelectCommon selectedValue={ApiReducer?.apiJson?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'state')} placeholder={'Enter State'} options={state} error={true} errorMsg={ApiReducer?.apiJson?.state?'':ApiReducer?.apiJsonError?.state}/>
+                    <MySelectCommon selectedValue={ApiReducer?.apiJson?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'city')} placeholder={'Enter City'} options={city} error={true} errorMsg={ApiReducer?.apiJson?.city?'':ApiReducer?.apiJsonError?.city} />
+
                     <div>
-                        <MyInput name={'country'} placeholder={'Enter country'} title={'Country'} error={ApiReducer?.apiJson?.country === '' ? true : !ApiReducer?.apiJson?.country ? true : !ApiReducer?.apiJsonError?.country ? true : false} />
+                        <MyInput name={'pinCode'} placeholder={'Enter pinCode'} title={'Pincode'} error={ApiReducer?.apiJson?.pinCode === '' ? true : !ApiReducer?.apiJson?.pinCode ? true : !ApiReducer?.apiJsonError?.pinCode ? true : false} />
                     </div>
                     <div>
                         <MyInput name={'address'} placeholder={'Enter address'} title={'Address'} error={ApiReducer?.apiJson?.address === '' ? true : !ApiReducer?.apiJson?.address ? true : !ApiReducer?.apiJsonError?.address ? true : false} />
                     </div>
                     <div>
-                        <MyInput name={'pinCode'} placeholder={'Enter pinCode'} title={'Pincode'} error={ApiReducer?.apiJson?.pinCode === '' ? true : !ApiReducer?.apiJson?.pinCode ? true : !ApiReducer?.apiJsonError?.pinCode ? true : false} />
-                    </div>
-                    <div>
                         <MyInput name={'landmark'} placeholder={'Enter Landmark'} title={'Landmark'} error={ApiReducer?.apiJson?.landmark === '' ? true : !ApiReducer?.apiJson?.landmark ? true : !ApiReducer?.apiJsonError?.landmark ? true : false} />
                     </div>
-                    <div>
+                    {/* <div>
                         <MyInput name={'state'} placeholder={'Enter state'} title={'State'} error={ApiReducer?.apiJson?.state === '' ? true : !ApiReducer?.apiJson?.state ? true : !ApiReducer?.apiJsonError?.state ? true : false} />
                     </div>
                     <div>
                         <MyInput name={'city'} placeholder={'Enter city'} title={'City'} error={ApiReducer?.apiJson?.city === '' ? true : !ApiReducer?.apiJson?.city ? true : !ApiReducer?.apiJsonError?.city ? true : false} />
-                    </div>
+                    </div> */}
                     <div>
                         <MyInput name={'username'} placeholder={'Enter username'} title={'Username'} error={ApiReducer?.apiJson?.username === '' ? true : !ApiReducer?.apiJson?.username ? true : !ApiReducer?.apiJsonError?.username ? true : false} />
                     </div>

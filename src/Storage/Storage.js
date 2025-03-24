@@ -10,7 +10,10 @@ export const apiJson = 'daj';
 export const selectedData = 'dajd';
 
 export const setAuthenticatedUser = (data) => {
-    localStorage.setItem(AuthenticatedUser, JSON.stringify(data));
+    if(data){
+        localStorage.setItem(AuthenticatedUser, JSON.stringify(data));
+    }
+    
 }
 
 export const getAuthenticatedUser = () => {

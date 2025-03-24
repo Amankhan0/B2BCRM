@@ -12,14 +12,13 @@ import { setQuotation } from '../../Store/Action/QuotationAction';
 import QuotationProductsView from './QuotationProductsView';
 import "jspdf-autotable";
 import QuotaionPDF from './QuotaionPDF';
-import MyInput from '../../Component/MyInput';
-import toast from 'react-hot-toast';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
-function Quotation() {
+function Quotation({ selectedLeadId }) {
 
-    const ApiReducer = useSelector(state => state.ApiReducer)
     const QuotationReducer = useSelector(state => state.QuotationReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
 
@@ -27,24 +26,24 @@ function Quotation() {
     const [leadData, setLeadData] = useState(null)
     const [selectedLead, setSelectedLead] = useState(null)
     const [quotationPdf, setQuotationPdf] = useState(null)
-    const [quotationDate, setQuotationDate] = useState(null)
-    const [name, setName] = useState(null)
-    const [contact, setContact] = useState(null)
 
     useEffect(() => {
-        if (leadData === null) {
+        if (leadData === null && !selectedLeadId) {
             fetchData()
-        } else if (QuotationReducer?.doc === null && selectedLead !== null) {
+        } else if (selectedLeadId && selectedLead === null) {
+            setSelectedLead(selectedLeadId)
+        }
+        else if (QuotationReducer?.doc === null && selectedLead !== null) {
             fetchQuotationData()
         }
-    }, [leadData, selectedLead])
+    }, [leadData, selectedLead, QuotationReducer])
 
     const fetchData = () => {
         var json = {
             page: 1,
             limit: 100,
             search: {
-
+                user_id: user?.userData?._id
             }
         }
         ApiHit(json, searchLead).then(res => {
@@ -94,7 +93,7 @@ function Quotation() {
                                     {downloadIcon}
                                 </div>
                                 {
-                                    leadData?.content?.[0]?.status !== OrderInitiated &&
+                                    leadData?.content?.[0]?.status !== OrderInitiated && user?.roleObject?.permission?.[2]?.permission?.[0].write &&
                                     <NavLink to={'/create-order/' + ele._id}>
                                         <MyButton icon={plusIcon} title={'Create Order'} className={'h-7 text-xs w-max'} />
                                     </NavLink>
@@ -107,26 +106,6 @@ function Quotation() {
         }
     }
 
-    const onClickNext = () => {
-        if (!ApiReducer?.apiJson?.quotationDate || ApiReducer?.apiJson?.quotationDate === '') {
-            toast.error('Quotation date is required')
-        }
-        if (!ApiReducer?.apiJson?.name || ApiReducer?.apiJson?.name === '') {
-            toast.error('Name is required')
-        }
-        if (!ApiReducer?.apiJson?.contact || ApiReducer?.apiJson?.contact === '' || ApiReducer?.apiJson?.contact?.length !== 10) {
-            toast.error('Contact is required')
-        }
-        else {
-            setQuotationDate(ApiReducer?.apiJson?.quotationDate)
-            setName(ApiReducer?.apiJson?.name)
-            setContact(ApiReducer?.apiJson?.contact)
-        }
-    }
-
-    console.log('selectedLead',selectedLead);
-    
-
     return (
         <div className='mt-10'>
             {
@@ -134,21 +113,26 @@ function Quotation() {
                 <>
                     <div className='grid grid-cols-3 items-center gap-5'>
                         <div>
-                            <Title title={'Select Lead'} size={'base'} color={Colors.BLACK} />
                             <div className='flex gap-5'>
-                                <select onChange={(e) => setSelectedLead(e.target.value)} className={selectClass}>
-                                    <option value={null}>Select Lead</option>
+                                {
+                                    !selectedLeadId &&
+                                    <div className='w-full'>
+                                        <Title title={'Select Lead'} size={'base'} color={Colors.BLACK} />
+                                        <select onChange={(e) => setSelectedLead(e.target.value)} className={selectClass}>
+                                            <option value={null}>Select Lead</option>
+                                            {
+                                                leadData?.content?.map((ele, i) => {
+                                                    return (
+                                                        <option value={JSON.stringify(ele)}>{ele.leadRefNo}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                <div className='w-full mt-7'>
                                     {
-                                        leadData?.content?.map((ele, i) => {
-                                            return (
-                                                <option value={JSON.stringify(ele)}>{ele.leadRefNo}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                                <div className='w-full mt-1'>
-                                    {
-                                        selectedLead !== null &&
+                                        selectedLead !== null && user?.roleObject?.permission?.[1]?.permission?.[0].write &&
                                         <NavLink to={'/create-quotation/' + JSON.parse(selectedLead)._id}>
                                             <MyButton className={'p-2.5'} title={'Create Quotation'} />
                                         </NavLink>
@@ -157,19 +141,19 @@ function Quotation() {
                             </div>
                         </div>
                     </div>
-                    {
-                        selectedLead !== null &&
-                        <>
-                            <div className='mt-5 p-5 bg-white'>
-                                <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
-                            </div>
-                            {
-                                showProducts !== null &&
-                                <QuotationProductsView onCloseClick={() => setShowProducts(null)} productsArr={QuotationReducer?.doc?.content?.[showProducts]?.products} title={`Quotation Ref No ${QuotationReducer?.doc?.content?.[showProducts]?.quotationRefNo}`} />
-                            }
-                        </>
-                    }
 
+                </>
+            }
+            {
+                selectedLead !== null &&
+                <>
+                    <div className='mt-5 p-5 bg-white'>
+                        <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
+                    </div>
+                    {
+                        showProducts !== null &&
+                        <QuotationProductsView onCloseClick={() => setShowProducts(null)} productsArr={QuotationReducer?.doc?.content?.[showProducts]?.products} title={`Quotation Ref No ${QuotationReducer?.doc?.content?.[showProducts]?.quotationRefNo}`} />
+                    }
                 </>
             }
             {
@@ -177,21 +161,7 @@ function Quotation() {
                 <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
                     <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
                     <div className={`relative rounded-lg card w-[60%] p-8 transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
-                        {
-                            quotationDate !== null && name !== null && contact !== null ?
-                                <QuotaionPDF data={quotationPdf} quotationDate={quotationDate} name={name} contact={contact} /> :
-                                <div>
-                                    <MyInput important={true} name={'quotationDate'} title={'Quotation Generated Date'} placeholder={'Enter Quotation Generated Date'} />
-                                    <p className='my-2 text-gray-400'>Example : Jan 01, 2025</p>
-                                    <MyInput important={true} name={'name'} title={'Name'} placeholder={'Enter Name'} />
-                                    <div className='mt-5'>
-                                        <MyInput important={true} name={'contact'} title={'Contact'} placeholder={'Enter Contact'} />
-                                    </div>
-                                    <div className='mt-5'>
-                                        <MyButton className={'px-5'} onClick={() => onClickNext()} title={'Next'} />
-                                    </div>
-                                </div>
-                        }
+                        <QuotaionPDF data={quotationPdf} /> :
                     </div>
                 </div>
             }

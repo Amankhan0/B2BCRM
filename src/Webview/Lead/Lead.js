@@ -9,8 +9,11 @@ import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
 import { localLeadData } from './localLeadData';
-import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
+import { crossIcon, deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import LeadProductsView from './LeadProductsView';
+import Quotation from '../Quotation/Quotation';
+import { setQuotation } from '../../Store/Action/QuotationAction';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
 function Lead() {
 
@@ -20,10 +23,14 @@ function Lead() {
   const dispatch = useDispatch()
 
   const [showProducts, setShowProducts] = useState(null)
+  const [quotationModal, setQuotationModal] = useState(null)
+  let user = getAuthenticatedUserWithRoles();
 
   useEffect(() => {
     if (LeadReducer.doc === null) {
       fetchData()
+      console.log('user----',user);
+      
     }
   }, [])
 
@@ -32,7 +39,7 @@ function Lead() {
       page: PaginationReducer.pagination.page,
       limit: PaginationReducer.pagination.limit,
       search: {
-
+        "user_id":user?.userData?._id
       }
     }
     ApiHit(json, searchLead).then(res => {
@@ -62,16 +69,17 @@ function Lead() {
               <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='p-2 border text-black'>
+              <p className='cursor-pointer' onClick={() => setQuotationModal(JSON.stringify(ele))} style={{ color: Colors.ThemeBlue }}>View Quotation</p>
               {
                 ele.status === 'Active' &&
                 <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
-                  {editIcon}
+                  <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                    {editIcon}
+                  </div>
+                  <div className='cursor-pointer' style={{ color: Colors.RED }}>
+                    {deleteIcon}
+                  </div>
                 </div>
-                <div className='cursor-pointer' style={{ color: Colors.RED }}>
-                  {deleteIcon}
-                </div>
-              </div>
               }
             </td>
           </tr>
@@ -80,17 +88,22 @@ function Lead() {
     }
   }
 
-  console.log('LeadReducer', LeadReducer?.doc);
-
+  const onCrossQuotaiotn = () => {
+    dispatch(setQuotation(null))
+    setQuotationModal(null)
+  }
 
   return (
     <div className='mt-10'>
       <div className='card p-2'>
         <div className='flex justify-between items-center'>
           <Title title={'Lead'} size={'xl'} color={Colors.BLACK} />
-          <NavLink to={'/create-lead'}>
-            <MyButton title={'Create Lead'} />
-          </NavLink>
+          {
+            user?.roleObject?.permission?.[0]?.permission?.[0].write &&
+            <NavLink to={'/create-lead'}>
+              <MyButton title={'Create Lead'} />
+            </NavLink>
+          }
         </div>
       </div>
       <div className='mt-5 p-5 bg-white'>
@@ -99,6 +112,19 @@ function Lead() {
       {
         showProducts !== null &&
         <LeadProductsView onCloseClick={() => setShowProducts(null)} productsArr={LeadReducer?.doc?.content?.[showProducts]?.products} title={`Lead Ref No ${LeadReducer?.doc?.content?.[showProducts]?.leadRefNo}`} />
+      }
+      {
+        quotationModal !== null &&
+        <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
+          <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
+          <div className={`relative rounded-lg card w-[60%] p-8 transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
+            <div className='flex justify-between text-white p-2 items-center rounded-md' style={{ background: Colors.ThemeBlue }}>
+              <Title title={'Quotation'} size={'lg'} />
+              <i className='cursor-pointer' onClick={() => onCrossQuotaiotn()}>{crossIcon}</i>
+            </div>
+            <Quotation selectedLeadId={quotationModal} />
+          </div>
+        </div>
       }
     </div>
   )

@@ -11,7 +11,7 @@ import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../Store/ActionName/ActionName';
 import { CrossMark } from '../../SVG/Icons';
 import toast from 'react-hot-toast';
-import { getAuthenticatedUser } from '../../Storage/Storage';
+import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import { OrderInvoiceDetails } from '../OrderInvoiceDetails';
 import ReactQuill from 'react-quill';
 
@@ -57,7 +57,7 @@ function CreateQuotation() {
         var json = updateProductId(ApiReducer?.apiJson)
         json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
         json.status = Active
-        json.user_id = getAuthenticatedUser().userId;
+        json.user_id =  getAuthenticatedUserWithRoles().userData?._id;
         json.termsAndConditions = content
         ApiHit(json, addQuotation).then(res => {
             if (res.status === 200) {

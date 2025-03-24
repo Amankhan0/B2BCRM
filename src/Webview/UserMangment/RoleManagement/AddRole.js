@@ -21,8 +21,8 @@ const AddRole = () => {
 
     const onClickAddRemovePermission = (index, keyName, ele) => {
         var oldJson = permissionData
-        if (oldJson.permission[index][keyName]) {
-            oldJson.permission[index][keyName] = false
+        if (oldJson.permission[index].permission[0][keyName]) {
+            oldJson.permission[index].permission[0][keyName] = false
             if (keyName === 'read') {
                 let newArr = oldJson.allowedEndPoints.filter(item => item !== ele.readEndpoint);
                 oldJson.allowedEndPoints = newArr
@@ -35,7 +35,7 @@ const AddRole = () => {
                 oldJson.allowedEndPoints = newArr
             }
         } else {
-            oldJson.permission[index][keyName] = true
+            oldJson.permission[index].permission[0][keyName] = true
             if (keyName === 'read') {
                 oldJson.allowedEndPoints.push(ele.readEndpoint)
             } else if (keyName === 'write') {
@@ -55,6 +55,8 @@ const AddRole = () => {
         if(permissionData.roleName === ''){
             toast.error('Role name is required')
         }else{
+            console.log('permissionData',permissionData);
+            
             ApiHit(permissionData,addRole).then(res=>{
                 if(res.status === 200){
                     toast.success('Role added successfully')
@@ -88,9 +90,9 @@ const AddRole = () => {
                                     <Title title={ele.value} size={'md'} color={Colors.BLACK} />
                                 </div>
                                 <div className="flex gap-5">
-                                    <p onClick={() => onClickAddRemovePermission(i, 'read', ele)} className={`${ele.read ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Read</p>
-                                    <p onClick={() => onClickAddRemovePermission(i, 'write', ele)} className={`${ele.write ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Write</p>
-                                    <p onClick={() => onClickAddRemovePermission(i, 'delete', ele)} className={`${ele.delete ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Delete</p>
+                                    <p onClick={() => onClickAddRemovePermission(i, 'read', ele)} className={`${ele.permission[0].read ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Read</p>
+                                    <p onClick={() => onClickAddRemovePermission(i, 'write', ele)} className={`${ele.permission[0].write ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Write</p>
+                                    <p onClick={() => onClickAddRemovePermission(i, 'delete', ele)} className={`${ele.permission[0].delete ? 'bg-green-500 text-white' : 'bg-slate-300 text-black'} p-1 rounded-md`}>Delete</p>
                                 </div>
                             </div>
                         </div>

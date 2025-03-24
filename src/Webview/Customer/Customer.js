@@ -12,12 +12,14 @@ import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import LeadProductsView from '../Lead/LeadProductsView';
 import CustomerBillingAddressView from './CustomerBillingAddressView';
 import CustomerShippingAddressView from './CustomerShippingAdddressView';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 // import LeadProductsView from './LeadProductsView';
 
 function Customer() {
 
   const PaginationReducer = useSelector(state => state.PaginationReducer)
   const customerReducer = useSelector(state => state.CustomerReducer)
+  let user = getAuthenticatedUserWithRoles();
 
   const navigate = useNavigate();
 
@@ -67,7 +69,7 @@ function Customer() {
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-customer/${ele?._id}`) }} >
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-customer/${ele?._id}`) }} >
                   {editIcon}
                 </div>
                 {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
@@ -89,9 +91,12 @@ function Customer() {
       <div className='card p-2'>
         <div className='flex justify-between items-center'>
           <Title title={'Customer'} size={'xl'} color={Colors.BLACK} />
-          <NavLink to={'/create-customer'}>
-            <MyButton title={'Create Customer'} />
-          </NavLink>
+          {
+            user?.roleObject?.permission?.[3]?.permission?.[0].write &&
+            <NavLink to={'/create-customer'}>
+              <MyButton title={'Create Customer'} />
+            </NavLink>
+          }
         </div>
       </div>
       <div className='mt-5 p-5 bg-white'>

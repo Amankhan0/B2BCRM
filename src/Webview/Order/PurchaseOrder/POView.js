@@ -13,12 +13,12 @@ import { Status } from '../../../Component/status';
 import toast from 'react-hot-toast';
 import { Colors } from '../../../Colors/color';
 import MyFileUpload from '../../../Component/MyFileUpload';
-import DispatchOrder from './DispatchOrder';
+import DispatchOrder from '../Dispatch/DispatchOrder';
+import POProductsView from './POProductView';
 
 function POView({ orderData }) {
 
     const OrderReducer = useSelector(state => state.OrderReducer)
-    const ApiReducer = useSelector(state => state.ApiReducer)
 
     const dispatch = useDispatch()
     const [loader, setLoader] = useState(null)
@@ -64,19 +64,22 @@ function POView({ orderData }) {
                         </td>
                         <td className='p-2 border text-black flex gap-2'>
                             {
+                                ele.status !== 'cancel' &&
+                                <MyButton title={'Download PO PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
+                            }
+                            {
                                 ele.status === 'cancel' &&
                                 <MyButton title={'cancelled'} bg={Colors.DARKRED} className={'h-7 text-xs w-max'} />
                             }
                             {
-                                ele.status === 'Active' && ele.status !== 'cancel' &&
-                                <MyButton title={'Download PO PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
-                            }
-                            {
-                                ele.status === 'Active' &&
+                                ele.status === 'Active' || ele.status === "partial_dispatched"?
                                 <>
-                                    <MyButton type={loader === 'cancelPO'&&'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                    <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
                                     <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                    <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
                                 </>
+                                :
+                                ''
                             }
                         </td>
 
@@ -86,22 +89,16 @@ function POView({ orderData }) {
         }
     }
 
-    const onClickDispatch = () => {
-        if (!ApiReducer?.apiJson?.headsupInvoice && !ApiReducer?.apiJson?.vendorInvoice) {
-            toast.error('Both invoice are required')
-        } else {
-            var json = {
-                status: 'Dispatched',
-                _id: dispatchModal._id,
-                headsupInvoice: ApiReducer?.apiJson?.headsupInvoice,
-                vendorInvoice: ApiReducer?.apiJson?.vendorInvoice
-            }
-            // ApiHit(json,updatePO).then(res=>{
-            //     if(res.status === 200){
-            //         toast.success('Order Dispatched')
-            //     }
-            // })
+    const onClickCloseMannually = (ele) => {
+        var json = {
+            _id:ele._id,
+            status :'close_mannually'
         }
+        ApiHit(json,updatePO).then(res=>{
+            if(res.status === 200){
+                toast.success('Mannually close successfully')
+            }
+        })
     }
 
     function removeMatchingQty(poData, orderData) {
@@ -146,11 +143,11 @@ function POView({ orderData }) {
                             if (res.status === 200) {
                                 toast.success('Order Cancel Successfully')
                                 window.location.reload()
-                            }else{
+                            } else {
                                 setLoader(null)
                             }
                         })
-                    }else{
+                    } else {
                         setLoader(null)
                     }
                 })
@@ -166,7 +163,7 @@ function POView({ orderData }) {
                 </div>
                 {
                     showProducts !== null &&
-                    <OrderProductsView onCloseClick={() => setShowProducts(null)} productsArr={OrderReducer?.PO?.content?.[showProducts]?.products} title={`Order Ref No ${OrderReducer?.PO?.content?.[showProducts]?.orderRefNo}`} />
+                    <POProductsView onCloseClick={() => setShowProducts(null)} productsArr={OrderReducer?.PO?.content?.[showProducts]?.products} title={`Order Ref No ${OrderReducer?.PO?.content?.[showProducts]?.orderRefNo}`} />
                 }
                 {
                     dispatchModal !== null &&
@@ -181,7 +178,7 @@ function POView({ orderData }) {
                                     {crossIcon}
                                 </div>
                             </div>
-                            <DispatchOrder data={JSON.parse(dispatchModal)}/>
+                            <DispatchOrder data={JSON.parse(dispatchModal)} />
                         </div>
                     </div>
                 }

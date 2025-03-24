@@ -10,11 +10,13 @@ import { searchRole, searchUser } from "../../../Constants/Constants";
 import { setRole } from "../../../Store/Action/RoleAction";
 import { deleteIcon, editIcon } from "../../../Icons/Icon";
 import { setUser } from "../../../Store/Action/UserAction";
+import { getAuthenticatedUserWithRoles } from "../../../Storage/Storage";
 
 const User = () => {
 
     const UserReducer = useSelector(state => state.UserReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
 
@@ -37,7 +39,7 @@ const User = () => {
         })
     }
 
-    const th = ['Full Name', 'Contact', 'Email','UserName','Role Type','Action']
+    const th = ['Full Name', 'Contact', 'Email', 'UserName', 'Role Type', 'Action']
     let td;
     if (UserReducer.doc !== null) {
         if (UserReducer.doc.content.length !== 0) {
@@ -68,9 +70,6 @@ const User = () => {
             })
         }
     }
-
-    console.log(UserReducer);
-    
     return (
         <div>
             <div className="card mt-10 p-2">
@@ -79,11 +78,14 @@ const User = () => {
                         <Title title={'User'} size={'lg'} color={Colors.BLACK} />
                     </div>
                     <div className='flex gap-5'>
-                        <div className='w-full mt-1'>
-                            <NavLink to={'/adduser'}>
-                                <MyButton className={'p-2.5'} title={'Create User'} />
-                            </NavLink>
-                        </div>
+                        {
+                            user?.roleObject?.permission?.[7]?.permission?.[0].write &&
+                            <div className='w-full mt-1'>
+                                <NavLink to={'/adduser'}>
+                                    <MyButton className={'p-2.5'} title={'Create User'} />
+                                </NavLink>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

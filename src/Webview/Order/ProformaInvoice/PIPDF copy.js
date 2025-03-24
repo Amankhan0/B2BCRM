@@ -1,13 +1,14 @@
-
-
 import React, { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { Colors } from "../../Colors/color";
-import signature from '../../Image/signature.jpeg';
-import { OrderInvoiceDetails } from "../OrderInvoiceDetails";
+import { Colors } from "../../../Colors/color";
+import signature from '../../..//Image/signature.jpeg';
+import { GetFullYear } from "../../../utils";
+import { backIcon } from "../../../SVG/Icons";
+import Title from "../../../Component/Title";
+import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
 
-const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
+const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
     const pdfRef = useRef();
 
     const downloadPDF = () => {
@@ -55,15 +56,33 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
 
     console.log('data', data);
 
-    const calculateTotalPrice = (products) => {
-        return products.reduce((total, product) => {
-            const productTotal = Number(product.price) * Number(product.qty);
-            return total + productTotal;
-        }, 0);
+    const calculateTotal = (products, type) => {
+
+        if (type === 'taxamount') {
+            return products.reduce((total, product) => {
+                const productTotal = Number(product.price) * Number(product.qty);
+                return total + productTotal;
+            }, 0);
+        } else if (type === 'cgst') {
+            return products.reduce((total, product) => {
+                const productTotal = Number(product.cgst)
+                return total + productTotal;
+            }, 0);
+        }
+        else if (type === 'sgst') {
+            return products.reduce((total, product) => {
+                const productTotal = Number(product.sgst)
+                return total + productTotal;
+            }, 0);
+        }
     };
 
     return (
         <div>
+            <div className="flex gap-2 mb-4" onClick={onClickBack}>
+                <p>{backIcon}</p>
+                <Title title={'Back'} size={'md'} />
+            </div>
             <div ref={pdfRef} className="quotation-container" style={{ padding: 20, maxWidth: 800, margin: "auto", backgroundColor: "#fff", border: "1px solid #ddd" }}>
                 {/* Header */}
                 <div className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
@@ -73,30 +92,37 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                         <p className="text-xs p-0.5">CIN : {OrderInvoiceDetails.companyDetails.cin}</p>
                         <p className="text-xs p-0.5">PAN : {OrderInvoiceDetails.companyDetails.panNo}</p>
                     </div>
-                    <div style={{ textAlign: "right" }}>
-                        <p className="text-sm mt-2">{OrderInvoiceDetails.companyDetails.address.address}</p>
-                        <p className="text-sm">{OrderInvoiceDetails.companyDetails.address.city}</p>
-                        <p>{OrderInvoiceDetails.companyDetails.address.state} {OrderInvoiceDetails.companyDetails.address.pinCode} , {OrderInvoiceDetails.companyDetails.address.country}</p>
+                    <div className="flex justify-end text-right">
+                        <div>
+                            <h3 style={{ color: Colors.ThemeBlue }}>Proforma Invoice</h3>
+                            <p className="text-xs p-0.5">Order Ref No: <b>{data?.orderRefNo}</b></p>
+                            <p className="text-xs p-0.5">Date: <b>{quotationDate ? quotationDate : GetFullYear(Date.now())}</b></p>
+                            <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
+                        </div>
                     </div>
                 </div>
 
                 {/* Client & Supplier Info */}
                 <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
-                    <div className="flex justify-between">
+                    <div className="grid grid-cols-2">
                         <div>
-                            <h3 style={{ color: Colors.ThemeBlue }}>Customer</h3>
+                            <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
                             <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
-                            <p className="text-xs p-0.5">Customer Name : {data?.customerDetails?.name || '-'}</p>
-                            <p className="text-xs p-0.5">Customer Contact No : {data?.customerDetails?.contact || '-'}</p>
-                            <p className="text-xs p-0.5">Customer Email ID : {data?.customerDetails?.email || '-'}</p>
+                            <p className="text-xs p-0.5">Customer Name : {data?.customerDetails?.name}</p>
+                            <p className="text-xs p-0.5">Customer Contact : {data?.customerDetails?.contact}</p>
+                            <p className="text-xs p-0.5">Address : {data?.customerDetails?.billingAddress?.address || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.city + ' ' + data?.customerDetails?.billingAddress?.landmark || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.state + ' ' + data?.customerDetails?.billingAddress?.pinCode || '-'}</p>
+                            <p className="text-xs p-0.5">GSTIN : {data?.customerDetails?.gstNo}</p>
                         </div>
                         <div>
-                            <h3 style={{ color: Colors.ThemeBlue }}>Quotation</h3>
-                            <p className="text-xs p-0.5">Quotation Ref No: <b>{data?.quotationRefNo}</b></p>
-                            <p className="text-xs p-0.5">Date: <b>{quotationDate}</b></p>
+                            <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
+                            <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
+                            <p className="text-xs p-0.5">Address : {data?.customerDetails?.shippingAddress?.address || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.city + ' ' + data?.customerDetails?.shippingAddress?.landmark || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.state + ' ' + data?.customerDetails?.shippingAddress?.pinCode || '-'}</p>
                         </div>
                     </div>
-
                 </div>
 
                 {/* Table */}
@@ -104,8 +130,11 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                     <thead>
                         <tr style={{ backgroundColor: Colors.ThemeBlue, color: "#fff", textAlign: "left" }}>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Product / Varient</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>HSN</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Amount</th>
                         </tr>
                     </thead>
@@ -115,8 +144,11 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                                 return (
                                     <tr>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.hsnNo}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.cgst}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.sgst}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
                                     </tr>
                                 )
@@ -127,14 +159,11 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
 
                 {/* Total Calculation */}
                 <div style={{ marginTop: 20, textAlign: "right" }}>
-                    <h3><b>Total: ₹{calculateTotalPrice(data.products)}</b></h3>
+                    <h3><b>Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
+                    <h3><b>CGST Amount: ₹{calculateTotal(data.products, 'cgst')}</b></h3>
+                    <h3><b>SGST Amount: ₹{calculateTotal(data.products, 'sgst')}</b></h3>
+                    <h3><b>Taxable Total Amount : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
                 </div>
-
-
-                <div
-                    dangerouslySetInnerHTML={{ __html: data?.termsAndConditions }}
-                    className="terms-container"
-                />
 
                 {/* Terms & Notes */}
                 {/* <div style={{ marginTop: 20 }}>
@@ -160,12 +189,12 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
 
                 <div className="mt-20 flex justify-between">
                     <div>
-                    <h4 className="text-black font-bold">Thanking you,</h4>
-                    <p className="text-xs p-0.5">Best Regards</p>
-                    <p>{name}</p>
-                    <p>+91-{contact}</p>
+                        <h4 className="text-black font-bold">Thanking you,</h4>
+                        <p className="text-xs p-0.5">Best Regards</p>
+                        <p className="text-xs p-0.5">{name ? name : 'Rishab'}</p>
+                        <p className="text-xs p-0.5">+91-{contact ? contact : 1234567890}</p>
                     </div>
-                
+
                     <div>
                         <p className="text-xs p-0.5 mb-5">Authorized Signature</p>
                         <img src={signature} alt="Signature" style={{ width: 150 }} />
@@ -181,4 +210,4 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
     );
 };
 
-export default QuotaionPDF;
+export default PIPDF;

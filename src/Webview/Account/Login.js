@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import MyInput from '../../Component/MyInput';
 import MyButton from '../../Component/MyButton';
 import { ApiHit } from '../../utils';
-import { buildVersion, login, searchRole } from '../../Constants/Constants';
+import { buildVersion, login, searchRole, searchUser } from '../../Constants/Constants';
 import { useSelector } from 'react-redux';
 import { setAuthenticatedUser, setAuthenticatedUserWithRole, SetBuildVersion } from '../../Storage/Storage';
 import { jwtDecode } from 'jwt-decode';
@@ -23,6 +23,8 @@ function Login() {
                 SetBuildVersion(buildVersion);
                 setAuthenticatedUser(Result?.jwtToken);
                 loadRoleData(Result);
+                console.log('Result',Result);
+                
               } else {
                 setMsg({ login: 'User Not Found' });
                 setLoading(false);
@@ -36,9 +38,15 @@ function Login() {
           var json = { page: 1, limit: 1, search: { _id: decodedJson?.roleId } };
           ApiHit(json, searchRole).then((Result) => {
             if (Result?.content?.[0]) {
-              Object.assign(res, { roleObject: Result?.content?.[0] });
-              setAuthenticatedUserWithRole(res);
-              window.location.href = '/';
+              var userJson = {page: 1, limit: 1, search:{_id:decodedJson.userId}}
+              ApiHit(userJson,searchUser).then(userRes=>{
+                console.log('userRes',userRes);
+                if(userRes.content){
+                  Object.assign(res, { roleObject: Result?.content?.[0], userData : userRes?.content?.[0] });
+                  setAuthenticatedUserWithRole(res);
+                  window.location.href = '/';
+                }
+              })
             } else {
               setLoading(false);
             }

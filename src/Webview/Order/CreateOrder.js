@@ -14,6 +14,7 @@ import Title from '../../Component/Title';
 import DataTable from '../../Component/DataTable';
 import toast from 'react-hot-toast';
 import MyFileUpload from '../../Component/MyFileUpload';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
 function CreateOrder() {
 
@@ -137,6 +138,7 @@ function CreateOrder() {
                 type: paymentTerm,
                 days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : 'NA'
             }
+            updatedOrderJson.user_id =  getAuthenticatedUserWithRoles().userData?._id;
             console.log('updatedOrderJson',updatedOrderJson);
             
             ApiHit(updatedOrderJson, addOrder).then(res => {

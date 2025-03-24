@@ -7,46 +7,110 @@ import { GetFullYear } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
+import { getAuthenticatedUserWithRoles, } from "../../../Storage/Storage";
 
 const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
-    
-    const pdfRef = useRef();
-    const downloadPDF = () => {
-        const input = pdfRef.current;
-        html2canvas(input, {
-            scale: window.devicePixelRatio,
-            useCORS: true,
-            allowTaint: true
-        }).then((canvas) => {
-            const imgData = canvas.toDataURL("image/png");
-            const watermarkUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+
+    const headerRef = useRef();
+    const ourInfoRef = useRef();
+    const vendorInfoRef = useRef();
+    const totalRef = useRef();
+    const termsRef = useRef();
+    const signatureRef = useRef();
+
+    const downloadPDF = async () => {
+        try {
             const pdf = new jsPDF("p", "mm", "a4");
-            const imgWidth = pdf.internal.pageSize.width;
-            const imgHeight = 50;
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = watermarkUrl;
-            img.onload = () => {
-                // Convert image to low-opacity DataURL
-                const watermarkCanvas = document.createElement("canvas");
-                watermarkCanvas.width = img.width;
-                watermarkCanvas.height = img.height;
-                const ctx = watermarkCanvas.getContext("2d");
-                ctx.globalAlpha = 0.1; // Set opacity
-                ctx.drawImage(img, 0, 0);
-                const watermarkDataURL = watermarkCanvas.toDataURL("image/png");
-                // Generate PDF
-                pdf.addImage(imgData, "PNG", 0, 0, 210, (canvas.height * 210) / canvas.width);
-                // Add watermark on all pages
-                const totalPages = pdf.internal.getNumberOfPages();
-                for (let i = 1; i <= totalPages; i++) {
-                    pdf.setPage(i);
-                    pdf.addImage(watermarkDataURL, "PNG", 0, (pdf.internal.pageSize.height - imgHeight) / 2, imgWidth, imgHeight);
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            let currentY = 10;
+
+            // 🟢 Header (Only on First Page)
+            const headerCanvas = await html2canvas(headerRef.current, { scale: 10, useCORS: true });
+            pdf.addImage(headerCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 35);
+            currentY += 40;
+
+            // 🟢 Customer Info
+            const customerCanvas = await html2canvas(ourInfoRef.current, { scale: 10, useCORS: true });
+            pdf.addImage(customerCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 50);
+            currentY += 50;
+
+            // 🟢 Vendor Info
+            const vendorCanvas = await html2canvas(vendorInfoRef.current, { scale: 10, useCORS: true });
+            pdf.addImage(vendorCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 40);
+            currentY += 40;
+
+            // 🟢 Add Table with Multi-Page Handling
+            pdf.autoTable({
+                startY: 150,
+                head: [['Product / Variant', 'HSN', 'Qty', 'Rate', 'CGST (%)', 'SGST (%)', 'Amount']],
+                body: data.products.map(ele => [
+                    `${ele?.product_id?.productName} / ${ele?.productVarient?.varientName}${ele?.productVarient?.varientUnit}`,
+                    ele?.product_id?.hsnNo,
+                    ele?.qty,
+                    ele?.price,
+                    ele?.cgst,
+                    ele?.sgst,
+                    Number(ele?.price) * Number(ele?.qty)
+                ]),
+                theme: 'grid',
+                headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
+                bodyStyles: { fontSize: 9 },
+                didDrawPage: function (data) {
+                    if (data.pageNumber > 1) {
+                        pdf.setFontSize(10);
+                        pdf.setTextColor("#000");
+                        pdf.text("Continued on next page...", pageWidth - 50, pageHeight - 10);
+                    }
                 }
-                pdf.save("Quotation.pdf");
-            };
-        });
+            });
+
+            currentY = pdf.lastAutoTable.finalY + 10;
+
+            // 🟢 Add Total Calculation
+            if (currentY + 30 > pageHeight) {
+                pdf.addPage();
+                currentY = 15;
+            }
+
+            pdf.setFontSize(10);  // Font size ko table ke font size jaisa rakhein
+            pdf.setFont("helvetica", "normal"); // Normal font use karein
+            pdf.text(`Total: ${calculateTotal(data.products, 'taxamount')}`, pageWidth - 70, currentY);
+            currentY += 5;
+            pdf.text(`CGST: ${calculateTotal(data.products, 'cgst')}`, pageWidth - 70, currentY);
+            currentY += 5;
+            pdf.text(`SGST: ${calculateTotal(data.products, 'sgst')}`, pageWidth - 70, currentY);
+            currentY += 5;
+            pdf.text(`Grand Total: ${calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}`, pageWidth - 70, currentY);
+            currentY += 10;
+
+            // 🟢 Terms & Conditions with Multi-Page Handling
+            const termsText = termsRef.current.innerText.split("\n").map(line => [line]);
+            pdf.autoTable({
+                startY: currentY,
+                body: termsText,
+                theme: 'plain',
+                styles: { fontSize: 9, cellPadding: 2 },
+                margin: { left: 10, right: 10 }
+            });
+            currentY = pdf.lastAutoTable.finalY + 10;
+
+            // 🟢 Add Signature
+            if (currentY > pageHeight - 40) {
+                pdf.addPage();
+                currentY = 15;
+            }
+            const signatureCanvas = await html2canvas(signatureRef.current, { scale: 10, useCORS: true });
+            const signatureImgData = signatureCanvas.toDataURL("image/png");
+            pdf.addImage(signatureImgData, "PNG", 0, currentY, pageWidth, 40);
+
+            // Save PDF
+            pdf.save("PurchaseOrder.pdf");
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+        }
     };
+
 
     const calculateTotal = (products, type) => {
 
@@ -75,10 +139,10 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 <p>{backIcon}</p>
                 <Title title={'Back'} size={'md'} />
             </div>
-            <div ref={pdfRef} className="quotation-container" style={{ padding: 20, maxWidth: 800, margin: "auto", backgroundColor: "#fff", border: "1px solid #ddd" }}>
+            <div className="quotation-container" style={{ padding: 20, maxWidth: 800, margin: "auto", backgroundColor: "#fff", border: "1px solid #ddd" }}>
                 {/* Header */}
 
-                <div className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
+                <div ref={headerRef} className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div>
                         <img className="w-1/2" src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75" />
                         <p className="text-xs p-0.5 mt-3">GSTIN : {OrderInvoiceDetails.companyDetails.gstNo}</p>
@@ -96,7 +160,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 </div>
 
                 {/* Client */}
-                <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
+                <div ref={ourInfoRef} className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div className="grid grid-cols-2">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
@@ -116,7 +180,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                     </div>
                 </div>
                 {/* Supplier Info */}
-                <div className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
+                <div ref={vendorInfoRef} className="p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div className="grid grid-cols-2">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Supplier Details</h3>
@@ -162,7 +226,7 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 </table>
 
                 {/* Total Calculation */}
-                <div style={{ marginTop: 20, textAlign: "right" }}>
+                <div ref={totalRef} style={{ marginTop: 20, textAlign: "right" }}>
                     <h3><b>Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
                     <h3><b>CGST Amount: ₹{calculateTotal(data.products, 'cgst')}</b></h3>
                     <h3><b>SGST Amount: ₹{calculateTotal(data.products, 'sgst')}</b></h3>
@@ -170,33 +234,22 @@ const POPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                 </div>
 
                 {/* Terms & Notes */}
-                {/* <div style={{ marginTop: 20 }}>
-                    <h4 className="text-black font-bold">Terms and Conditions:</h4>
-                    {
-                        data?.termsAndConditions?.map((ele, index) => {
-                            return (
-                                <p className="text-xs">{index + 1}. {ele.title}</p>
-                            )
-                        })
-                    }
+                <div ref={termsRef} style={{ marginTop: 20, padding: "10px 15px", border: "1px solid #f0f0f0", borderRadius: "4px" }}>
+                    <h3 style={{ color: Colors.ThemeBlue, marginBottom: 10 }}>Terms & Conditions</h3>
+                    <div dangerouslySetInnerHTML={{
+                        __html: data.termsAndConditions
+                            .replace(/<p><br><\/p>/g, '')  // Empty <p><br></p> hatao
+                            .replace(/<br\s*\/?>/g, '')  // Extra <br> hatao
+                    }} />
                 </div>
 
-                <div style={{ marginTop: 20 }}>
-                    <h4 className="text-black font-bold">Additional Notes:</h4>
-                    <p className="text-xs p-0.5">
-                        The delivery schedule offered or committed is merely an indicative time of delivery which is not firm
-                        and the same may vary or change depending upon various factors relating to the Contract. Therefore, the
-                        Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
-                        the time schedule
-                    </p>
-                </div> */}
-
-                <div className="mt-20 flex justify-between">
+                {/* Signature - will be captured separately */}
+                <div ref={signatureRef} className="mt-20 px-20 flex justify-between">
                     <div>
                         <h4 className="text-black font-bold">Thanking you,</h4>
                         <p className="text-xs p-0.5">Best Regards</p>
-                        <p className="text-xs p-0.5">{name ? name : 'Rishab'}</p>
-                        <p className="text-xs p-0.5">+91-{contact ? contact : 1234567890}</p>
+                        <p>{getAuthenticatedUserWithRoles()?.userData?.firstName + ' ' + getAuthenticatedUserWithRoles()?.userData?.lastName}</p>
+                        <p>+91-{getAuthenticatedUserWithRoles()?.userData?.contact}</p>
                     </div>
 
                     <div>

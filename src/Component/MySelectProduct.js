@@ -99,10 +99,13 @@ const MySelectProduct = ({ isQuotation }) => {
 
     return (
         <div className="p-5">
-            <div onClick={() => onAddProduct()} className="w-max flex items-center gap-1 text-black hover:text-themeBlue hover:underline cursor-pointer">
-                <Title title={'Add Product'} size={'xl'} />
-                <i>{plusIcon}</i>
-            </div>
+            {
+                !isQuotation &&
+                <div onClick={() => onAddProduct()} className="w-max flex items-center gap-1 text-black hover:text-themeBlue hover:underline cursor-pointer">
+                    <Title title={'Add Product'} size={'xl'} />
+                    <i>{plusIcon}</i>
+                </div>
+            }
             {
                 ApiReducer?.apiJson?.products &&
                 <div>
