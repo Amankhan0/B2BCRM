@@ -27,8 +27,7 @@ function CreateProduct() {
         productName: string().required('Product name is required'),
         make: string().required('Make is required'),
         hsnNo: string()
-            .required('HSN number is required')
-            .matches(/^[0-9]{4,8}$/, 'Invalid HSN number format. Must be 4 to 8 digits.'),
+            .required('HSN number is required'),
         varients: array().of(
             object().shape({
                 varientName: string().required('Variant name is required'),
