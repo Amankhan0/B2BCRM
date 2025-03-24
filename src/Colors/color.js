@@ -4,6 +4,7 @@ export const Colors = {
    INPUTBLUE :'#115FF7',
    LIGHTBLUE: '#24c6dd',
    RED: 'red',
+   DARKRED:"#e53935",
    HOMEBLUE:'#040D1C',
    BLACK: 'black',
    CYAN :"cyan",

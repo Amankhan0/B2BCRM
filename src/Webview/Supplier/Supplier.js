@@ -77,9 +77,9 @@ function Customer() {
                 <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-supplier/${ele?._id}`) }} >
                   {editIcon}
                 </div>
-                <div className='cursor-pointer' style={{ color: Colors.RED }}>
+                {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
                   {deleteIcon}
-                </div>
+                </div> */}
               </div>
             </td>
           </tr>

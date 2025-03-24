@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchOrder } from '../../Constants/Constants';
+import { Active, InActive, OrderInitiated, QuotationInitiated, searchOrder, updateLead, updateOrder } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { crossIcon, smallEyeIcon } from '../../Icons/Icon';
@@ -13,6 +13,9 @@ import PI from './PI';
 import AddPO from './PurchaseOrder/AddPO';
 import AddDispatch from './Dispatch/AddDispatch';
 import AddPI from './ProformaInvoice/AddPI';
+import toast from 'react-hot-toast';
+import MyLoader from '../../Component/MyLoader';
+import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon, trashbin } from '../../SVG/Icons';
 
 function Order() {
 
@@ -23,6 +26,7 @@ function Order() {
     const [showProducts, setShowProducts] = useState(null)
     const [modal, setModal] = useState(null)
     const [singleOrderData, setSingleOrderData] = useState(null)
+    const [loader, setLoader] = useState(null)
 
     useEffect(() => {
         if (OrderReducer.doc === null) {
@@ -43,7 +47,7 @@ function Order() {
         })
     }
 
-    const th = ['Order Ref No', 'Lead Source', 'Company Name', 'Company Size', 'Industry', 'Customer Name', 'Customer Contact', 'Customer Email', 'Products', 'Action']
+    const th = ['Order Ref No', 'Customer Detials', 'Company Size', 'Lead Source', 'Industry', 'Products', 'Action']
 
     let td;
     if (OrderReducer.doc !== null) {
@@ -52,31 +56,95 @@ function Order() {
                 return (
                     <tr>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
+
+                        <td className='text-left p-2 border text-black'>
+                            <div className='flex gap-2 pb-0.5'>
+                                <i>{smallComputerIcon}</i>
+                                <Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} />
+                            </div>
+                            <div className='flex gap-2 pb-0.5'>
+                                {smallPersonIcon}
+
+                                <Title size={'xs'} title={ele?.customerDetails?.name || '-'} />
+                            </div>
+                            <div className='flex gap-2 pb-0.5'>
+                                {smallPhoneIcon}
+
+                                <Title size={'xs'} title={ele?.customerDetails?.contact || '-'} />
+                            </div>
+                            <div className='flex gap-2'>
+                                {smallMailIcon}
+                                <Title size={'xs'} title={ele?.customerDetails?.email || '-'} />
+                            </div>
+                        </td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.phone || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
                         <td className='p-2 border text-black'>
-                            <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
+                            <div className='flex justify-center'>
+                                <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'text-xs w-max'} />
+                            </div>
                         </td>
                         <td className='p-2 border text-black'>
-                            <div className='flex gap-2'>
-                                <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
-                                </div>
-                                <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
-                                </div>
-                                <div onClick={() => setModalType('Dispatch', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                    <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Dispatch</p>
-                                </div>
+                            <div className='flex justify-center'>
+                                {
+                                    ele.status !== InActive &&
+                                    <div className='flex gap-2'>
+                                        <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                            <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
+                                        </div>
+                                        <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                            <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
+                                        </div>
+                                        {
+                                            loader === 'cancelOrder' ?
+                                                <div className='p-2'>
+                                                    <MyLoader />
+                                                </div>
+
+                                                :
+                                                <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                    <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
+                                                </div>
+
+                                        }
+                                    </div>
+                                }
                             </div>
                         </td>
                     </tr>
                 )
+            })
+        }
+    }
+
+    const onClickCancelOrder = (ele) => {
+        var confirmation = window.confirm('Are you sure to cancel this order')
+        if (confirmation) {
+            var json = {
+                status: InActive,
+                _id: ele._id
+            }
+            setLoader('cancelOrder')
+            ApiHit(json, updateOrder).then(res => {
+                if (res.status === 200) {
+                    var leadJson = {
+                        _id: ele?.lead_id,
+                        status: QuotationInitiated
+                    }
+                    ApiHit(leadJson, updateLead).then(result => {
+                        if (result.status === 200) {
+                            setLoader(null)
+                            toast.success('Order Canceld')
+                            window.location.reload()
+                        }
+                        else {
+                            setLoader(null)
+                        }
+                    })
+                } else {
+                    setLoader(null)
+                }
             })
         }
     }

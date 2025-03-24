@@ -13,6 +13,7 @@ import AccordionSide from '../Component/AccordionSide';
 import { useEffect } from 'react';
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { getHeadingFromPathname } from '../utils';
+import { getAuthenticatedUser } from '../Storage/Storage';
 
 const SidebarItem = ({ item, onClick }) => {
 
@@ -123,6 +124,7 @@ export default function Main() {
 
     let x = getHeadingFromPathname()
 
+    var UserName = getAuthenticatedUser()?.sub?.split('')[0]
 
     return (
         <div>
@@ -167,7 +169,7 @@ export default function Main() {
 
                     <div className='main-content' style={{ width: '100%', background: '#f9f9f9' }}>
                         <div className='bg-white shadow-xl flex justify-between px-5 py-3' style={{ alignItems: 'center' }}>
-                            { 
+                            {
                                 reduxSidebar?.doc ?
                                     <div className='flex items-center p-1'>
                                         <button style={{ color: Colors.BLACK }} className="sidebar-toggle ml-0.5 flex h-7 w-7 flex-col justify-center space-y-1.5 outline-none focus:outline-none dark:text-accent-light/80" onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}>
@@ -190,9 +192,8 @@ export default function Main() {
                                         </div>
                                     </h1>
                             }
-                            <div className='items-center gap-x-3 cursor-pointer mr-5' style={{ color: Colors.BLACK }}>
-                                {/* <div className={`w-8 h-8 text-center pt-0.5 text-lg rounded-full shadow-xl`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }} onClick={() => setShowProfile(!showProfile)}>{user?.username?.slice(0, 1)}
-                                </div> */}
+                            <div className='flex items-center gap-x-3' style={{ color: Colors.BLACK }}>
+                                <NavLink to='/profile' onCanPlay={() => setSideBarTitle('Profile')} ><div className={`w-8 h-8 text-center text-xl rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></NavLink>
                             </div>
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >

@@ -5,7 +5,6 @@ import MyCheckBox from '../../Component/MyCheckBox';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../Store/Action/SetDataAction';
 import { SET_API_JSON, SET_API_JSON_ERROR } from '../../Store/ActionName/ActionName';
-import MySelectProduct from '../../Component/MySelectProduct';
 import MyButton from '../../Component/MyButton';
 import { SupplierValidation } from './SupplierValidation';
 import { ApiHit, ObjIsEmpty } from '../../utils';

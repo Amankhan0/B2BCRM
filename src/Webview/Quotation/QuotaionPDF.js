@@ -1,8 +1,11 @@
+
+
 import React, { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Colors } from "../../Colors/color";
 import signature from '../../Image/signature.jpeg';
+import { OrderInvoiceDetails } from "../OrderInvoiceDetails";
 
 const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
     const pdfRef = useRef();
@@ -66,14 +69,14 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                 <div className="grid grid-cols-2 gap-6 p-2 py-5" style={{ borderBottom: `2px solid ${Colors.ThemeBlue}` }}>
                     <div>
                         <img className="w-1/2" src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75" />
-                        <p className="text-xs p-0.5 mt-3">GSTIN : 07AARCA3767A1ZN</p>
-                        <p className="text-xs p-0.5">CIN : U72900DL2018PTC338934</p>
-                        <p className="text-xs p-0.5">PAN : AARCA3767A</p>
+                        <p className="text-xs p-0.5 mt-3">GSTIN : {OrderInvoiceDetails.companyDetails.gstNo}</p>
+                        <p className="text-xs p-0.5">CIN : {OrderInvoiceDetails.companyDetails.cin}</p>
+                        <p className="text-xs p-0.5">PAN : {OrderInvoiceDetails.companyDetails.panNo}</p>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                        <p className="text-sm mt-2">A-4 Second Floor</p>
-                        <p className="text-sm">Sarvodaya Enclave</p>
-                        <p>New Delhi 110017, India</p>
+                        <p className="text-sm mt-2">{OrderInvoiceDetails.companyDetails.address.address}</p>
+                        <p className="text-sm">{OrderInvoiceDetails.companyDetails.address.city}</p>
+                        <p>{OrderInvoiceDetails.companyDetails.address.state} {OrderInvoiceDetails.companyDetails.address.pinCode} , {OrderInvoiceDetails.companyDetails.address.country}</p>
                     </div>
                 </div>
 
@@ -84,7 +87,7 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                             <h3 style={{ color: Colors.ThemeBlue }}>Customer</h3>
                             <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
                             <p className="text-xs p-0.5">Customer Name : {data?.customerDetails?.name || '-'}</p>
-                            <p className="text-xs p-0.5">Customer Contact No : {data?.customerDetails?.phone || '-'}</p>
+                            <p className="text-xs p-0.5">Customer Contact No : {data?.customerDetails?.contact || '-'}</p>
                             <p className="text-xs p-0.5">Customer Email ID : {data?.customerDetails?.email || '-'}</p>
                         </div>
                         <div>
@@ -127,8 +130,14 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                     <h3><b>Total: ₹{calculateTotalPrice(data.products)}</b></h3>
                 </div>
 
+
+                <div
+                    dangerouslySetInnerHTML={{ __html: data?.termsAndConditions }}
+                    className="terms-container"
+                />
+
                 {/* Terms & Notes */}
-                <div style={{ marginTop: 20 }}>
+                {/* <div style={{ marginTop: 20 }}>
                     <h4 className="text-black font-bold">Terms and Conditions:</h4>
                     {
                         data?.termsAndConditions?.map((ele, index) => {
@@ -147,7 +156,7 @@ const QuotaionPDF = ({ data,quotationDate,name,contact }) => {
                         Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain
                         the time schedule
                     </p>
-                </div>
+                </div> */}
 
                 <div className="mt-20 flex justify-between">
                     <div>

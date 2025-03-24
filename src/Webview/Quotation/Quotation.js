@@ -3,17 +3,13 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchLead, searchQuotation, selectClass } from '../../Constants/Constants';
+import { OrderInitiated, searchLead, searchQuotation, selectClass } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
-import { deleteIcon, downloadIcon, editIcon, plusIcon, smallEyeIcon } from '../../Icons/Icon';
-// import LeadProductsView from './LeadProductsView';
-import { QuotationData } from './QuotationData';
+import { downloadIcon, plusIcon, smallEyeIcon } from '../../Icons/Icon';
 import { setQuotation } from '../../Store/Action/QuotationAction';
 import QuotationProductsView from './QuotationProductsView';
-import { localLeadData } from '../Lead/localLeadData';
-import jsPDF from "jspdf";
 import "jspdf-autotable";
 import QuotaionPDF from './QuotaionPDF';
 import MyInput from '../../Component/MyInput';
@@ -38,10 +34,10 @@ function Quotation() {
     useEffect(() => {
         if (leadData === null) {
             fetchData()
-        } else if (QuotationReducer?.doc === null && selectedLead!==null) {
+        } else if (QuotationReducer?.doc === null && selectedLead !== null) {
             fetchQuotationData()
         }
-    }, [leadData,selectedLead])
+    }, [leadData, selectedLead])
 
     const fetchData = () => {
         var json = {
@@ -59,11 +55,11 @@ function Quotation() {
     }
 
     const fetchQuotationData = () => {
-       var json = {
+        var json = {
             page: PaginationReducer.pagination.page,
             limit: PaginationReducer.pagination.limit,
             search: {
-                lead_id: selectedLead._id
+                lead_id: JSON.parse(selectedLead)._id
             }
         }
         ApiHit(json, searchQuotation).then(res => {
@@ -87,7 +83,7 @@ function Quotation() {
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.phone || '-'} /></td>
+                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
                         <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
                         <td className='p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
@@ -97,9 +93,12 @@ function Quotation() {
                                 <div onClick={() => setQuotationPdf(ele)} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                     {downloadIcon}
                                 </div>
-                                <NavLink to={'/create-order/'+ele._id}>
-                                    <MyButton icon={plusIcon} title={'Create Order'} className={'h-7 text-xs w-max'} />
-                                </NavLink>
+                                {
+                                    leadData?.content?.[0]?.status !== OrderInitiated &&
+                                    <NavLink to={'/create-order/' + ele._id}>
+                                        <MyButton icon={plusIcon} title={'Create Order'} className={'h-7 text-xs w-max'} />
+                                    </NavLink>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -107,9 +106,6 @@ function Quotation() {
             })
         }
     }
-
-    console.log('selectedLead',selectedLead);
-    
 
     const onClickNext = () => {
         if (!ApiReducer?.apiJson?.quotationDate || ApiReducer?.apiJson?.quotationDate === '') {
@@ -128,6 +124,9 @@ function Quotation() {
         }
     }
 
+    console.log('selectedLead',selectedLead);
+    
+
     return (
         <div className='mt-10'>
             {
@@ -142,7 +141,7 @@ function Quotation() {
                                     {
                                         leadData?.content?.map((ele, i) => {
                                             return (
-                                                <option value={ele._id}>{ele.leadRefNo}</option>
+                                                <option value={JSON.stringify(ele)}>{ele.leadRefNo}</option>
                                             )
                                         })
                                     }
@@ -150,7 +149,7 @@ function Quotation() {
                                 <div className='w-full mt-1'>
                                     {
                                         selectedLead !== null &&
-                                        <NavLink to={'/create-quotation/' + selectedLead}>
+                                        <NavLink to={'/create-quotation/' + JSON.parse(selectedLead)._id}>
                                             <MyButton className={'p-2.5'} title={'Create Quotation'} />
                                         </NavLink>
                                     }

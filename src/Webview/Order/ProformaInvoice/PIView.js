@@ -21,6 +21,7 @@ function PIView({ orderData }) {
     const dispatch = useDispatch()
 
     const [showProducts, setShowProducts] = useState(null)
+    const [loader, setLoader] = useState(null)
     const [downloadPDF, setDownloadPDF] = useState(null)
 
     useEffect(() => {
@@ -68,7 +69,7 @@ function PIView({ orderData }) {
                             ele.status === 'Active' &&
                             <td className='p-2 border text-black flex gap-2'>
                                 <MyButton title={'Download PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
-                                <MyButton title={'Cancel PI'} onClick={() => onClickCancelPI(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                <MyButton type={loader==='cancelPI'&&'loader'} title={'Cancel PI'} onClick={() => onClickCancelPI(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
                             </td>
                         }
                     </tr>
@@ -102,6 +103,7 @@ function PIView({ orderData }) {
     const onClickCancelPI = (ele, i) => {
         var confirmation = window.confirm('Are you sure to cancel PI')
         if (confirmation) {
+            setLoader('cancelPI')
             var PIData = updateProductId(OrderReducer?.PI?.content[i])
             var NewOrderData = updateProductId(orderData)
 
@@ -127,8 +129,14 @@ function PIView({ orderData }) {
                         ApiHit(orderJson, updateOrder).then(res => {
                             if (res.status === 200) {
                                 toast.success('PI Cancel Successfully')
+                                window.location.reload()
+                            }
+                            else{
+                                setLoader(null)
                             }
                         })
+                    }else{
+                        setLoader(null)
                     }
                 })
             }

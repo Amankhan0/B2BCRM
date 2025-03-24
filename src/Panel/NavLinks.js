@@ -20,4 +20,10 @@ export default [
     {
         id: 0, title: "Product", url: '/product', active: true, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
     },
+    {
+        id: 0, title: "Role", url: '/role', active: true, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
+    },
+    {
+        id: 0, title: "User", url: '/user', active: true, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
+    },
 ]

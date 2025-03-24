@@ -4,8 +4,8 @@ export const LeadValidation = (json) => {
       if (!json.customerDetails||!json.customerDetails.name || json.customerDetails.name === '') {
         Object.assign(errorJson, { name: 'vehicle number is required' })
       }
-      if (!json.customerDetails||!json.customerDetails.phone || json.customerDetails.phone === '') {
-        Object.assign(errorJson, { phone: 'vehicle number is required' })
+      if (!json.customerDetails||!json.customerDetails.contact || json.customerDetails.phone === '') {
+        Object.assign(errorJson, { contact: 'vehicle number is required' })
       }
       if (!json.customerDetails||!json.customerDetails.email || json.customerDetails.email === '') {
         Object.assign(errorJson, { email: 'vehicle number is required' })

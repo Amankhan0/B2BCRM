@@ -12,12 +12,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import PIView from './PIView';
+import ReactQuill from 'react-quill';
 
 function AddPI({ orderData }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
     const [data, setData] = useState(null)
+    const [loader, setLoader] = useState(null)
     const [render, setRender] = useState(Date.now())
     const [page, setPage] = useState(0)
     const [paymentTerm, setPaymentTerm] = useState(null)
@@ -34,16 +36,16 @@ function AddPI({ orderData }) {
             oldJson.days = orderData.paymentTerm.days
             dispatch(setDataAction(oldJson, SET_API_JSON))
         }
-        console.log('page',page);
-        
+        console.log('page', page);
+
         if (page === 1 && !removePOAvailableOrNOt) {
             console.log('call');
-            
-            var orderNewData = updateProductPOAvailableOrNot(orderData,'availablePI')
+
+            var orderNewData = updateProductPOAvailableOrNot(orderData, 'availablePI')
             setData(orderNewData)
             setRemovePOAvailableOrNot(true)
         }
-    }, [data, render,page,removePOAvailableOrNOt])
+    }, [data, render, page, removePOAvailableOrNOt])
 
     const onChangeAddress = (value, name) => {
         var oldData = data
@@ -138,32 +140,20 @@ function AddPI({ orderData }) {
         setPage(page)
     }
 
-    const onChangetermsAndConditions = (i, value) => {
+    const onChangetermsAndConditions = (e) => {
         var oldData = data
-        if (i !== 'additionalNotes') {
-            if (oldData.termsAndConditions[i].status) {
-                oldData.termsAndConditions[i].status = false
-            } else {
-                oldData.termsAndConditions[i].status = true
-            }
-            setData(oldData)
-        } else {
-            oldData[i] = value
-        }
+        oldData.termsAndConditions = e
         setData(oldData)
         setRender(Date.now())
     }
 
     const onSubmit = () => {
-        var newData = updateProductIdWithPO(data,'availablePI')
+        setLoader(true)
+        var newData = updateProductIdWithPO(data, 'availablePI')
         newData.order_id = data._id
         delete newData._id
         newData.status = 'Active'
         newData.paymentTerm = { type: paymentTerm, days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : null }
-        
-        console.log('newData',newData);
-        
-        
         ApiHit(newData, addPI).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -175,10 +165,15 @@ function AddPI({ orderData }) {
                     if (result.status === 200) {
                         toast.success('PO Generated successfully')
                         window.location.pathname = '/order'
+                        setLoader(false)
+                    } else {
+                        toast.error(res?.message)
+                        setLoader(false)
                     }
                 })
             } else {
-                toast.error(res.message)
+                setLoader(false)
+                toast.error(res?.message)
             }
         })
     }
@@ -256,7 +251,20 @@ function AddPI({ orderData }) {
                             </div>
                             :
                             <div>
-                                <div className='mb-1'>
+                                <ReactQuill
+                                    value={data?.termsAndConditions}
+                                    style={{ height: '60vh' }}
+                                    onChange={(e) => onChangetermsAndConditions(e)}
+                                    modules={{
+                                        toolbar: [
+                                            ["bold", "italic", "underline"], // Formatting options
+                                            [{ list: "ordered" }, { list: "bullet" }], // Lists
+                                            ["link", "blockquote", "code-block"], // Other options
+                                            ["clean"], // Remove Formatting
+                                        ],
+                                    }}
+                                />
+                                {/* <div className='mb-1'>
                                     <Title title={'Terms and conditions'} size={'lg'} color={Colors.BLACK} />
                                     <div className='text-left'>
                                         {
@@ -275,10 +283,10 @@ function AddPI({ orderData }) {
                                             <MyInput title={'Additional Notes:'} onChange={(e) => onChangetermsAndConditions('additionalNotes', e.target.value)} value={data?.additionalNotes} />
                                         </div>
                                     </div>
-                                </div>
-                                <div className='flex gap-2 mt-10'>
+                                </div> */}
+                                <div className='flex gap-2 mt-20'>
                                     <MyButton className={'w-20'} title={'Back'} onClick={() => onClickBack(1)} />
-                                    <MyButton className={'w-20'} title={'Submit'} onClick={() => onSubmit()} />
+                                    <MyButton type={loader && 'loader'} className={'w-20'} title={'Submit'} onClick={() => onSubmit()} />
                                 </div>
                             </div>
                 }
