@@ -10,10 +10,10 @@ import MyButton from '../../Component/MyButton';
 import { LeadValidation } from './LeadValidation';
 import { ApiHit, ObjIsEmpty, updateProductId } from '../../utils';
 import toast from 'react-hot-toast';
-import { Active, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
-import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import { Active, addLead, searchCustomer, selectClass, updateLead } from '../../Constants/Constants';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
-function CreateLead() {
+function CreateLead({ edit }) {
 
   const [decision, setDecision] = useState(false)
   const [customers, setCustomers] = useState(null)
@@ -25,7 +25,7 @@ function CreateLead() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!decision) {
+    if (!decision && !edit) {
       var oldJson = ApiReducer.apiJson
       oldJson.customerDetails = {
         isDecisionTaker: true
@@ -36,7 +36,11 @@ function CreateLead() {
     if (customers === null) {
       fetchData()
     }
-  }, [])
+    if (edit && selectedCustomer === null && customers !== null) {
+      var alreadyCustomer = customers.find(obj => obj.name === ApiReducer?.apiJson?.customerDetails?.name && obj.contact === ApiReducer?.apiJson?.customerDetails?.contact)
+      setSelectedCustomer(alreadyCustomer)
+    }
+  }, [customers, selectedCustomer])
 
   const onSubmit = () => {
     setLoader(true)
@@ -46,19 +50,24 @@ function CreateLead() {
       if (error) {
         setLoader(false)
         dispatch(setDataAction(res, SET_API_JSON_ERROR))
-      } else {        
+      } else {
         if (!ApiReducer?.apiJson?.products) {
           toast.error('Add Products')
           setLoader(false)
-        } else {
+        }
+        else if (ObjIsEmpty(ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]) || !ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.product_id || !ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.productVarient || !ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.qty || !ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.price || ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.qty === "" || !ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.qty === "0" || ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.price === "" || ApiReducer?.apiJson?.products?.[ApiReducer?.apiJson?.products?.length - 1]?.price === "0") {
+          toast.error('Add Products')
+          setLoader(false)
+        }
+        else {
           var json = updateProductId(ApiReducer?.apiJson)
           if (json) {
-            json.status = Active 
+            json.status = Active
             json.user_id = getAuthenticatedUserWithRoles().userData?._id;
-            ApiHit(json, addLead).then(res => {
+            ApiHit(json, edit ? updateLead : addLead).then(res => {
               setLoader(false)
               if (res.status === 200) {
-                toast.success('Lead created successfully')
+                toast.success(edit ? 'Lead Updated successfully' : 'Lead created successfully')
                 window.location.pathname = '/lead'
               } else {
                 toast.error(res.message)
@@ -106,7 +115,7 @@ function CreateLead() {
             {
               customers?.map((ele, i) => {
                 return (
-                  ele.name !== null && <option value={ele._id}>{ele.name}</option>
+                  ele.name !== null && <option selected={ele?.name === selectedCustomer?.name} value={ele._id}>{ele.name}</option>
                 )
               })
             }

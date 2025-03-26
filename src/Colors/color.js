@@ -18,6 +18,7 @@ export const Colors = {
    GRADIENTFIRST :'#0885a6',
    GRADIENTSECOND :'#002443',
    bgGreenColor :'#10B9811A',
+   lightgreen :'lightgreen',
    PRIMARY : "",
    SECONDARY :"",
    INFO : "",

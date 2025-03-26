@@ -5,6 +5,7 @@ import { uploadFile } from "../Constants/Constants";
 import FileRenderer from "./FileRender";
 import { setDataAction } from "../Store/Action/SetDataAction";
 import { SET_API_JSON } from "../Store/ActionName/ActionName";
+import ImageViewer from "./ImageViewer";
 
 const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType, validate, onChange }) => {
 
@@ -65,13 +66,15 @@ const MyFileUploadCommon = ({ name, title, error, important, uppercase, fileType
         }
     }
 
+    console.log('ApiReducer?.apiJson?.[name]',ApiReducer?.apiJson?.[name]);
+
     return (
         <div>
-
             <label className='w-full text-black'>{title}{important ? <span className='text-red-600 text-base'>*</span> : ''}</label>
-            <div className="flex gap-2">
+            <div className="gap-2">
                 <input type="file" style={{ textTransform: uppercase ? 'uppercase' : '' }} onChange={(e) => onFileUpload(e)} className={`mt-1 w-full outline-none h-max p-2 text-md rounded-lg border border-slate-400 placeholder:normal-case hover:border-slate-400 pl-2`} name={name} />
-            </div>
+                <p className="text-xs">{Array.isArray(ApiReducer?.apiJson?.[name]) && "Last file - " + ApiReducer?.apiJson?.[name]?.[0]?.title}</p>
+                </div>
             <label className='w-full text-red-600'>{error}</label>
         </div>
     )

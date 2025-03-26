@@ -120,3 +120,58 @@ export const panelPermisson = {
         }
     ]
 }
+
+
+export function compileData(data) {
+    const endpointMapping = {
+        "Lead": {
+            read: searchLeadWithoutIP,
+            write: [addLeadWithoutIP, updateLeadWithoutIP],
+            delete: deleteLeadWithoutIP
+        },
+        "Quotation": {
+            read: searchQuotationWithoutIP,
+            write: [addQuotationWithoutIP, updateQuotationWithoutIP],
+            delete: deleteQuotationWithoutIP
+        },
+        "Order": {
+            read: searchOrderWithoutIP,
+            write: [addOrderWithoutIP, uploadFileWithoutIP, updateOrderWithoutIP, searchPOWithoutIP, searchPIWithoutIP, addPOWithoutIP, addPIWithoutIP, addDispatchWithoutIP, searchDispatchWithoutIP, updatePOWithoutIP, updatePIWithoutIP, updateDispatchWithoutIP],
+            delete: deleteOrderWithoutIP
+        },
+        "Customer": {
+            read: searchCustomerWithoutIP,
+            write: [addCustomerWithoutIP, updateCustomerWithoutIP],
+            delete: deleteCustomerWithoutIP
+        },
+        "Supplier": {
+            read: searchSupplierWithoutIP,
+            write: [addSupplierWithoutIP, updateSupplierWithoutIP],
+            delete: deleteSupplierWithoutIP
+        },
+        "Product": {
+            read: searchProductWithoutIP,
+            write: [addProductWithoutIP, updateProductWithoutIP],
+            delete: deleteProductWithoutIP
+        },
+        "Role": {
+            read: searchRoleWithoutIP,
+            write: [addRoleWithoutIP, updateRoleWithoutIP],
+            delete: deleteRoleWithoutIP
+        },
+        "User": {
+            read: searchUserWithoutIP,
+            write: [addUserWithoutIP, updateUserWithoutIP],
+            delete: deleteUserWithoutIP
+        }
+    };
+
+    return {
+        permission: data.map(item => ({
+            ...item,
+            readEndpoint: endpointMapping[item.value]?.read || null,
+            writeEndpoint: endpointMapping[item.value]?.write || [],
+            deleteEndpoint: endpointMapping[item.value]?.delete || null
+        }))
+    };
+}

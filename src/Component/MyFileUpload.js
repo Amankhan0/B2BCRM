@@ -37,7 +37,7 @@ const MyFileUpload = ({ name, title, error, important, uppercase, fileType }) =>
                     }
                     setFileId(result.data._id)
                 }
-                dispatch(setDataAction(oldJson,SET_API_JSON))
+                dispatch(setDataAction(oldJson, SET_API_JSON))
             }
         }
     }
@@ -48,6 +48,7 @@ const MyFileUpload = ({ name, title, error, important, uppercase, fileType }) =>
             <label className='w-full text-black'>{title}{important ? <span className='text-red-600 text-base'>*</span> : ''}</label>
             <div className="flex gap-2">
                 <input type="file" style={{ textTransform: uppercase ? 'uppercase' : '' }} onChange={(e) => onFileUpload(e)} className={`mt-1 w-full outline-none h-max p-2 text-md rounded-lg border border-slate-400 placeholder:normal-case hover:border-slate-400 pl-2`} name={name} />
+                <p className="text-xs">{Array.isArray(ApiReducer?.apiJson?.[name]) && "Last file - " + ApiReducer?.apiJson?.[name]?.[0]?.title}</p>
             </div>
             <label className='w-full text-red-600'>{error && ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</label>
         </div>

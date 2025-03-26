@@ -8,7 +8,6 @@ import { SET_API_JSON } from "../Store/ActionName/ActionName";
 import MyInput from "./MyInput";
 import Title from "./Title";
 import { deleteIcon, plusIcon } from "../Icons/Icon";
-import { Colors } from "../Colors/color";
 import MyButton from "./MyButton";
 import toast from "react-hot-toast";
 
@@ -94,9 +93,6 @@ const MySelectProduct = ({ isQuotation }) => {
         dispatch(setDataAction(oldJson, SET_API_JSON))
     }
 
-    console.log('APired', ApiReducer);
-
-
     return (
         <div className="p-5">
             {
@@ -126,13 +122,13 @@ const MySelectProduct = ({ isQuotation }) => {
                                             :
                                             <MyInput disable={true} value={ele.productVarient?.varientName || '0'} title={'Product Varient'} name={'productVarient'} placeholder={'Enter Product Varient'} />
                                     }
-                                    {
+                                    {/* {
                                         isQuotation &&
                                         <>
                                             <MyInput disable={true} value={ele.cgst || '0'} title={'CGST'} name={'cgst'} placeholder={'Enter CGST'} />
                                             <MyInput disable={true} value={ele.sgst || '0'} title={'SGCT'} name={'sgst'} placeholder={'Enter SGCT'} />
                                         </>
-                                    }
+                                    } */}
                                     {
                                         ele.product_id &&
                                         <>

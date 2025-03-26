@@ -19,6 +19,9 @@ import AddUser from "../Webview/UserMangment/UserManagement/AddUser";
 import User from "../Webview/UserMangment/UserManagement/User";
 import { getAuthenticatedUserWithRoles } from "../Storage/Storage";
 import Profile from "../Webview/Profile";
+import EditAddRole from "../Webview/UserMangment/RoleManagement/EditRole";
+import EditAddLead from "../Webview/Lead/EditLead";
+import EditUser from "../Webview/UserMangment/UserManagement/EditUser";
 
 const PanelRoutes = () => {
 
@@ -34,6 +37,10 @@ const PanelRoutes = () => {
         {
           // user?.roleObject?.permission?.[0]?.permission?.[0].write &&
           <Route path="/create-lead" exact element={<CreateLead />} />
+        }
+        {
+          // user?.roleObject?.permission?.[0]?.permission?.[0].write &&
+          <Route path="/editlead/:id" exact element={<EditAddLead />} />
         }
         {
           // user?.roleObject?.permission?.[1]?.permission?.[0].read &&
@@ -90,6 +97,10 @@ const PanelRoutes = () => {
         }
         {
           // user?.roleObject?.permission?.[6]?.permission?.[0].write &&
+          <Route path="/editrole/:id" exact element={<EditAddRole />} />
+        }
+        {
+          // user?.roleObject?.permission?.[6]?.permission?.[0].write &&
           <Route path="/addrole" exact element={<AddRole />} />
         }
         {
@@ -99,6 +110,10 @@ const PanelRoutes = () => {
         {
           // user?.roleObject?.permission?.[7]?.permission?.[0].write &&
           <Route path="/addUser" exact element={<AddUser />} />
+        }
+        {
+          // user?.roleObject?.permission?.[7]?.permission?.[0].write &&
+          <Route path="/edituser/:id" exact element={<EditUser />} />
         }
         <Route path="/" exact element={<Dashboard />} />
         <Route path="/profile" exact element={<Profile />} />

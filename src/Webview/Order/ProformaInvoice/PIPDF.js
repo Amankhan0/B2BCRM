@@ -1,20 +1,56 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Colors } from "../../../Colors/color";
 import signature from '../../..//Image/signature.jpeg';
-import { GetFullYear } from "../../../utils";
+import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
 import { getAuthenticatedUserWithRoles } from "../../../Storage/Storage";
 
-const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
+const PIPDF = ({ data, onClickBack }) => {
     const headerRef = useRef();
     const customerInfoRef = useRef();
     const totalRef = useRef();
     const termsRef = useRef();
     const signatureRef = useRef();
+
+    const [totalCGSTAmount, setTotalCGSTAmount] = useState(null)
+    const [totalSGSTAmount, setTotalSGSTAmount] = useState(null)
+    const [totalGSTAmount, setTotalGSTAmount] = useState(null)
+    const [totalTaxAmount, setTotalTaxAmount] = useState(null)
+    const [totalAmount, setTotalAmount] = useState(null)
+
+    useEffect(() => {
+        if (totalAmount === null) {
+            var t = calculateTotalAmountUsingData(data?.products)
+            if (t) {
+                setTotalAmount(t)
+            }
+        }
+        if (totalGSTAmount === null) {
+            var g = calculateTotalGSTAmountUsingData(data?.products)
+            if (g) {
+                setTotalGSTAmount(g)
+            }
+        }
+        if (totalCGSTAmount === null) {
+            var c = calculateTotalCGSTAmountUsingData(data?.products)
+            setTotalCGSTAmount(c)
+        }
+        if (totalSGSTAmount === null) {
+            var s = calculateTotalSGSTAmountUsingData(data?.products)
+            setTotalSGSTAmount(s)
+        }
+        if (totalTaxAmount === null && totalCGSTAmount !== null && totalGSTAmount !== null && totalSGSTAmount !== null && totalAmount !== null) {
+            if (data?.customerDetails?.shippingAddress?.state === 'Delhi') {
+                setTotalTaxAmount(totalAmount + totalGSTAmount)
+            } else {
+                setTotalTaxAmount(totalAmount + totalCGSTAmount + totalSGSTAmount)
+            }
+        }
+    }, [totalAmount])
 
     const downloadPDF = async () => {
 
@@ -39,11 +75,17 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
                 startY: 110,
-                head: [['Product / Variant', 'Qty', 'Rate', 'Amount']],
-                body: data.products.map(ele => [
-                    `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                    ele.qty, ele.price, Number(ele.price) * Number(ele.qty)
-                ]),
+                head: data.customerDetails?.shippingAddress?.state === 'Delhi' ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                body:
+                    data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                        data.products.map(ele => [
+                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele.price) * Number(ele.qty)
+                        ])
+                        : data.products.map(ele => [
+                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            ele.qty, ele.price, ele.cgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", ele.sgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                        ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
                 bodyStyles: { fontSize: 9 },
@@ -57,22 +99,56 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
             currentY = pdf.lastAutoTable.finalY + 10;
 
             // 🟢 Add Total Calculation
-            if (currentY + 30 > pageHeight) {
-                pdf.addPage();
-                currentY = 15;
+            if (currentY + 10 > pageHeight) {
+                pdf.addPage(); // Move to next page if not enough space
+                currentY = 10;
             }
-    
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total: ${calculateTotal(data.products, 'taxamount')}`, pageWidth - 70, currentY);
+            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 70, currentY);
+
             currentY += 5;
-            pdf.text(`CGST: ${calculateTotal(data.products, 'cgst')}`, pageWidth - 70, currentY);
-            currentY += 5;
-            pdf.text(`SGST: ${calculateTotal(data.products, 'sgst')}`, pageWidth - 70, currentY);
-            currentY += 5;
-            pdf.text(`Grand Total: ${calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}`, pageWidth - 70, currentY);
-            currentY += 10;
-    
+
+            if (data?.customerDetails?.shippingAddress?.state === 'Delhi') {
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+            } else {
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+            }
+
+            if (currentY + 10 > pageHeight) {
+                pdf.addPage(); // Move to next page if not enough space
+                currentY = 10;
+            }
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 70, currentY);
+
 
 
             // if (currentY > pageHeight - 60) {
@@ -90,8 +166,8 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
             });
             currentY = pdf.lastAutoTable.finalY + 10;
 
-             // 🟢 Add Signature
-             if (currentY > pageHeight - 40) {
+            // 🟢 Add Signature
+            if (currentY > pageHeight - 40) {
                 pdf.addPage();
                 currentY = 15;
             }
@@ -151,7 +227,7 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Proforma Invoice</h3>
                             <p className="text-xs p-0.5">Order Ref No: <b>{data?.orderRefNo}</b></p>
-                            <p className="text-xs p-0.5">Date: <b>{quotationDate ? quotationDate : GetFullYear(Date.now())}</b></p>
+                            <p className="text-xs p-0.5">Date: <b>{GetFullYear(Date.now())}</b></p>
                             <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
                         </div>
                     </div>
@@ -188,8 +264,15 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>HSN</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
-                            <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
-                            <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
+                            {
+                                data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                                    <th style={{ padding: 8, border: "1px solid #ddd" }}>GST Amount (%)</th>
+                                    :
+                                    <>
+                                        <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
+                                        <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
+                                    </>
+                            }
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Amount</th>
                         </tr>
                     </thead>
@@ -202,8 +285,15 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.hsnNo}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.cgst}</td>
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.sgst}</td>
+                                        {
+                                            data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                                :
+                                                <>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                </>
+                                        }
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
                                     </tr>
                                 )
@@ -212,12 +302,19 @@ const PIPDF = ({ data, quotationDate, name, contact, onClickBack }) => {
                     </tbody>
                 </table>
 
-                {/* Total Calculation */}
-                <div ref={totalRef} style={{ marginTop: 20, textAlign: "right" }}>
-                    <h3><b>Amount: ₹{calculateTotal(data.products, 'taxamount')}</b></h3>
-                    <h3><b>CGST Amount: ₹{calculateTotal(data.products, 'cgst')}</b></h3>
-                    <h3><b>SGST Amount: ₹{calculateTotal(data.products, 'sgst')}</b></h3>
-                    <h3><b>Taxable Total Amount : ₹{calculateTotal(data.products, 'taxamount') + calculateTotal(data.products, 'cgst') + calculateTotal(data.products, 'sgst')}</b></h3>
+                {/* Total Calculation - Capture it as an image */}
+                <div ref={totalRef} style={{ marginTop: 20, textAlign: "right", padding: "10px 20px", backgroundColor: "#f8f8f8", border: "1px solid #eee", borderRadius: "4px" }}>
+                    <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
+                    {
+                        data?.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
+                            :
+                            <>
+                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
+                            </>
+                    }
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount}</span></h3>
                 </div>
 
                 {/* Terms & Notes */}

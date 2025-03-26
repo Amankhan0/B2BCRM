@@ -55,9 +55,9 @@ const User = () => {
                             <div className='flex gap-2'>
                                 {
                                     <div className='flex gap-2'>
-                                        <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                                        <NavLink to={'/edituser/'+ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                             {editIcon}
-                                        </div>
+                                        </NavLink>
                                         {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
                                             {deleteIcon}
                                         </div> */}

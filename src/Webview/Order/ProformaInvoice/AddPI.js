@@ -91,7 +91,7 @@ function AddPI({ orderData }) {
                         <div className='flex justify-center'>
                             {
                                 availableQty !== Number(ele?.qty) ?
-                                    <MyInput onChange={(e) => onChangeProdcuts(e.target.value, i, 'price')} title={'Price Quantity'} value={ele.price} />
+                                    <MyInput onChange={(e) => onChangeProdcuts(e.target.value, i, 'price')} title={'Price'} value={ele.price} />
                                     :
                                     ele.price
                             }

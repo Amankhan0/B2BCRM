@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Colors } from "../../Colors/color";
 import signature from '../../Image/signature.jpeg';
 import { OrderInvoiceDetails } from "../OrderInvoiceDetails";
 import 'jspdf-autotable';
-import { GetFullYear } from "../../utils";
+import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, calculateTotalTaxAmountUsingData, GetFullYear, GstCalculation } from "../../utils";
 import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from "../../Storage/Storage";
 
 const QuotaionPDF = ({ data }) => {
@@ -16,33 +16,75 @@ const QuotaionPDF = ({ data }) => {
     const termsRef = useRef();
     const signatureRef = useRef();
 
+    const [totalCGSTAmount, setTotalCGSTAmount] = useState(null)
+    const [totalSGSTAmount, setTotalSGSTAmount] = useState(null)
+    const [totalGSTAmount, setTotalGSTAmount] = useState(null)
+    const [totalTaxAmount, setTotalTaxAmount] = useState(null)
+    const [totalAmount, setTotalAmount] = useState(null)
+
+    useEffect(() => {
+        if (totalAmount === null) {
+            var t = calculateTotalAmountUsingData(data?.products)
+            if (t) {
+                setTotalAmount(t)
+            }
+        }
+        if (totalGSTAmount === null) {
+            var g = calculateTotalGSTAmountUsingData(data?.products)
+            if (g) {
+                setTotalGSTAmount(g)
+            }
+        }
+        if (totalCGSTAmount === null) {
+            var c = calculateTotalCGSTAmountUsingData(data?.products)
+            setTotalCGSTAmount(c)
+        }
+        if (totalSGSTAmount === null) {
+            var s = calculateTotalSGSTAmountUsingData(data?.products)
+            setTotalSGSTAmount(s)
+        }
+        if (totalTaxAmount === null && totalCGSTAmount !== null && totalGSTAmount !== null && totalSGSTAmount !== null && totalAmount !== null) {
+            if (data?.customerDetails?.shippingAddress?.state === 'Delhi') {
+                setTotalTaxAmount(totalAmount + totalGSTAmount)
+            } else {
+                setTotalTaxAmount(totalAmount + totalCGSTAmount + totalSGSTAmount)
+            }
+        }
+    }, [totalAmount])
+
     const downloadPDF = async () => {
         try {
             const pdf = new jsPDF("p", "mm", "a4");
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
             let currentY = 10; // Initial Y position
-    
+
             // 🟢 Add Header (ONLY ON FIRST PAGE)
             const headerCanvas = await html2canvas(headerRef.current, { scale: 10, useCORS: true });
             const headerImgData = headerCanvas.toDataURL("image/png");
             pdf.addImage(headerImgData, "PNG", 0, currentY, pageWidth, 35);
             currentY += 35; // Move cursor down
-    
+
             // 🟢 Add Customer Info Below Header
             const customerInfoCanvas = await html2canvas(customerInfoRef.current, { scale: 10, useCORS: true });
             const customerInfoImgData = customerInfoCanvas.toDataURL("image/png");
             pdf.addImage(customerInfoImgData, "PNG", 0, currentY, pageWidth, 35);
             currentY += 25;
-    
+
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
                 startY: 90,
-                head: [['Product / Variant', 'Qty', 'Rate', 'Amount']],
-                body: data.products.map(ele => [
-                    `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                    ele.qty, ele.price, Number(ele.price) * Number(ele.qty)
-                ]),
+                head: data.customerDetails?.shippingAddress?.state === 'Delhi' ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                body:
+                    data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                        data.products.map(ele => [
+                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele.price) * Number(ele.qty)
+                        ])
+                        : data.products.map(ele => [
+                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            ele.qty, ele.price, ele.cgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", ele.sgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                        ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
                 bodyStyles: { fontSize: 9 },
@@ -52,9 +94,9 @@ const QuotaionPDF = ({ data }) => {
                     }
                 }
             });
-    
+
             currentY = pdf.lastAutoTable.finalY + 10;
-    
+
             // 🟢 Add Total Calculation
             if (currentY + 10 > pageHeight) {
                 pdf.addPage(); // Move to next page if not enough space
@@ -62,9 +104,50 @@ const QuotaionPDF = ({ data }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total: ${calculateTotalPrice(data.products)}`, pageWidth - 70, currentY);
-            currentY += 10;
-    
+            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 70, currentY);
+
+            currentY += 5;
+
+            if (data?.customerDetails?.shippingAddress?.state === 'Delhi') {
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+            } else {
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+
+                if (currentY + 10 > pageHeight) {
+                    pdf.addPage(); // Move to next page if not enough space
+                    currentY = 10;
+                }
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 70, currentY);
+
+                currentY += 5;
+            }
+
+            if (currentY + 10 > pageHeight) {
+                pdf.addPage(); // Move to next page if not enough space
+                currentY = 10;
+            }
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 70, currentY);
+
             // 🟢 Add Terms & Conditions
             if (currentY > pageHeight - 60) {
                 pdf.addPage();
@@ -79,7 +162,7 @@ const QuotaionPDF = ({ data }) => {
                 margin: { left: 10, right: 10 }
             });
             currentY = pdf.lastAutoTable.finalY + 10;
-    
+
             // 🟢 Add Signature
             if (currentY > pageHeight - 40) {
                 pdf.addPage();
@@ -88,21 +171,12 @@ const QuotaionPDF = ({ data }) => {
             const signatureCanvas = await html2canvas(signatureRef.current, { scale: 10, useCORS: true });
             const signatureImgData = signatureCanvas.toDataURL("image/png");
             pdf.addImage(signatureImgData, "PNG", 0, currentY, pageWidth, 40);
-    
+
             // 🟢 Save PDF
             pdf.save("Quotation.pdf");
         } catch (error) {
             console.error("Error generating PDF:", error);
         }
-    };
-    
-
-
-    const calculateTotalPrice = (products) => {
-        return products.reduce((total, product) => {
-            const productTotal = Number(product.price) * Number(product.qty);
-            return total + productTotal;
-        }, 0);
     };
 
     return (
@@ -169,6 +243,15 @@ const QuotaionPDF = ({ data }) => {
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Product / Varient</th>
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
+                                {
+                                    data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                                        <th style={{ padding: 8, border: "1px solid #ddd" }}>GST Amount (%)</th>
+                                        :
+                                        <>
+                                            <th style={{ padding: 8, border: "1px solid #ddd" }}>CGST Amount (%)</th>
+                                            <th style={{ padding: 8, border: "1px solid #ddd" }}>SGST Amount (%)</th>
+                                        </>
+                                }
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Amount</th>
                             </tr>
                         </thead>
@@ -178,6 +261,15 @@ const QuotaionPDF = ({ data }) => {
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
+                                    {
+                                        data.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                                            <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                            :
+                                            <>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                            </>
+                                    }
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
                                 </tr>
                             ))}
@@ -187,7 +279,17 @@ const QuotaionPDF = ({ data }) => {
 
                 {/* Total Calculation - Capture it as an image */}
                 <div ref={totalRef} style={{ marginTop: 20, textAlign: "right", padding: "10px 20px", backgroundColor: "#f8f8f8", border: "1px solid #eee", borderRadius: "4px" }}>
-                    <h3 style={{ margin: 0 }}>Total: <span style={{ fontWeight: "bold" }}>₹{calculateTotalPrice(data.products)}</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
+                    {
+                        data?.customerDetails?.shippingAddress?.state === 'Delhi' ?
+                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
+                            :
+                            <>
+                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
+                            </>
+                    }
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount}</span></h3>
                 </div>
 
                 {/* Terms & Notes - This is just for reference in the browser, actual PDF uses text */}
@@ -220,7 +322,7 @@ const QuotaionPDF = ({ data }) => {
             <button onClick={downloadPDF} style={{ marginTop: 20, padding: 10, backgroundColor: Colors.ThemeBlue, color: "#fff", border: "none", cursor: "pointer" }}>
                 Download PDF
             </button>
-        </div >
+        </div>
     );
 };
 

@@ -726,7 +726,7 @@ export function updateProductId(data) {
   return data;
 }
 
-export function updateProductIdWithPO(data,keyName) {
+export function updateProductIdWithPO(data, keyName) {
   if (!data.products || !Array.isArray(data.products)) {
     return data;
   }
@@ -735,10 +735,10 @@ export function updateProductIdWithPO(data,keyName) {
     const availablePO = [...(product?.[keyName] || [])]; // Create a new array
     const availableQty = availablePO.reduce((acc, num) => acc + Number(num), 0);
     const qty = product.useQty ? product.useQty : availableQty === 0 ? product.qty : availableQty;
-    
 
-    if(qty){
-      availablePO.push(String(product.useQty?qty:Number(product.qty)-availableQty));
+
+    if (qty) {
+      availablePO.push(String(product.useQty ? qty : Number(product.qty) - availableQty));
     }
 
     return {
@@ -746,7 +746,7 @@ export function updateProductIdWithPO(data,keyName) {
       product_id: product.product_id._id,
       oldqty: product.qty,
       [keyName]: availablePO, // Assigning the new array
-      qty: product.useQty?qty:Number(product.qty)-availableQty,
+      qty: product.useQty ? qty : Number(product.qty) - availableQty,
     };
   });
 
@@ -754,26 +754,21 @@ export function updateProductIdWithPO(data,keyName) {
 }
 
 
-export function updateProductPOAvailableOrNot(data,keyName) {
+export function updateProductPOAvailableOrNot(data, keyName) {
   if (!data.products || !Array.isArray(data.products)) {
     return data;
   }
-
   data.products = data.products.filter(product => {
     if (!Array.isArray(product[keyName])) {
       return true; // Agar availablePO array nahi hai to product ko rakhna hai
     }
-
     // availablePO array ka sum calculate karna
     const availablePOSum = product[keyName].reduce((sum, val) => sum + Number(val), 0);
-
     // Agar sum product.qty ke barabar hai to isko hata dena
     return availablePOSum !== Number(product.qty);
   });
-
   return data;
 }
-
 
 export function updateAvaialblePO(data) {
   if (!data.products || !Array.isArray(data.products)) {
@@ -807,3 +802,52 @@ export function updateProductIdWithAvailablePOPIDispatch(data) {
 
   return data;
 }
+
+export const GstCalculation = (amount, value) => {
+  var newValue = value > 10? "0." + value : "0.0" + value 
+  if (newValue) {    
+    return amount * Number(newValue)
+  }
+}
+
+export const calculateTotalAmountUsingData = (products) => {
+  return products?.reduce((total, product) => {
+    const productTotal = Number(product.price) * Number(product.qty);
+    console.log('productTotal',productTotal);
+    
+    return total + productTotal;
+  }, 0);
+};
+
+export const calculateTotalGSTAmountUsingData = (products) => {
+  return products?.reduce((total, product) => {
+    let productTotal = 0;
+    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst));
+    if(cal){      
+      productTotal = cal;
+    }    
+    return productTotal!==0 && total + productTotal;
+  }, 0);
+};
+
+export const calculateTotalCGSTAmountUsingData = (products) => {
+  return products?.reduce((total, product) => {
+    let productTotal = 0;
+    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst)/2);
+    if(cal){      
+      productTotal = cal;
+    }    
+    return productTotal!==0 && total + productTotal;
+  }, 0);
+};
+
+export const calculateTotalSGSTAmountUsingData = (products) => {
+  return products?.reduce((total, product) => {
+    let productTotal = 0;
+    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst)/2);
+    if(cal){      
+      productTotal = cal;
+    }    
+    return productTotal!==0 && total + productTotal;
+  }, 0);
+};

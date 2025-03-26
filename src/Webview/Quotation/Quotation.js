@@ -13,6 +13,7 @@ import QuotationProductsView from './QuotationProductsView';
 import "jspdf-autotable";
 import QuotaionPDF from './QuotaionPDF';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import { CrossMark } from '../../SVG/Icons';
 
 function Quotation({ selectedLeadId }) {
 
@@ -106,6 +107,11 @@ function Quotation({ selectedLeadId }) {
         }
     }
 
+    const onChangeLead = (value) =>{
+        setSelectedLead(value)
+        dispatch(setQuotation(null))
+    }
+
     return (
         <div className='mt-10'>
             {
@@ -118,7 +124,7 @@ function Quotation({ selectedLeadId }) {
                                     !selectedLeadId &&
                                     <div className='w-full'>
                                         <Title title={'Select Lead'} size={'base'} color={Colors.BLACK} />
-                                        <select onChange={(e) => setSelectedLead(e.target.value)} className={selectClass}>
+                                        <select onChange={(e) => onChangeLead(e.target.value)} className={selectClass}>
                                             <option value={null}>Select Lead</option>
                                             {
                                                 leadData?.content?.map((ele, i) => {
@@ -141,11 +147,22 @@ function Quotation({ selectedLeadId }) {
                             </div>
                         </div>
                     </div>
-
                 </>
             }
             {
+                selectedLeadId &&
+                <div className='w-max mt-7 ml-5'>
+                    {
+                        selectedLead !== null && user?.roleObject?.permission?.[1]?.permission?.[0].write &&
+                        <NavLink to={'/create-quotation/' + JSON.parse(selectedLead)._id}>
+                            <MyButton className={'p-2.5'} title={'Create Quotation'} />
+                        </NavLink>
+                    }
+                </div>
+            }
+            {
                 selectedLead !== null &&
+
                 <>
                     <div className='mt-5 p-5 bg-white'>
                         <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
@@ -160,8 +177,17 @@ function Quotation({ selectedLeadId }) {
                 quotationPdf !== null &&
                 <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
                     <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
-                    <div className={`relative rounded-lg card w-[60%] p-8 transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
-                        <QuotaionPDF data={quotationPdf} /> :
+
+                    <div className={`relative rounded-lg card w-[60%] transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
+                        <div className='text-white mb-5 flex justify-between p-2 items-center' style={{ background: Colors.ThemeBlue }}>
+                            <Title title={'Quotation'} size={'lg'} />
+                            <div onClick={() => setQuotationPdf(null)} className='cursor-pointer'>
+                                {CrossMark}
+                            </div>
+                        </div>
+                        <div className='p-8'>
+                            <QuotaionPDF data={quotationPdf} />
+                        </div>
                     </div>
                 </div>
             }

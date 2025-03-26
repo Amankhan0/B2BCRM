@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 import MyInput from "../../../Component/MyInput";
-import { panelPermisson } from "./permission";
+import { compileData, panelPermisson } from "./permission";
 import Title from "../../../Component/Title";
 import { Colors } from "../../../Colors/color";
 import MyButton from "../../../Component/MyButton";
 import toast from "react-hot-toast";
 import { ApiHit } from "../../../utils";
-import { addRole } from "../../../Constants/Constants";
+import { addRole, addRoleWithoutIP, addUserWithoutIP, deleteRoleWithoutIP, deleteUserWithoutIP, downloadWithoutIP, searchRoleWithoutIP, searchUserWithoutIP, updateRole, updateRoleWithoutIP, updateUserWithoutIP } from "../../../Constants/Constants";
 
-const AddRole = () => {
+const AddRole = ({data}) => {
 
     const [permissionData, setPermissionData] = useState(null)
     const [render, setRender] = useState(Date.now())
 
     useEffect(() => {
-        if (permissionData === null) {
+        if(data){
+            var compile = {
+                ...data,
+                permission:compileData(data.permission).permission
+            }
+            setPermissionData(compile)
+        }
+        else if (permissionData === null) {
             setPermissionData(panelPermisson)
         }
     }, [])
@@ -55,11 +62,19 @@ const AddRole = () => {
         if(permissionData.roleName === ''){
             toast.error('Role name is required')
         }else{
-            console.log('permissionData',permissionData);
-            
-            ApiHit(permissionData,addRole).then(res=>{
+            var oldPermissionData = permissionData
+            oldPermissionData?.allowedEndPoints?.push(searchRoleWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(addRoleWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(updateRoleWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(deleteRoleWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(searchUserWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(addUserWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(deleteUserWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(updateUserWithoutIP)
+            oldPermissionData?.allowedEndPoints?.push(downloadWithoutIP)
+            ApiHit(oldPermissionData,data?updateRole:addRole).then(res=>{
                 if(res.status === 200){
-                    toast.success('Role added successfully')
+                    toast.success(data?'Role updated successfully':'Role added successfully')
                     window.location.pathname = '/role'
                 }
             })
@@ -72,8 +87,6 @@ const AddRole = () => {
         setPermissionData(permissionData)
         setRender(Date.now())
     }
-
-    console.log('permissionData', permissionData);
 
     return (
         permissionData !== null &&
@@ -100,7 +113,7 @@ const AddRole = () => {
                 })
             }
             <div className="mt-5">
-                <MyButton onClick={() => onClickSubmit()} title={'Submit'} />
+                <MyButton onClick={() => onClickSubmit()} title={data?'Update':'Submit'} />
             </div>
         </div>
     )
