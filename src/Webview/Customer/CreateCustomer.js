@@ -36,16 +36,23 @@ function CreateCustomer() {
 
 
     useEffect(() => {
-        // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
-        //     fetchData()
-        // }
+
+        const state = options.find((item) => {
+            console.log(item?.label === 'India', 'bool val');
+            if ('India' === item?.label) {
+                return item;
+            }
+            return false;
+        })?.state;
+
+        setState(state)
 
         return () => {
             let json = ApiReducer?.apiJson;
             json = {};
             dispatch(setDataAction(json, SET_API_JSON));
         }
-    }, [])
+    }, [options])
 
     const natureOfCompanyOptions = [
         { label: "Sole Proprietorship", value: "Sole Proprietorship" },
@@ -70,6 +77,11 @@ function CreateCustomer() {
             console.log('ApiReducer?.apiJson Error', errors);
             if (res?.inner) {
                 dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
+                res.inner.forEach((error) => {
+                    if(['billingAddresses', 'shippingAddresses'].includes(error.path)){
+                        toast.error(error.message);
+                    }
+                  });
             } else {
                 const api = params?.id ? updateCustomer:addCustomer;
 
@@ -77,7 +89,7 @@ function CreateCustomer() {
                     console.log('res', res);
 
                     if (res.status === 200) {
-                        toast.success('Customer created successfully')
+                        toast.success(`Customer ${params?.id ? 'updated' : 'created'} successfully`)
 
                         setTimeout(() => {
                             window.location.pathname = '/customer'
@@ -137,14 +149,14 @@ function CreateCustomer() {
         console.log(e, loadType);
 
         if (loadType === 'state') {
-            const state = options.find((item) => {
-                if (e.value === item?.label) {
-                    return item;
-                }
-                return false;
-            })?.state;
+            // const state = options.find((item) => {
+            //     if (e.value === item?.label) {
+            //         return item;
+            //     }
+            //     return false;
+            // })?.state;
 
-            setState(state)
+            // setState(state)
             setCity(null)
 
             onChange(e.value, index, 'country', parent)
@@ -315,7 +327,7 @@ function CreateCustomer() {
                 </div>
             </div>
             <div className='mt-5'>
-                <MyButton title={'Submit'} onClick={() => onSubmit()} />
+                <MyButton title={params?.id ? 'Update' :'Submit'} onClick={() => onSubmit()} />
             </div>
         </div>
     )

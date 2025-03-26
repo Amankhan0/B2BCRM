@@ -39,7 +39,12 @@ function CreateCustomer() {
         contact: Yup.string()
             .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
             .required('Phone number is required'),
-        email: Yup.string().email('Invalid email format').required('Email is required'),
+        email: Yup.string()
+          .matches(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            'Invalid email format'
+          )
+          .required('Email is required'),
         gstAddresses: Yup.array().of(
             Yup.object().shape({
                 address: Yup.string().required('GST address is required'),
@@ -141,16 +146,21 @@ function CreateCustomer() {
     }, [params])
 
     useEffect(() => {
-        // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
-        //     fetchData()
-        // }
 
+        const state = options.find((item) => {
+            if ('India' === item?.label) {
+                return item;
+            }
+            return false;
+        })?.state;
+
+        setState(state)
         return () => {
             let json = ApiReducer?.apiJson;
             json = {};
             dispatch(setDataAction(json, SET_API_JSON));
         }
-    }, [])
+    }, [options])
 
     console.log(errors, 'errors');
 
@@ -162,6 +172,11 @@ function CreateCustomer() {
             console.log('ApiReducer?.apiJson', ApiReducer?.apiJson);
             if (res?.inner) {
                 dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
+                res.inner.forEach((error) => {
+                    if(['warehouseAddresses', 'gstAddresses'].includes(error.path)){
+                        toast.error(error.message);
+                    }
+                  });
             } else {
 
                 const api = params?.id ? updateSupplier : addSupplier;
@@ -169,8 +184,8 @@ function CreateCustomer() {
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
                     console.log('res', res);
 
-                    if (res.status === 200) {
-                        toast.success('Supplier created successfully')
+                    if (res.status === 200 || res.status === 201) {
+                        toast.success(`Supplier ${params?.id ? 'updated' : 'created'} successfully`)
                         window.location.pathname = '/supplier'
                     } else {
                         toast.success(res.message)
@@ -192,7 +207,7 @@ function CreateCustomer() {
             }
         })
     }
-    console.log(ApiReducer?.apiJson)
+
     const onChange = (value, index, key, parent) => {
         const json = ApiReducer?.apiJson;
         json[parent][index] = { ...json[parent][index], [key]: value };
@@ -221,14 +236,14 @@ function CreateCustomer() {
         console.log(e, loadType);
 
         if (loadType === 'state') {
-            const state = options.find((item) => {
-                if (e.value === item?.label) {
-                    return item;
-                }
-                return false;
-            })?.state;
+            // const state = options.find((item) => {
+            //     if (e.value === item?.label) {
+            //         return item;
+            //     }
+            //     return false;
+            // })?.state;
 
-            setState(state)
+            // setState(state)
             setCity(null)
 
             onChange(e.value, index, 'country', parent)
@@ -470,7 +485,7 @@ function CreateCustomer() {
                 </div>
             </div>
             <div className='mt-5'>
-                <MyButton title={'Submit'} onClick={() => onSubmit()} />
+                <MyButton title={params?.id ? 'Update' : 'Submit'} onClick={() => onSubmit()} />
             </div>
         </div>
     )
