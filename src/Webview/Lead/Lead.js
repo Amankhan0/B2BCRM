@@ -80,10 +80,10 @@ function Lead() {
                   {
                     ele.status === 'Active' &&
                     <div className='flex gap-2'>
-                      <NavLink to={'/editlead/'+ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                      <NavLink to={'/editlead/' + ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                         {editIcon}
                       </NavLink>
-                      <div onClick={()=>deleteLead(ele?._id)} className='cursor-pointer' style={{ color: Colors.RED }}>
+                      <div onClick={() => deleteLead(ele?._id)} className='cursor-pointer' style={{ color: Colors.RED }}>
                         {deleteIcon}
                       </div>
                     </div>
@@ -97,17 +97,20 @@ function Lead() {
     }
   }
 
-  const deleteLead = (id) =>{
-    var json = {
-      _id:id,
-      status:'InActive'
-    }
-    ApiHit(json,updateLead).then(res=>{
-      if(res?.status === 200){
-        toast.success('lead delete successfully')
-        dispatch(setLead(null))
+  const deleteLead = (id) => {
+    var confirmation = window.confirm('Are you sure to delete this lead')
+    if (confirmation) {
+      var json = {
+        _id: id,
+        status: 'InActive'
       }
-    })
+      ApiHit(json, updateLead).then(res => {
+        if (res?.status === 200) {
+          toast.success('lead delete successfully')
+          dispatch(setLead(null))
+        }
+      })
+    }
   }
 
   const onCrossQuotaiotn = () => {
