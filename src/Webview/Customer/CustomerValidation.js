@@ -158,7 +158,12 @@ export const CustomerValidationSchema = Yup.object().shape({
   contact: Yup.string()
     .matches(/^[0-9]{10}$/, 'Contact must be 10 digits')
     .required('Contact is required'),
-  email: Yup.string().email('Invalid email format').required('Email is required'),
+  email: Yup.string()
+  .matches(
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    'Invalid email format'
+  )
+  .required('Email is required'),
   billingAddresses: Yup.array().of(
     Yup.object().shape({
       address: Yup.string().required('Billing address is required'),
@@ -170,7 +175,7 @@ export const CustomerValidationSchema = Yup.object().shape({
         .required('Billing pincode is required')
         .matches(/^[1-9][0-9]{5}$/, 'Billing pincode must be 6 digits'),
     })
-  ),
+  ).min(1, 'At least one Billing address is required').required('At least one Billing address is required'),
   shippingAddresses: Yup.array().of(
     Yup.object().shape({
       address: Yup.string().required('Shipping address is required'),
@@ -182,7 +187,7 @@ export const CustomerValidationSchema = Yup.object().shape({
         .required('Shipping pincode is required')
         .matches(/^[1-9][0-9]{5}$/, 'Shipping pincode must be 6 digits'),
     })
-  ),
+  ).min(1, 'At least one Shipping address is required').required('At least one Shipping address is required'),
   pancardNo: Yup.string()
     .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
     .required('PAN card number is required'),

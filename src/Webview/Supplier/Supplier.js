@@ -12,6 +12,7 @@ import { deleteIcon, editIcon, smallEyeIcon } from '../../Icons/Icon';
 import SupplierGstAddressView from './SupplierGstAddressView';
 import SupplierWarehouseAddressView from './SupplierWarehouseAdddressView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import SupplierBankDetailsView from './SupplierBankDetailsView';
 // import LeadProductsView from './LeadProductsView';
 
 function Customer() {
@@ -119,7 +120,7 @@ function Customer() {
       }
       {
         showBankDetails !== null &&
-        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.shippingAddresses} />
+        <SupplierBankDetailsView onCloseClick={() => setshowBankDetails(null)} addressesArr={supplierReducer?.doc?.content[showBankDetails || 0]?.bankDetails} />
       }
     </div>
   )

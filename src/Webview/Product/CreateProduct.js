@@ -32,10 +32,14 @@ function CreateProduct() {
             object().shape({
                 varientName: string().required('Variant name is required'),
                 varientUnit: string().required('Variant unit is required'),
-                price: string().required('Price is required'), // Consider using .number() if it's a number
+                price: string()
+                .matches(/^[0-9]+$/, 'Price must contain only numbers').required('Price is required'), // Consider using .number() if it's a number
                 priceUnit: string().required('Price unit is required'),
-                minQty: string().required('Minimum quantity is required'), // Consider .number()
-                gst: string().required('GST is required'), // Consider a specific format if needed
+                minQty: string()
+                .matches(/^[0-9]+$/, 'Min Qty must contain only numbers').required('Minimum quantity is required'), // Consider .number()
+                gst: string()
+                .matches(/^[0-9]+$/, 'GST must contain only numbers')
+                .required('GST is required'), // Consider a specific format if needed
             })
         ).min(1,'At least one variant is required').required('At least one variant is required'),
     });
@@ -79,7 +83,7 @@ function CreateProduct() {
                     console.log('res', res);
 
                     if (res.status === 200 || res.status === 201) {
-                        toast.success('Product created successfully')
+                        toast.success(`Product ${params?.id ? 'updated':'created'} successfully`)
                         window.location.pathname = '/product'
                     } else {
                         toast.success(res.message)
@@ -241,7 +245,7 @@ function CreateProduct() {
                 </div>
             </div>
             <div className='mt-5'>
-                <MyButton title={'Submit'} onClick={() => onSubmit()} />
+                <MyButton title={params?.id ? 'Update' : 'Submit'} onClick={() => onSubmit()} />
             </div>
         </div>
     )
