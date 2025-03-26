@@ -27,8 +27,7 @@ function CreateProduct() {
         productName: string().required('Product name is required'),
         make: string().required('Make is required'),
         hsnNo: string()
-            .required('HSN number is required')
-            .matches(/^[0-9]{4,8}$/, 'Invalid HSN number format. Must be 4 to 8 digits.'),
+            .required('HSN number is required'),
         varients: array().of(
             object().shape({
                 varientName: string().required('Variant name is required'),
@@ -43,16 +42,15 @@ function CreateProduct() {
 
     const { errors, validateJson, validateField } = useYupValidation(validationSchema);
 
-
     const dispatch = useDispatch()
 
     const params = useParams();
+
     useLayoutEffect(() => {
         if (params?.id) {
             fetchData()
         }
     }, [params])
-
 
     useEffect(() => {
         // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
@@ -205,7 +203,7 @@ function CreateProduct() {
             </div>
             <div className='bg-white mt-5'>
                 <div style={{ background: Colors.ThemeBlue }}>
-                    <p className='text-white p-2'>Billing Addresses</p>
+                    <p className='text-white p-2'>Add Products Variant</p>
                 </div>
                 <div className="p-5">
 

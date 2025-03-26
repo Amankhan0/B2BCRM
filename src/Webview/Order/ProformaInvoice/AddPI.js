@@ -5,7 +5,6 @@ import MyInput from '../../../Component/MyInput';
 import DataTable from '../../../Component/DataTable';
 import toast from 'react-hot-toast';
 import MyButton from '../../../Component/MyButton';
-import MyCheckBox from '../../../Component/MyCheckBox';
 import { ApiHit, updateAvaialblePO, updateProductIdWithPO, updateProductPOAvailableOrNot } from '../../../utils';
 import { addPI, selectClass, updateOrder } from '../../../Constants/Constants';
 import { useDispatch, useSelector } from 'react-redux';
