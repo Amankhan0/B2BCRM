@@ -16,10 +16,12 @@ import AddPI from './ProformaInvoice/AddPI';
 import toast from 'react-hot-toast';
 import MyLoader from '../../Component/MyLoader';
 import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon, trashbin } from '../../SVG/Icons';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
 function Order() {
 
     const OrderReducer = useSelector(state => state.OrderReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
 
@@ -38,7 +40,9 @@ function Order() {
         var json = {
             page: 1,
             limit: 100,
-            search: {}
+            search: {
+                user_id:user?.userData?._id
+            }
         }
         ApiHit(json, searchOrder).then(res => {
             if (res?.content) {

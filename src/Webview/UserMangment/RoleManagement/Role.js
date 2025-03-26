@@ -9,11 +9,13 @@ import { ApiHit, GetFullYearWithTime } from "../../../utils";
 import { searchRole } from "../../../Constants/Constants";
 import { setRole } from "../../../Store/Action/RoleAction";
 import { deleteIcon, editIcon } from "../../../Icons/Icon";
+import { getAuthenticatedUserWithRoles } from "../../../Storage/Storage";
 
 const Role = () => {
 
     const RoleReducer = useSelector(state => state.RoleReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
 
@@ -73,11 +75,14 @@ const Role = () => {
                         <Title title={'Role'} size={'lg'} color={Colors.BLACK} />
                     </div>
                     <div className='flex gap-5'>
-                        <div className='w-full mt-1'>
-                            <NavLink to={'/addrole'}>
-                                <MyButton className={'p-2.5'} title={'Create Role'} />
-                            </NavLink>
-                        </div>
+                        {
+                            user?.roleObject?.permission?.[6]?.permission?.[0].write &&
+                            <div className='w-full mt-1'>
+                                <NavLink to={'/addrole'}>
+                                    <MyButton className={'p-2.5'} title={'Create Role'} />
+                                </NavLink>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

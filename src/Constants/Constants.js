@@ -170,9 +170,9 @@ export const addPO = OrderMicroService + 'addPO'
 export const searchPO = OrderMicroService + 'searchPO'
 export const updatePO = OrderMicroService + 'updatePO'
 
-export const addPOWithoutIP = OrderMicroService + 'addPO'
-export const searchPOWithoutIP = OrderMicroService + 'searchPO'
-export const updatePOWithoutIP = OrderMicroService + 'updatePO'
+export const addPOWithoutIP = OrderMicroServiceWithoutIP + 'addPO'
+export const searchPOWithoutIP = OrderMicroServiceWithoutIP + 'searchPO'
+export const updatePOWithoutIP = OrderMicroServiceWithoutIP + 'updatePO'
 
 // Dispatch
 export const addDispatch = OrderMicroService + 'addDispatch'

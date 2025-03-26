@@ -13,13 +13,14 @@ import LeadProductsView from '../Lead/LeadProductsView';
 import CustomerShippingAddressView from './CustomerShippingAdddressView';
 import { setProduct } from '../../Store/Action/ProductAction';
 import ProductVarientsView from './ProductVarientsView';
+import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 // import LeadProductsView from './LeadProductsView';
 
 function Product() {
 
   const PaginationReducer = useSelector(state => state.PaginationReducer)
   const productReducer = useSelector(state => state.ProductReducer)
-
+  let user = getAuthenticatedUserWithRoles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -63,7 +64,7 @@ function Product() {
             </td>
             <td className='p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={()=>{ navigate(`/edit-product/${ele?._id}`) }} >
+                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-product/${ele?._id}`) }} >
                   {editIcon}
                 </div>
                 {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
@@ -85,9 +86,13 @@ function Product() {
       <div className='card p-2'>
         <div className='flex justify-between items-center'>
           <Title title={'Product'} size={'xl'} color={Colors.BLACK} />
-          <NavLink to={'/create-product'}>
-            <MyButton title={'Create Product'} />
-          </NavLink>
+          {
+            user?.roleObject?.permission?.[5]?.permission?.[0].write &&
+            <NavLink to={'/create-product'}>
+              <MyButton title={'Create Product'} />
+            </NavLink>
+          }
+
         </div>
       </div>
       <div className='mt-5 p-5 bg-white'>

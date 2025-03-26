@@ -142,6 +142,7 @@ export default function Main() {
                                 <div className="simplebar-content-wrapper" tabIndex="0" role="region" aria-label="scrollable content" style={{ height: '100%', overflow: 'scroll' }}><div className="simplebar-content" style={{ padding: '0px 0px 24px' }}>
                                     <ul>
                                         {localNav.map((item, index) => (
+                                            item.active &&
                                             <div key={index} className={item?.id === 1 ? 'p-2 w-max -ml-4 font-semibold' : 'p-0'}>
                                                 {item.url ? (
                                                     <SidebarItem item={item} onClick={() => handleItemClick(item.title)} />

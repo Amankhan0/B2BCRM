@@ -11,7 +11,7 @@ import { LeadValidation } from './LeadValidation';
 import { ApiHit, ObjIsEmpty, updateProductId } from '../../utils';
 import toast from 'react-hot-toast';
 import { Active, addLead, searchCustomer, selectClass } from '../../Constants/Constants';
-import { getAuthenticatedUser } from '../../Storage/Storage';
+import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
 function CreateLead() {
 
@@ -53,8 +53,8 @@ function CreateLead() {
         } else {
           var json = updateProductId(ApiReducer?.apiJson)
           if (json) {
-            json.status = Active
-            json.user_id = getAuthenticatedUser().userId;
+            json.status = Active 
+            json.user_id = getAuthenticatedUserWithRoles().userData?._id;
             ApiHit(json, addLead).then(res => {
               setLoader(false)
               if (res.status === 200) {

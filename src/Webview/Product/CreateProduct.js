@@ -42,16 +42,15 @@ function CreateProduct() {
 
     const { errors, validateJson, validateField } = useYupValidation(validationSchema);
 
-
     const dispatch = useDispatch()
 
     const params = useParams();
+
     useLayoutEffect(() => {
         if (params?.id) {
             fetchData()
         }
     }, [params])
-
 
     useEffect(() => {
         // if (Object.keys(ApiReducer?.apiJson)?.length > 0) {
@@ -204,7 +203,7 @@ function CreateProduct() {
             </div>
             <div className='bg-white mt-5'>
                 <div style={{ background: Colors.ThemeBlue }}>
-                    <p className='text-white p-2'>Billing Addresses</p>
+                    <p className='text-white p-2'>Add Products Variant</p>
                 </div>
                 <div className="p-5">
 

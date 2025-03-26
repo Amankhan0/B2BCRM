@@ -1,12 +1,13 @@
 import { 
-    addCustomerWithoutIP, addLeadWithoutIP, addOrderWithoutIP, addProductWithoutIP, addQuotationWithoutIP, 
+    addCustomerWithoutIP, addDispatchWithoutIP, addLeadWithoutIP, addOrderWithoutIP, addPIWithoutIP, addPOWithoutIP, addProductWithoutIP, addQuotationWithoutIP, 
     addRoleWithoutIP, addSupplierWithoutIP, addUserWithoutIP, 
     deleteCustomerWithoutIP, deleteLeadWithoutIP, deleteOrderWithoutIP, deleteProductWithoutIP, 
     deleteQuotationWithoutIP, deleteRoleWithoutIP, deleteSupplierWithoutIP, deleteUserWithoutIP, 
-    searchCustomerWithoutIP, searchLeadWithoutIP, searchOrderWithoutIP, searchProductWithoutIP, 
+    searchCustomerWithoutIP, searchDispatchWithoutIP, searchLeadWithoutIP, searchOrderWithoutIP, searchPIWithoutIP, searchPOWithoutIP, searchProductWithoutIP, 
     searchQuotationWithoutIP, searchRoleWithoutIP, searchSupplierWithoutIP, searchUserWithoutIP, 
-    updateCustomerWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updateProductWithoutIP, 
-    updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP 
+    updateCustomerWithoutIP, updateDispatch, updateDispatchWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updatePIWithoutIP, updatePOWithoutIP, updateProductWithoutIP, 
+    updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP, 
+    uploadFileWithoutIP
   } from "../../../Constants/Constants";
   
 export const panelPermisson = {
@@ -49,7 +50,7 @@ export const panelPermisson = {
                 }
             ],
             "readEndpoint": searchOrderWithoutIP,
-            'writeEndpoint': [addOrderWithoutIP, updateOrderWithoutIP],
+            'writeEndpoint': [addOrderWithoutIP, uploadFileWithoutIP,updateOrderWithoutIP,searchPOWithoutIP,searchPOWithoutIP,searchPIWithoutIP,addPOWithoutIP,addPIWithoutIP,addDispatchWithoutIP,searchDispatchWithoutIP,updatePOWithoutIP,updatePIWithoutIP,updateDispatchWithoutIP],
             'deleteEndpoint': deleteOrderWithoutIP
         },
         {
