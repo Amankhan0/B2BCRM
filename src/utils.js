@@ -779,19 +779,19 @@ export const GstCalculation = (amount, value) => {
   }
 }
 
-export const calculateTotalAmountUsingData = (products) => {
+export const calculateTotalAmountUsingData = (products,type) => {
   return products?.reduce((total, product) => {
-    const productTotal = Number(product.price) * Number(product.qty);
+    const productTotal = Number(type?product.vendorPrice:product.price) * Number(product.qty);
     console.log('productTotal', productTotal);
 
     return total + productTotal;
   }, 0);
 };
 
-export const calculateTotalGSTAmountUsingData = (products) => {
+export const calculateTotalGSTAmountUsingData = (products,type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst));
+    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst));
     if (cal) {
       productTotal = cal;
     }
@@ -799,10 +799,10 @@ export const calculateTotalGSTAmountUsingData = (products) => {
   }, 0);
 };
 
-export const calculateTotalCGSTAmountUsingData = (products) => {
+export const calculateTotalCGSTAmountUsingData = (products,type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
     if (cal) {
       productTotal = cal;
     }
@@ -810,13 +810,60 @@ export const calculateTotalCGSTAmountUsingData = (products) => {
   }, 0);
 };
 
-export const calculateTotalSGSTAmountUsingData = (products) => {
+export const calculateTotalSGSTAmountUsingData = (products,type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
     if (cal) {
       productTotal = cal;
     }
     return productTotal !== 0 && total + productTotal;
   }, 0);
 };
+
+
+export function numberToWords(num) {
+  // Handle negative numbers
+  if (num < 0) return `minus ${numberToWords(Math.abs(num))}`;
+  
+  // Handle zero
+  if (num === 0) return 'zero';
+  
+  // Arrays for different number names
+  const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
+  
+  // Function to convert numbers less than 1000
+  function convertHundreds(n) {
+      if (n === 0) return '';
+      
+      if (n < 20) return ones[n];
+      
+      if (n < 100) {
+          return tens[Math.floor(n / 10)] + 
+              (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+      }
+      
+      return ones[Math.floor(n / 100)] + ' hundred' + 
+          (n % 100 !== 0 ? ' ' + convertHundreds(n % 100) : '');
+  }
+  
+  // Main conversion logic
+  let words = '';
+  let scaleIndex = 0;
+  
+  while (num > 0) {
+      if (num % 1000 !== 0) {
+          words = convertHundreds(num % 1000) + 
+              (scaleIndex > 0 ? ' ' + scales[scaleIndex] : '') + 
+              (words ? ' ' + words : '');
+      }
+      
+      num = Math.floor(num / 1000);
+      scaleIndex++;
+  }
+  
+  return words.trim();
+}

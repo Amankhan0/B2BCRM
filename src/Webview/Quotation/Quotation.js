@@ -22,6 +22,7 @@ function Quotation({ selectedLeadId }) {
     let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
+    const width = window.innerWidth
 
     const [showProducts, setShowProducts] = useState(null)
     const [leadData, setLeadData] = useState(null)
@@ -112,6 +113,9 @@ function Quotation({ selectedLeadId }) {
         dispatch(setQuotation(null))
     }
 
+    console.log('quotationPdf',quotationPdf);
+    
+
     return (
         <div className='mt-10'>
             {
@@ -162,9 +166,8 @@ function Quotation({ selectedLeadId }) {
             }
             {
                 selectedLead !== null &&
-
                 <>
-                    <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
+                    <div style={{width:width/1.3}} className='mt-5 p-5 bg-white overflow-scroll'>
                         <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
                     </div>
                     {
@@ -177,7 +180,6 @@ function Quotation({ selectedLeadId }) {
                 quotationPdf !== null &&
                 <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
                     <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
-
                     <div className={`relative rounded-lg card w-[60%] transition-opacity duration-300`} style={{ height: '90vh', overflow: 'scroll' }}>
                         <div className='text-white mb-5 flex justify-between p-2 items-center' style={{ background: Colors.ThemeBlue }}>
                             <Title title={'Quotation'} size={'lg'} />

@@ -89,12 +89,7 @@ function AddPI({ orderData }) {
                     </td>
                     <td className='min-w-[100px] p-2 border text-black text-left'>
                         <div className='flex justify-center'>
-                            {
-                                availableQty !== Number(ele?.qty) ?
-                                    <MyInput onChange={(e) => onChangeProdcuts(e.target.value, i, 'price')} title={'Price'} value={ele.price} />
-                                    :
-                                    ele.price
-                            }
+                            {ele.price}
                         </div>
                     </td>
                     <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>

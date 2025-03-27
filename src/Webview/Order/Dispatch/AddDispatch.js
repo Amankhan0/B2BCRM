@@ -6,9 +6,8 @@ import MyInput from "../../../Component/MyInput";
 import DataTable from "../../../Component/DataTable";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { ApiHit, updateProductId } from "../../../utils";
-import { addDispatch, updatePO } from "../../../Constants/Constants";
-import { checkDispatchedQty, updateDispatchedQty } from "./dispatchUtils";
+import { updateProductId } from "../../../utils";
+import { updateDispatchedQty } from "./dispatchUtils";
 
 const AddDispatchOrder = ({ data }) => {
 
@@ -43,28 +42,30 @@ const AddDispatchOrder = ({ data }) => {
                     ourInvoice: ApiReducer?.apiJson?.ourInvoice
                 }
                 var newFinalJson = updateProductId(json)
-                ApiHit(newFinalJson, addDispatch).then(res => {
-                    if (res.status === 200) {
-                        newFinalJson._id = poID
-                        var manageStatus = checkDispatchedQty(newFinalJson)
-                        if (manageStatus) {
-                            newFinalJson.status = 'dispatched'
-                        }else{
-                            newFinalJson.status = 'partial_dispatched'
-                        }
-                        ApiHit(newFinalJson, updatePO).then(res => {
-                            if (res.status === 200) {
-                                toast.success('Dispatched Sussessfully')
-                                window.location.reload()
-                            }
-                        })
-                    }
-                })
+                console.log('newFinalJson',newFinalJson);
+                
+                // ApiHit(newFinalJson, addDispatch).then(res => {
+                //     if (res.status === 200) {
+                //         newFinalJson._id = poID
+                //         var manageStatus = checkDispatchedQty(newFinalJson)
+                //         if (manageStatus) {
+                //             newFinalJson.status = 'dispatched'
+                //         }else{
+                //             newFinalJson.status = 'partial_dispatched'
+                //         }
+                //         ApiHit(newFinalJson, updatePO).then(res => {
+                //             if (res.status === 200) {
+                //                 toast.success('Dispatched Sussessfully')
+                //                 window.location.reload()
+                //             }
+                //         })
+                //     }
+                // })
             }
         }
     }
 
-    const th = ['Product Name', 'HSN No', "Make", "Varient/Unit", 'Quantity', 'Available Quantity', 'Price', 'GST', 'CGST', 'SGST']
+    const th = ['Product Name', 'HSN No', "Make", "Varient/Unit", 'Orderd Quantity', 'Balance Quantity','Dispatch Quantity', 'Price', 'GST', 'CGST', 'SGST']
     let td;
     if (newData !== null) {
         td = newData?.products?.map((ele, i) => {
@@ -79,9 +80,14 @@ const AddDispatchOrder = ({ data }) => {
                     <td className='min-w-[100px] p-2 border text-black'>{ele?.qty || '-'}</td>
                     <td className='min-w-[100px] p-2 border text-black text-left'>
                         <div className='flex justify-center'>
+                            {availableQty}
+                        </div>
+                    </td>
+                    <td className='min-w-[100px] p-2 border text-black text-left'>
+                        <div className='flex justify-center'>
                             {
                                 availableQty !== 0 ?
-                                    <MyInput onChange={(e) => onChangeProdcuts(ele, e.target.value, i)} title={'Available Quantity'} value={ele.dummyDispatch || ele.dummyDispatch == "" ? ele.dummyDispatch : availableQty} />
+                                    <MyInput onChange={(e) => onChangeProdcuts(ele, e.target.value, i)} title={'Available Quantity'} value={ele.dummyDispatch || ele.dummyDispatch === "" ? ele.dummyDispatch : availableQty} />
                                     :
                                     0
                             }
@@ -96,10 +102,17 @@ const AddDispatchOrder = ({ data }) => {
         })
     }
 
-    const onChangeProdcuts = (ele, value, index) => {
+    console.log(data);
+    
+
+    const onChangeProdcuts = (ele, value, index) => {        
         var oldData = newData
         const availableQty = newData.products[index].dispatchedQty ? newData.products[index].dispatchedQty !== null ? newData.products[index].dispatchedQty !== undefined ? newData.products[index].dispatchedQty !== 0 ? newData.products[index].dispatchedQty !== "0" ? Number(newData.products[index].dispatchedQty) > Number(newData.products[index].qty) ? Number(newData.products[index].dispatchedQty) - Number(newData.products[index].qty) : Number(newData.products[index].qty) - Number(newData.products[index].dispatchedQty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty);
-        if (availableQty >= value) {
+        
+        console.log('availableQty',availableQty >= Number(value));
+        
+
+        if (availableQty >= Number(value)) {
             newData.products[index].dummyDispatch = value
             setNewData(oldData)
             setRender(Date.now())

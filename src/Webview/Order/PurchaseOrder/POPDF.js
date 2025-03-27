@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Colors } from "../../../Colors/color";
 import signature from '../../..//Image/signature.jpeg';
-import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation } from "../../../utils";
+import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
@@ -26,23 +26,23 @@ const POPDF = ({ data, onClickBack }) => {
 
     useEffect(() => {
         if (totalAmount === null) {
-            var t = calculateTotalAmountUsingData(data?.products)
+            var t = calculateTotalAmountUsingData(data?.products, true)
             if (t) {
                 setTotalAmount(t)
             }
         }
         if (totalGSTAmount === null) {
-            var g = calculateTotalGSTAmountUsingData(data?.products)
+            var g = calculateTotalGSTAmountUsingData(data?.products, true)
             if (g) {
                 setTotalGSTAmount(g)
             }
         }
         if (totalCGSTAmount === null) {
-            var c = calculateTotalCGSTAmountUsingData(data?.products)
+            var c = calculateTotalCGSTAmountUsingData(data?.products, true)
             setTotalCGSTAmount(c)
         }
         if (totalSGSTAmount === null) {
-            var s = calculateTotalSGSTAmountUsingData(data?.products)
+            var s = calculateTotalSGSTAmountUsingData(data?.products, true)
             setTotalSGSTAmount(s)
         }
         if (totalTaxAmount === null && totalCGSTAmount !== null && totalGSTAmount !== null && totalSGSTAmount !== null && totalAmount !== null) {
@@ -59,17 +59,26 @@ const POPDF = ({ data, onClickBack }) => {
             const pdf = new jsPDF("p", "mm", "a4");
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
+
+            // Calculate height proportionally
+            const originalAspectRatio = 3.5; // You'll need to calculate this or know it beforehand
+            const desiredWidth = 50;
+            const proportionalHeight = desiredWidth / originalAspectRatio;
+            const proportionalHeightForSignature = desiredWidth / 1;
+            const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
             let currentY = 10;
 
             // 🟢 Add Header with Text
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(10);
 
-            // Add Company Logo (if possible)
             pdf.addImage(
-                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+                logoUrl,
                 "PNG",
-                15, currentY, 60, 15
+                15,
+                currentY,
+                desiredWidth,
+                proportionalHeight
             );
 
             // Company Details on Left Side (Below Logo)
@@ -115,7 +124,7 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
             pdf.text(`Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`, pageWidth / 2, currentY + 12);
             pdf.text(`${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`, pageWidth / 2, currentY + 17);
-            
+
 
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
@@ -135,19 +144,23 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.text(`${data?.supplierDetails?.gstAddresses?.city}, ${data?.supplierDetails?.gstAddresses?.pinCode}, ${data?.supplierDetails?.gstAddresses?.landmark}`, 15, currentY + 17);
             pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 22);
 
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
+            currentY += 35;
+
             // 🟢 Add Table with Multi-Page Handling
             pdf.autoTable({
-                startY: 150,
+                startY: 120,
                 head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
                 body:
                     data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
                         data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele?.vendorPrice) * Number(ele.qty)
                         ])
                         : data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, ele.cgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", ele.sgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2), GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2), Number(ele?.vendorPrice) * Number(ele.qty)
                         ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
@@ -168,7 +181,7 @@ const POPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -179,7 +192,7 @@ const POPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             } else {
@@ -189,7 +202,7 @@ const POPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
 
@@ -199,7 +212,7 @@ const POPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             }
@@ -210,7 +223,9 @@ const POPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
+
+            currentY += 10;
 
             // 🟢 Terms & Conditions with Multi-Page Handling
             const termsText = termsRef.current.innerText.split("\n").map(line => [line]);
@@ -228,9 +243,19 @@ const POPDF = ({ data, onClickBack }) => {
                 pdf.addPage();
                 currentY = 15;
             }
-            const signatureCanvas = await html2canvas(signatureRef.current, { scale: 10, useCORS: true });
-            const signatureImgData = signatureCanvas.toDataURL("image/png");
-            pdf.addImage(signatureImgData, "PNG", 0, currentY, pageWidth, 40);
+            pdf.text(`Thanking you,`, pageWidth - 175, currentY);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+
+            pdf.addImage(
+                signature,
+                "PNG",
+                pageWidth - 70,
+                currentY,
+                desiredWidth,
+                proportionalHeightForSignature
+            );
 
             // Save PDF
             pdf.save("PurchaseOrder.pdf");
@@ -349,17 +374,17 @@ const POPDF = ({ data, onClickBack }) => {
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.hsnNo}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.vendorPrice}</td>
                                         {
                                             data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
-                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)} ({ele?.productVarient?.gst / 2}%)</td>
                                                 </>
                                         }
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.vendorPrice) * Number(ele.qty)}</td>
                                     </tr>
                                 )
                             })
@@ -379,7 +404,7 @@ const POPDF = ({ data, onClickBack }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount}</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
                 </div>
 
                 {/* Terms & Notes */}
@@ -397,10 +422,9 @@ const POPDF = ({ data, onClickBack }) => {
                     <div>
                         <h4 className="text-black font-bold">Thanking you,</h4>
                         <p className="text-xs p-0.5">Best Regards</p>
-                        <p>{getAuthenticatedUserWithRoles()?.userData?.firstName + ' ' + getAuthenticatedUserWithRoles()?.userData?.lastName}</p>
-                        <p>+91-{getAuthenticatedUserWithRoles()?.userData?.contact}</p>
+                        <p>{data?.regards?.name}</p>
+                        <p>+91 {data?.regards?.contact}</p>
                     </div>
-
                     <div>
                         <p className="text-xs p-0.5 mb-5">Authorized Signature</p>
                         <img src={signature} alt="Signature" style={{ width: 150 }} />

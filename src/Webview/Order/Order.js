@@ -29,6 +29,7 @@ function Order() {
     const [modal, setModal] = useState(null)
     const [singleOrderData, setSingleOrderData] = useState(null)
     const [loader, setLoader] = useState(null)
+    const width = window.innerWidth
 
     useEffect(() => {
         if (OrderReducer.doc === null) {
@@ -160,7 +161,7 @@ function Order() {
 
     return (
         <div className='mt-10'>
-            <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
+            <div className='mt-5 p-5 bg-white overflow-scroll' style={{width:width/1.3}}>
                 <DataTable th={th} td={td} totalPages={OrderReducer?.doc?.totalPages} api={fetchData} />
             </div>
             {

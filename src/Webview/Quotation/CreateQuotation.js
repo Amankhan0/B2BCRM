@@ -57,7 +57,7 @@ function CreateQuotation() {
         var json = updateProductId(ApiReducer?.apiJson)
         json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
         json.status = Active
-        json.user_id =  getAuthenticatedUserWithRoles().userData?._id;
+        json.user_id = getAuthenticatedUserWithRoles().userData?._id;
         json.termsAndConditions = content
         ApiHit(json, addQuotation).then(res => {
             if (res.status === 200) {
@@ -76,6 +76,14 @@ function CreateQuotation() {
                 toast.error(res.message)
             }
         })
+    }
+
+    const onClickNext = () => {
+        if (!ApiReducer?.apiJson?.regards || !ApiReducer?.apiJson?.regards?.name || ApiReducer?.apiJson?.regards?.name === "" || ApiReducer?.apiJson?.regards?.contact === "" || !ApiReducer?.apiJson?.regards?.contact || ApiReducer?.apiJson?.regards?.contact?.length !== 10) {
+            toast.error('regards details Is required')
+        } else {
+            setPrivacyPolicy(true)
+        }
     }
 
     return (
@@ -120,12 +128,25 @@ function CreateQuotation() {
             </div>
             <div className='bg-white mt-5'>
                 <div style={{ background: Colors.ThemeBlue }}>
+                    <p className='text-white p-2'>Regards Details</p>
+                </div>
+                <div className='grid grid-cols-4 gap-4 p-5'>
+                    <div>
+                        <MyInput parent={'regards'} name='name' title={'Full Name'} placeholder={'Enter Full Name'} />
+                    </div>
+                    <div>
+                        <MyInput parent={'regards'} name='contact' title={'Contact'} placeholder={'Enter Contact'} />
+                    </div>
+                </div>
+            </div>
+            <div className='bg-white mt-5'>
+                <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Products Details</p>
                 </div>
                 <MySelectProduct isQuotation={true} />
             </div>
             <div className='mt-5'>
-                <MyButton title={'Submit'} onClick={() =>  setPrivacyPolicy(true)} />
+                <MyButton title={'Next'} onClick={() => onClickNext()} />
             </div>
             {
                 privacyPolicy &&
@@ -143,7 +164,7 @@ function CreateQuotation() {
                         <div className='p-10 text-left'>
                             <ReactQuill
                                 value={content}
-                                style={{height:'60vh'}}
+                                style={{ height: '60vh' }}
                                 onChange={setContent}
                                 modules={{
                                     toolbar: [
@@ -154,8 +175,8 @@ function CreateQuotation() {
                                     ],
                                 }}
                             />
-                             <div className='mt-20'>
-                                <MyButton type={loader&&'loader'} title={'Submit'} onClick={() => onSubmit(true)} />
+                            <div className='mt-20'>
+                                <MyButton type={loader && 'loader'} title={'Submit'} onClick={() => onSubmit(true)} />
                             </div>
                         </div>
                     </div>

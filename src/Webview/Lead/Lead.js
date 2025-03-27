@@ -25,6 +25,7 @@ function Lead() {
 
   const [showProducts, setShowProducts] = useState(null)
   const [quotationModal, setQuotationModal] = useState(null)
+  const width = window.innerWidth
   let user = getAuthenticatedUserWithRoles();
 
   useEffect(() => {
@@ -114,15 +115,13 @@ function Lead() {
   }
 
   const onCrossQuotaiotn = () => {
-    console.log('call');
-
     dispatch(setQuotation(null))
     setQuotationModal(null)
   }
 
   return (
     <div className='mt-10'>
-      <div className='card p-2 w-[92%]'>
+      <div className='card p-2' style={{width:width/1.3}}>
         <div className='flex justify-between items-center'>
           <Title title={'Lead'} size={'xl'} color={Colors.BLACK} />
           {
@@ -133,7 +132,7 @@ function Lead() {
           }
         </div>
       </div>
-      <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
+      <div style={{width:width/1.3}} className={`mt-5 p-5 bg-whit overflow-scroll`}>
         <DataTable th={th} td={td} totalPages={LeadReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {

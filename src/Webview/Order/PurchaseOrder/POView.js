@@ -5,16 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import MyButton from '../../../Component/MyButton';
 import Title from '../../../Component/Title';
 import { crossIcon, smallcrossIcon, smalldownloadIcon, smallEyeIcon, smallMoneyIcon } from '../../../Icons/Icon';
-import OrderProductsView from '../OrderProductsView';
 import { setPo } from '../../../Store/Action/OrderAction';
 import { searchPO, updateOrder, updatePO } from '../../../Constants/Constants';
 import POPDF from './POPDF';
 import { Status } from '../../../Component/status';
 import toast from 'react-hot-toast';
 import { Colors } from '../../../Colors/color';
-import MyFileUpload from '../../../Component/MyFileUpload';
 import DispatchOrder from '../Dispatch/DispatchOrder';
 import POProductsView from './POProductView';
+import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon } from '../../../SVG/Icons';
 
 function POView({ orderData }) {
 
@@ -47,7 +46,7 @@ function POView({ orderData }) {
         })
     }
 
-    const th = ['Order Ref No', 'Products', 'Status', 'Action']
+    const th = ['Order Ref No', 'Supplier Details','Products', 'Status', 'Action']
 
     let td;
     if (OrderReducer.PO !== null) {
@@ -56,20 +55,40 @@ function POView({ orderData }) {
                 return (
                     <tr>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className='min-w-[100px] text-left p-2 border text-black'>
+                            <div className='flex gap-2 pb-0.5'>
+                                <i>{smallComputerIcon}</i>
+                                <Title size={'xs'} title={ele?.supplierDetails?.companyName || '-'} />
+                            </div>
+                            <div className='flex gap-2 pb-0.5'>
+                                {smallPersonIcon}
+
+                                <Title size={'xs'} title={ele?.supplierDetails?.name || '-'} />
+                            </div>
+                            <div className='flex gap-2 pb-0.5'>
+                                {smallPhoneIcon}
+
+                                <Title size={'xs'} title={ele?.supplierDetails?.contact || '-'} />
+                            </div>
+                            <div className='flex gap-2'>
+                                {smallMailIcon}
+                                <Title size={'xs'} title={ele?.supplierDetails?.email || '-'} />
+                            </div>
+                        </td>
                         <td className='min-w-[100px] p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
                         <td className='min-w-[100px] p-2 border text-black'>
                             <Status title={ele.status === 'cancel' ? 'cancelled' : ele.status} className={ele.status === 'Active' ? 'bg-green-500' : ele.status === 'cancel' ? 'bg-red-500' : 'bg-green-700'} titleClass={'text-white'} />
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black flex gap-2'>
+                        <td className='min-w-[100px] p-2 h-24 items-center border text-black flex gap-2'>
                             {
                                 ele.status !== 'cancel' &&
                                 <MyButton title={'Download PO PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
                             }
                             {
                                 ele.status === 'cancel' &&
-                                <MyButton title={'cancelled'} bg={Colors.DARKRED} className={'h-7 text-xs w-max'} />
+                                <MyButton title={'cancelled'} bg={Colors.DARKRED} className={'h-5 text-xs w-max'} />
                             }
                             {
                                 ele.status === 'Active' || ele.status === "partial_dispatched"?
@@ -169,7 +188,7 @@ function POView({ orderData }) {
                     dispatchModal !== null &&
                     <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
                         <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
-                        <div className={`relative rounded-lg card w-[60%] transition-opacity duration-300`}>
+                        <div className={`relative rounded-lg card transition-opacity duration-300`}>
                             <div className='flex justify-between p-2' style={{ background: Colors.ThemeBlue }}>
                                 <div>
                                     <Title size={'lg'} color={Colors.WHITE} title={'Dispatch'} />

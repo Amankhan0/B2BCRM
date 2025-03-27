@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { Colors } from "../../Colors/color";
 import signature from '../../Image/signature.jpeg';
 import { OrderInvoiceDetails } from "../OrderInvoiceDetails";
 import 'jspdf-autotable';
-import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, calculateTotalTaxAmountUsingData, GetFullYear, GstCalculation } from "../../utils";
-import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from "../../Storage/Storage";
+import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, calculateTotalTaxAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../utils";
 
 const QuotaionPDF = ({ data }) => {
 
@@ -59,15 +57,24 @@ const QuotaionPDF = ({ data }) => {
             const pageHeight = pdf.internal.pageSize.getHeight();
             let currentY = 10; // Initial Y position
 
+            // Calculate height proportionally
+            const originalAspectRatio = 3.5; // You'll need to calculate this or know it beforehand
+            const desiredWidth = 50;
+            const proportionalHeight = desiredWidth / originalAspectRatio;
+            const proportionalHeightForSignature = desiredWidth / 1; 
+            const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
+
             // 🟢 Add Header with Text
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(10);
 
-            // Add Company Logo (if possible)
             pdf.addImage(
-                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+                logoUrl,
                 "PNG",
-                15, currentY, 60, 15
+                15,
+                currentY,
+                desiredWidth,
+                proportionalHeight
             );
 
             // Company Details on Left Side (Below Logo)
@@ -151,7 +158,7 @@ const QuotaionPDF = ({ data }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -162,7 +169,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
                 currentY += 5;
             } else {
                 if (currentY + 10 > pageHeight) {
@@ -171,7 +178,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
 
@@ -181,7 +188,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             }
@@ -192,7 +199,9 @@ const QuotaionPDF = ({ data }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
+
+            currentY += 10;
 
             // 🟢 Add Terms & Conditions
             if (currentY > pageHeight - 60) {
@@ -214,9 +223,19 @@ const QuotaionPDF = ({ data }) => {
                 pdf.addPage();
                 currentY = 15;
             }
-            const signatureCanvas = await html2canvas(signatureRef.current, { scale: 10, useCORS: true });
-            const signatureImgData = signatureCanvas.toDataURL("image/png");
-            pdf.addImage(signatureImgData, "PNG", 0, currentY, pageWidth, 40);
+            pdf.text(`Thanking you,`, pageWidth - 175, currentY);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+
+            pdf.addImage(
+                signature,
+                "PNG",
+                pageWidth - 70,
+                currentY,
+                desiredWidth,
+                proportionalHeightForSignature
+            );
 
             // 🟢 Save PDF
             pdf.save("Quotation.pdf");
@@ -335,7 +354,7 @@ const QuotaionPDF = ({ data }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount}</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
                 </div>
 
                 {/* Terms & Notes - This is just for reference in the browser, actual PDF uses text */}
@@ -353,8 +372,8 @@ const QuotaionPDF = ({ data }) => {
                     <div>
                         <h4 className="text-black font-bold">Thanking you,</h4>
                         <p className="text-xs p-0.5">Best Regards</p>
-                        <p>{getAuthenticatedUserWithRoles()?.userData?.firstName + ' ' + getAuthenticatedUserWithRoles()?.userData?.lastName}</p>
-                        <p>+91-{getAuthenticatedUserWithRoles()?.userData?.contact}</p>
+                        <p>{data?.regards?.name}</p>
+                        <p>+91 {data?.regards?.contact}</p>
                     </div>
 
                     <div>

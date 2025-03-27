@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Colors } from "../../../Colors/color";
 import signature from '../../..//Image/signature.jpeg';
-import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation } from "../../../utils";
+import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
@@ -60,17 +60,78 @@ const PIPDF = ({ data, onClickBack }) => {
             const pageHeight = pdf.internal.pageSize.getHeight();
             let currentY = 10; // Initial Y position
 
-            // 🟢 Add Header (ONLY ON FIRST PAGE)
-            const headerCanvas = await html2canvas(headerRef.current, { scale: 10, useCORS: true });
-            const headerImgData = headerCanvas.toDataURL("image/png");
-            pdf.addImage(headerImgData, "PNG", 0, currentY, pageWidth, 35);
-            currentY += 35; // Move cursor down
+            // Calculate height proportionally
+            const originalAspectRatio = 3.5; // You'll need to calculate this or know it beforehand
+            const desiredWidth = 50;
+            const proportionalHeight = desiredWidth / originalAspectRatio;
+            const proportionalHeightForSignature = desiredWidth / 1;
+            const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
 
-            // 🟢 Add Customer Info Below Header
-            const customerInfoCanvas = await html2canvas(customerInfoRef.current, { scale: 10, useCORS: true });
-            const customerInfoImgData = customerInfoCanvas.toDataURL("image/png");
-            pdf.addImage(customerInfoImgData, "PNG", 0, currentY, pageWidth, 60);
+            // 🟢 Add Header with Text
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(10);
+
+            pdf.addImage(
+                logoUrl,
+                "PNG",
+                15,
+                currentY,
+                desiredWidth,
+                proportionalHeight
+            );
+
+            // Company Details on Left Side (Below Logo)
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+            pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, 15, currentY + 20);
+            pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, 15, currentY + 25);
+            pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, 15, currentY + 30);
+
+            // Company Address on Right Side
+            pdf.text(
+                `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`,
+                pageWidth - 13,
+                15,
+                { align: 'right', maxWidth: 35 }
+            );
+
             currentY += 25;
+
+            // Add Horizontal Line
+            pdf.setDrawColor(67, 42, 119);
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 10, pageWidth - 10, currentY + 10);
+            currentY += 20;
+
+            // 🟢 Add Customer Info
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119); // Theme Blue Color
+            pdf.text("Billing Address", 15, currentY);
+            pdf.text("Shipping Address", pageWidth / 2, currentY);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+
+            // 🟢 Customer Info
+            pdf.text(`Company Name: ${data?.customerDetails?.companyName || '-'}`, 15, currentY + 7);
+            pdf.text(`Customer Name: ${data?.customerDetails?.name || '-'}`, 15, currentY + 12);
+            pdf.text(`Customer Contact: ${data?.customerDetails?.contact || '-'}`, 15, currentY + 17);
+            pdf.text(`Customer Email: ${data?.customerDetails?.email || '-'}`, 15, currentY + 22);
+            pdf.text(`Address: ${data?.customerDetails?.billingAddress?.address}, ${data?.customerDetails?.billingAddress?.state},`, 15, currentY + 27);
+            pdf.text(`${data?.customerDetails?.billingAddress?.city} ${data?.customerDetails?.billingAddress?.pinCode}`, 15, currentY + 32);
+            pdf.text(`GST No: ${data?.customerDetails?.gstNo}`, 15, currentY + 37);
+
+            // Shipping info
+            pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
+            pdf.text(`Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`, pageWidth / 2, currentY + 12);
+            pdf.text(`${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`, pageWidth / 2, currentY + 17);
+
+            currentY += 17;
+
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
+            currentY += 35;
 
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
@@ -105,7 +166,7 @@ const PIPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Amount: ${totalAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -116,7 +177,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             } else {
@@ -126,7 +187,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
 
@@ -136,7 +197,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 70, currentY);
+                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             }
@@ -147,9 +208,9 @@ const PIPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 70, currentY);
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 195, currentY);
 
-
+            currentY += 10;
 
             // if (currentY > pageHeight - 60) {
             //     pdf.addPage();
@@ -171,9 +232,19 @@ const PIPDF = ({ data, onClickBack }) => {
                 pdf.addPage();
                 currentY = 15;
             }
-            const signatureCanvas = await html2canvas(signatureRef.current, { scale: 10, useCORS: true });
-            const signatureImgData = signatureCanvas.toDataURL("image/png");
-            pdf.addImage(signatureImgData, "PNG", 0, currentY, pageWidth, 40);
+            pdf.text(`Thanking you,`, pageWidth - 175, currentY);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+
+            pdf.addImage(
+                signature,
+                "PNG",
+                pageWidth - 70,
+                currentY,
+                desiredWidth,
+                proportionalHeightForSignature
+            );
 
             pdf.save("ProformaInvoice.pdf");
 
@@ -314,7 +385,7 @@ const PIPDF = ({ data, onClickBack }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount}</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
                 </div>
 
                 {/* Terms & Notes */}
@@ -332,8 +403,8 @@ const PIPDF = ({ data, onClickBack }) => {
                     <div>
                         <h4 className="text-black font-bold">Thanking you,</h4>
                         <p className="text-xs p-0.5">Best Regards</p>
-                        <p>{getAuthenticatedUserWithRoles()?.userData?.firstName + ' ' + getAuthenticatedUserWithRoles()?.userData?.lastName}</p>
-                        <p>+91-{getAuthenticatedUserWithRoles()?.userData?.contact}</p>
+                        <p>{data?.regards?.name}</p>
+                        <p>+91 {data?.regards?.contact}</p>
                     </div>
 
                     <div>
