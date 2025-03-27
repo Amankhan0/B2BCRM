@@ -77,18 +77,18 @@ function Quotation({ selectedLeadId }) {
             td = QuotationReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex gap-2'>
                                 <div onClick={() => setQuotationPdf(ele)} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                     {downloadIcon}
@@ -164,7 +164,7 @@ function Quotation({ selectedLeadId }) {
                 selectedLead !== null &&
 
                 <>
-                    <div className='mt-5 p-5 bg-white'>
+                    <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
                         <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
                     </div>
                     {

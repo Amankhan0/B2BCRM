@@ -55,14 +55,14 @@ function POView({ orderData }) {
             td = OrderReducer.PO.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <Status title={ele.status === 'cancel' ? 'cancelled' : ele.status} className={ele.status === 'Active' ? 'bg-green-500' : ele.status === 'cancel' ? 'bg-red-500' : 'bg-green-700'} titleClass={'text-white'} />
                         </td>
-                        <td className='p-2 border text-black flex gap-2'>
+                        <td className='min-w-[100px] p-2 border text-black flex gap-2'>
                             {
                                 ele.status !== 'cancel' &&
                                 <MyButton title={'Download PO PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />

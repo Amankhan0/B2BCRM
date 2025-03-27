@@ -12,14 +12,14 @@ function LeadProductsView({ productsArr, title, onCloseClick }) {
     td = productsArr.map((ele, i) => {
         return (
             <tr>
-                <td className='p-2 border text-black'>{ele?.product_id?.productName || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.product_id?.hsnNo || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.product_id?.make || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit || '-'}</td>
-                {/* <td className='p-2 border text-black'>{ele?.productVarient?.varientUnit || '-'}</td> */}
-                <td className='p-2 border text-black'>{ele?.price || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.qty || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.productName || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.hsnNo || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.make || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit || '-'}</td>
+                {/* <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.varientUnit || '-'}</td> */}
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.price || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.qty || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>
             </tr>
         )
     })

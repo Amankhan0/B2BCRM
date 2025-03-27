@@ -62,20 +62,20 @@ function Customer() {
       td = supplierReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.name || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.name || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setShowGstAddress(i)} icon={smallEyeIcon} title={'View GST Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setShowWarehouseAddress(i)} icon={smallEyeIcon} title={'View Warehouse Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setshowBankDetails(i)} icon={smallEyeIcon} title={'View Bank Details'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'>
               <div className='flex gap-2'>
                 <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-supplier/${ele?._id}`) }} >
                   {editIcon}

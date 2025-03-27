@@ -45,9 +45,9 @@ const Role = () => {
             td = RoleReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={GetFullYearWithTime(ele?.updatedAt) || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={GetFullYearWithTime(ele?.updatedAt) || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex gap-2'>
                                 {
                                     <div className='flex gap-2'>

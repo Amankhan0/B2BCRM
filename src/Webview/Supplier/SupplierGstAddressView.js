@@ -12,12 +12,12 @@ function SupplierGstAddressView({ addressesArr, title, onCloseClick }) {
     td = addressesArr.map((ele, i) => {
         return (
             <tr>
-                <td className='p-2 border text-black'>{ele?.address || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.landmark || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.country || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.state || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.city || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.pinCode || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.address || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.landmark || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.country || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.state || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.city || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.pinCode || '-'}</td>
             </tr>
         )
     })

@@ -59,9 +59,9 @@ function Order() {
             td = OrderReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
 
-                        <td className='text-left p-2 border text-black'>
+                        <td className='min-w-[100px] text-left p-2 border text-black'>
                             <div className='flex gap-2 pb-0.5'>
                                 <i>{smallComputerIcon}</i>
                                 <Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} />
@@ -81,15 +81,15 @@ function Order() {
                                 <Title size={'xs'} title={ele?.customerDetails?.email || '-'} />
                             </div>
                         </td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex justify-center'>
                                 <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'text-xs w-max'} />
                             </div>
                         </td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex justify-center'>
                                 {
                                     ele.status !== InActive &&
@@ -160,7 +160,7 @@ function Order() {
 
     return (
         <div className='mt-10'>
-            <div className='mt-5 p-5 bg-white'>
+            <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
                 <DataTable th={th} td={td} totalPages={OrderReducer?.doc?.totalPages} api={fetchData} />
             </div>
             {

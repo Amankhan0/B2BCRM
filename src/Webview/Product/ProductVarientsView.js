@@ -12,10 +12,10 @@ function ProductVarientsView({ addressesArr, title, onCloseClick }) {
     td = addressesArr.map((ele, i) => {
         return (
             <tr>
-                <td className='p-2 border text-black'>{ele?.varientName + '_' + ele?.varientUnit || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.price + '_' + ele?.priceUnit|| '-'}</td>
-                <td className='p-2 border text-black'>{ele?.minQty || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.gst || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.varientName + '_' + ele?.varientUnit || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.price + '_' + ele?.priceUnit|| '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.minQty || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.gst || '-'}</td>
             </tr>
         )
     })

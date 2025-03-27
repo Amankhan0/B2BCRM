@@ -55,21 +55,21 @@ function Lead() {
     if (LeadReducer.doc.content.length !== 0) {
       td = LeadReducer.doc.content.map((ele, i) => {
         return (
-          <tr>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.leadRefNo || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
-            <td className='p-2 border text-black'>
+          <tr className=''>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.leadRefNo || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'>
               <div className='rounded-md p-1.5' style={{ background: ele?.status === 'InActive' ? Colors.RED : Colors.lightgreen }}>
                 <Title size={'xs'} title={ele?.status || '-'} />
               </div>
             </td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='h-12 p-3 border text-black flex gap-2 items-center'>
@@ -122,7 +122,7 @@ function Lead() {
 
   return (
     <div className='mt-10'>
-      <div className='card p-2'>
+      <div className='card p-2 w-[92%]'>
         <div className='flex justify-between items-center'>
           <Title title={'Lead'} size={'xl'} color={Colors.BLACK} />
           {
@@ -133,7 +133,7 @@ function Lead() {
           }
         </div>
       </div>
-      <div className='mt-5 p-5 bg-white'>
+      <div className='mt-5 p-5 bg-white w-[92%] overflow-scroll'>
         <DataTable th={th} td={td} totalPages={LeadReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {

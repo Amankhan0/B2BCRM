@@ -57,16 +57,16 @@ function DispatchView({ orderData }) {
             td = OrderReducer.Dispatch.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <Status title={ele.status} className={ele.status === 'Active' ? 'bg-green-500' : 'bg-orange-600'} titleClass={'text-white'} />
                         </td>
                         {
                             ele.status === 'Active' &&
-                            <td className='p-2 border text-black flex gap-2'>
+                            <td className='min-w-[100px] p-2 border text-black flex gap-2'>
                                 <MyButton title={'Download PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
                                 {/* <MyButton title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} /> */}
                             </td>

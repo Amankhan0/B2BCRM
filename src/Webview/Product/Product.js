@@ -56,13 +56,13 @@ function Product() {
       td = productReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.productName || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.make || '-'} /></td>
-            <td className='p-2 border text-black'><Title size={'xs'} title={ele?.hsnNo || '-'} /></td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.productName || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.make || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.hsnNo || '-'} /></td>
+            <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setShowVarients(i)} icon={smallEyeIcon} title={'View Varients'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='p-2 border text-black'>
+            <td className='min-w-[100px] p-2 border text-black'>
               <div className='flex gap-2'>
                 <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-product/${ele?._id}`) }} >
                   {editIcon}

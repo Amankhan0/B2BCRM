@@ -134,7 +134,7 @@ export default function Main() {
                         <div className={`flex h-full grow flex-col shadow-xl bg-white`}>
                             <div className="flex justify-between px-3 py-3 border-b-[0.5px]" >
                                 <h1 className="flex items-center gap-2" style={{ color: Colors.WHITE }}>
-                                    <img className='p-0.5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
+                                    <img className='w-[200px] p-0.5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
                                     {isSmallScreen < 700 && <div className='px-5' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
                                 </h1>
                             </div>
@@ -187,9 +187,8 @@ export default function Main() {
                                             <span></span>
                                             <span></span>
                                         </button>
-                                        <img className='-mt-0.5 mr-2 hidden md:flex  w-8 h-8 rounded-full' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
                                         <div className='text-black '>
-                                            <img className='w-1/4 ml-5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
+                                            <img className='w-[200px] ml-5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
                                         </div>
                                     </h1>
                             }

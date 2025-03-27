@@ -14,11 +14,11 @@ function SupplierBankDetailsView({ addressesArr, title, onCloseClick }) {
     td = addressesArr.map((ele, i) => {
         return (
             <tr>
-                <td className='p-2 border text-black'>{ele?.beneficiaryName || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.bankName || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.branchName || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.ifscCode || '-'}</td>
-                <td className='p-2 border text-black'>{ele?.accountNo || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.beneficiaryName || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.bankName || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.branchName || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.ifscCode || '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.accountNo || '-'}</td>
             </tr>
         )
     })

@@ -46,12 +46,12 @@ const User = () => {
             td = UserReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.firstName + ' ' + ele?.lastName || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.username || '-'} /></td>
-                        <td className='p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
-                        <td className='p-2 border text-black'>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.firstName + ' ' + ele?.lastName || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.username || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex gap-2'>
                                 {
                                     <div className='flex gap-2'>
