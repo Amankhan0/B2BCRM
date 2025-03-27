@@ -124,7 +124,7 @@ const POPDF = ({ data, onClickBack }) => {
             // 🟢 Vendor Info
             pdf.setFont("helvetica", "bold");
             pdf.setTextColor(67, 42, 119); // Theme Blue Color
-            pdf.text("Billing Address", 15, currentY);
+            pdf.text("Supplier Details", 15, currentY);
 
             pdf.setFont("helvetica", "normal");
             pdf.setTextColor(0, 0, 0);
