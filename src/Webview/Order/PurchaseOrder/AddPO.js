@@ -152,6 +152,9 @@ function AddPO({ orderData }) {
         setRender(Date.now())
     }
 
+    console.log(data);
+    
+
     const onClickNext = () => {
         if (selectedVendor === null || gstAddresses === null || warehouseAddresses === null) {
             toast.error('Vendor Details is Required')

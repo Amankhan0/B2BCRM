@@ -61,20 +61,79 @@ const POPDF = ({ data, onClickBack }) => {
             const pageHeight = pdf.internal.pageSize.getHeight();
             let currentY = 10;
 
-            // 🟢 Header (Only on First Page)
-            const headerCanvas = await html2canvas(headerRef.current, { scale: 10, useCORS: true });
-            pdf.addImage(headerCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 35);
-            currentY += 40;
+            // 🟢 Add Header with Text
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(10);
+
+            // Add Company Logo (if possible)
+            pdf.addImage(
+                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+                "PNG",
+                15, currentY, 60, 15
+            );
+
+            // Company Details on Left Side (Below Logo)
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+            pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, 15, currentY + 20);
+            pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, 15, currentY + 25);
+            pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, 15, currentY + 30);
+
+            // Company Address on Right Side
+            pdf.text(
+                `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`,
+                pageWidth - 13,
+                15,
+                { align: 'right', maxWidth: 35 }
+            );
+
+            currentY += 25;
+
+            // Add Horizontal Line
+            pdf.setDrawColor(67, 42, 119);
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 10, pageWidth - 10, currentY + 10);
+            currentY += 15;
+
+            // 🟢 Add Customer Info
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119); // Theme Blue Color
+            pdf.text("Billing Address", 15, currentY);
+            pdf.text("Shipping Address", pageWidth / 2, currentY);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
 
             // 🟢 Customer Info
-            const customerCanvas = await html2canvas(ourInfoRef.current, { scale: 10, useCORS: true });
-            pdf.addImage(customerCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 50);
-            currentY += 50;
+            pdf.text(`Company Name: ${OrderInvoiceDetails?.companyDetails?.companyName || '-'}`, 15, currentY + 7);
+            pdf.text(`Address: ${OrderInvoiceDetails?.companyDetails?.address?.address}, ${OrderInvoiceDetails?.companyDetails?.address?.state},`, 15, currentY + 12);
+            pdf.text(`${OrderInvoiceDetails?.companyDetails?.address?.city} ${OrderInvoiceDetails?.companyDetails?.address?.pinCode}`, 15, currentY + 17);
+            pdf.text(`GST No: ${OrderInvoiceDetails?.companyDetails?.gstNo}`, 15, currentY + 22);
+
+            // Shipping info
+            pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
+            pdf.text(`Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`, pageWidth / 2, currentY + 12);
+            pdf.text(`${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`, pageWidth / 2, currentY + 17);
+            
+
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
+            currentY += 35;
 
             // 🟢 Vendor Info
-            const vendorCanvas = await html2canvas(vendorInfoRef.current, { scale: 10, useCORS: true });
-            pdf.addImage(vendorCanvas.toDataURL("image/png"), "PNG", 0, currentY, pageWidth, 40);
-            currentY += 40;
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119); // Theme Blue Color
+            pdf.text("Billing Address", 15, currentY);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+
+            pdf.text(`Company Name: ${data?.supplierDetails?.companyName}`, 15, currentY + 7);
+            pdf.text(`Address: ${data?.supplierDetails?.gstAddresses?.address}, ${data?.supplierDetails?.gstAddresses?.state},`, 15, currentY + 12);
+            pdf.text(`${data?.supplierDetails?.gstAddresses?.city}, ${data?.supplierDetails?.gstAddresses?.pinCode}, ${data?.supplierDetails?.gstAddresses?.landmark}`, 15, currentY + 17);
+            pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 22);
 
             // 🟢 Add Table with Multi-Page Handling
             pdf.autoTable({
@@ -242,9 +301,9 @@ const POPDF = ({ data, onClickBack }) => {
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
                             <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
-                            <p className="text-xs p-0.5">Address : {data?.customerDetails?.billingAddress?.address || '-'}</p>
-                            <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.city + ' ' + data?.customerDetails?.billingAddress?.landmark || '-'}</p>
-                            <p className="text-xs p-0.5">{data?.customerDetails?.billingAddress?.state + ' ' + data?.customerDetails?.billingAddress?.pinCode || '-'}</p>
+                            <p className="text-xs p-0.5">Address : {data?.customerDetails?.shippingAddress?.address || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.city + ' ' + data?.customerDetails?.shippingAddress?.landmark || '-'}</p>
+                            <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.state + ' ' + data?.customerDetails?.shippingAddress?.pinCode || '-'}</p>
                         </div>
                     </div>
                 </div>

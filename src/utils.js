@@ -314,31 +314,6 @@ export const getEwayBillFromCorrectFormet = (result, setLoader) => {
   })
 }
 
-
-
-
-
-
-// const google = window.google;
-
-// export const calculateDistance = (lat1, lon1, lat2, lon2) => {
-//   const R = 6371; // Radius of the Earth in kilometers
-//   const dLat = toRadians(lat2 - lat1);
-//   const dLon = toRadians(lon2 - lon1);
-//   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-//             Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-//             Math.sin(dLon / 2) * Math.sin(dLon / 2);
-//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//   const dis = R * c; // Distance in kilometers
-//   const divideDis = dis / 9.89
-//   return divideDis.toFixed();
-// }
-
-// function toRadians(degrees) {
-//   return degrees;
-// }
-
-
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2 - lat1);  // deg2rad below
@@ -356,10 +331,6 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
-
-
-
-
 
 
 export function getDateInMilliseconds(days) {
@@ -404,9 +375,7 @@ export const regexDl = /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9
 export const regexGStno = /\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/;
 export const STROGNPASSWORD = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).*$/
 
-
 export const getHeadingFromPathname = () => {
-
   const pathname = window.location.pathname;
   const segments = pathname.split('/')[1];
   if (segments === 'lead' || segments === 'create-lead') {
@@ -417,21 +386,21 @@ export const getHeadingFromPathname = () => {
   else if (segments === 'order' || segments === 'create-order') {
     return "Order"
   }
-  // switch (segments) {
-  //   case "/create-lead":
-  //     return "Create Lead"
-  //   case "/lead":
-  //     return "Lead"
-  //   case "/create-order":
-  //     return "Create Order"
-  //   case "/create-quotation":
-  //     return "Create Quotation"
-  //   case "/order":
-  //     return "Order"
-  //   case "/quotation":
-  //     return "Quotation"
-  // }
-
+  else if (segments === 'customer' || segments?.includes('edit-customer') || segments?.includes('create-customer')) {
+    return "Customer"
+  }
+  else if (segments === 'supplier' || segments?.includes('edit-supplier') || segments?.includes('create-supplier')) {
+    return "Supplier"
+  }
+  else if (segments === 'product' || segments?.includes('edit-product') || segments?.includes('create-product')) {
+    return "Product"
+  }
+  else if (segments === 'role' || segments?.includes('editrole') || segments?.includes('addrole')) {
+    return "Role"
+  }
+  else if (segments === 'user' || segments?.includes('edituser') || segments?.includes('adduser')) {
+    return "User"
+  }
 }
 
 export const stateOptions = [
@@ -804,8 +773,8 @@ export function updateProductIdWithAvailablePOPIDispatch(data) {
 }
 
 export const GstCalculation = (amount, value) => {
-  var newValue = value > 10? "0." + value : "0.0" + value 
-  if (newValue) {    
+  var newValue = value > 10 ? "0." + value : "0.0" + value
+  if (newValue) {
     return amount * Number(newValue)
   }
 }
@@ -813,8 +782,8 @@ export const GstCalculation = (amount, value) => {
 export const calculateTotalAmountUsingData = (products) => {
   return products?.reduce((total, product) => {
     const productTotal = Number(product.price) * Number(product.qty);
-    console.log('productTotal',productTotal);
-    
+    console.log('productTotal', productTotal);
+
     return total + productTotal;
   }, 0);
 };
@@ -823,31 +792,31 @@ export const calculateTotalGSTAmountUsingData = (products) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
     var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst));
-    if(cal){      
+    if (cal) {
       productTotal = cal;
-    }    
-    return productTotal!==0 && total + productTotal;
+    }
+    return productTotal !== 0 && total + productTotal;
   }, 0);
 };
 
 export const calculateTotalCGSTAmountUsingData = (products) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst)/2);
-    if(cal){      
+    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    if (cal) {
       productTotal = cal;
-    }    
-    return productTotal!==0 && total + productTotal;
+    }
+    return productTotal !== 0 && total + productTotal;
   }, 0);
 };
 
 export const calculateTotalSGSTAmountUsingData = (products) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst)/2);
-    if(cal){      
+    var cal = GstCalculation(Number(product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    if (cal) {
       productTotal = cal;
-    }    
-    return productTotal!==0 && total + productTotal;
+    }
+    return productTotal !== 0 && total + productTotal;
   }, 0);
 };

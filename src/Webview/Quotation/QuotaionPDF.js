@@ -59,17 +59,64 @@ const QuotaionPDF = ({ data }) => {
             const pageHeight = pdf.internal.pageSize.getHeight();
             let currentY = 10; // Initial Y position
 
-            // 🟢 Add Header (ONLY ON FIRST PAGE)
-            const headerCanvas = await html2canvas(headerRef.current, { scale: 10, useCORS: true });
-            const headerImgData = headerCanvas.toDataURL("image/png");
-            pdf.addImage(headerImgData, "PNG", 0, currentY, pageWidth, 35);
-            currentY += 35; // Move cursor down
+            // 🟢 Add Header with Text
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(10);
 
-            // 🟢 Add Customer Info Below Header
-            const customerInfoCanvas = await html2canvas(customerInfoRef.current, { scale: 10, useCORS: true });
-            const customerInfoImgData = customerInfoCanvas.toDataURL("image/png");
-            pdf.addImage(customerInfoImgData, "PNG", 0, currentY, pageWidth, 35);
+            // Add Company Logo (if possible)
+            pdf.addImage(
+                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+                "PNG",
+                15, currentY, 60, 15
+            );
+
+            // Company Details on Left Side (Below Logo)
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+            pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, 15, currentY + 20);
+            pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, 15, currentY + 25);
+            pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, 15, currentY + 30);
+
+            // Company Address on Right Side
+            pdf.text(
+                `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`,
+                pageWidth - 13,
+                15,
+                { align: 'right', maxWidth: 35 }
+            );
+
             currentY += 25;
+
+            // Add Horizontal Line
+            pdf.setDrawColor(67, 42, 119);
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 10, pageWidth - 10, currentY + 10);
+            currentY += 15;
+
+            // 🟢 Add Customer Info
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119); // Theme Blue Color
+            pdf.text("Customer", 15, currentY);
+            pdf.text("Quotation", pageWidth - 23, currentY);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+
+            // Customer Details
+            pdf.text(`Company Name: ${data?.customerDetails?.companyName || '-'}`, 15, currentY + 7);
+            pdf.text(`Customer Name: ${data?.customerDetails?.name || '-'}`, 15, currentY + 12);
+            pdf.text(`Contact No: ${data?.customerDetails?.contact || '-'}`, 15, currentY + 17);
+            pdf.text(`Email ID: ${data?.customerDetails?.email || '-'}`, 15, currentY + 22);
+
+            // Quotation Details
+            pdf.text(`Quotation Ref No: ${data?.quotationRefNo}`, pageWidth - 10, currentY + 7, { align: 'right' });
+            pdf.text(`Date: ${GetFullYear(Date.now())}`, pageWidth - 10, currentY + 12, { align: 'right' });
+
+            // Add Horizontal Line
+            pdf.setLineWidth(0.5);
+            pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
+            currentY += 35;
 
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
@@ -116,7 +163,6 @@ const QuotaionPDF = ({ data }) => {
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
                 pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 70, currentY);
-
                 currentY += 5;
             } else {
                 if (currentY + 10 > pageHeight) {
