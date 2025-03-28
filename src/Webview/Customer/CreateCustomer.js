@@ -67,33 +67,24 @@ function CreateCustomer() {
         { label: "Public Limited Company", value: "Public Limited Company" },
         { label: "Private Limited Company", value: "Private Limited Company" },
         { label: "Other", value: "Other" },
-      ];
+    ];
 
-    console.log('errors', errors);
     const onSubmit = () => {
         dispatch(setDataAction({}, SET_API_JSON_ERROR))
         validateJson(ApiReducer?.apiJson).then(res => {
-            console.log('apiJson', ApiReducer?.apiJson);
-            console.log('ApiReducer?.apiJson Error', errors);
             if (res?.inner) {
                 dispatch(setDataAction(res?.inner, SET_API_JSON_ERROR))
                 res.inner.forEach((error) => {
-                    if(['billingAddresses', 'shippingAddresses'].includes(error.path)){
+                    if (['billingAddresses', 'shippingAddresses'].includes(error.path)) {
                         toast.error(error.message);
                     }
-                  });
+                });
             } else {
-                const api = params?.id ? updateCustomer:addCustomer;
-
+                const api = params?.id ? updateCustomer : addCustomer;
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
-                    console.log('res', res);
-
                     if (res.status === 200) {
                         toast.success(`Customer ${params?.id ? 'updated' : 'created'} successfully`)
-
-                        setTimeout(() => {
-                            window.location.pathname = '/customer'
-                        }, 200);
+                        window.location.pathname = '/customer'
                     } else {
                         toast.success(res.message)
                     }
@@ -101,8 +92,6 @@ function CreateCustomer() {
             }
         })
     }
-
-
 
     const fetchData = () => {
         var json = {
@@ -316,7 +305,7 @@ function CreateCustomer() {
                         <MyInputCommon name={'pancardNo'} title={'PAN Card No.'} placeholder={'Enter PAN Card No.'} validate={validateField} errorMsg={errors[`pancardNo`]} />
                     </div>
                     <div>
-                        <MyFileUploadCommon name={'pancard'} title={'Upload PAN Card'} error={errors['pancard']} validate={validateField}  uppercase fileType={"array"} />
+                        <MyFileUploadCommon name={'pancard'} title={'Upload PAN Card'} error={errors['pancard']} validate={validateField} uppercase fileType={"array"} />
                     </div>
                     <div>
                         <MyInputCommon name={'gstNo'} title={'GST No.'} placeholder={'Enter GST No.'} validate={validateField} errorMsg={errors[`gstNo`]} />
@@ -327,7 +316,7 @@ function CreateCustomer() {
                 </div>
             </div>
             <div className='mt-5'>
-                <MyButton title={params?.id ? 'Update' :'Submit'} onClick={() => onSubmit()} />
+                <MyButton title={params?.id ? 'Update' : 'Submit'} onClick={() => onSubmit()} />
             </div>
         </div>
     )

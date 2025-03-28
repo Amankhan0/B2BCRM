@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import MyLoader from '../../Component/MyLoader';
 import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon, trashbin } from '../../SVG/Icons';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import CustomerView from '../../Component/CustomerView';
 
 function Order() {
 
@@ -30,6 +31,7 @@ function Order() {
     const [singleOrderData, setSingleOrderData] = useState(null)
     const [loader, setLoader] = useState(null)
     const width = window.innerWidth
+    const [costomerModal, setCustomerModal] = useState(null)
 
     useEffect(() => {
         if (OrderReducer.doc === null) {
@@ -42,7 +44,7 @@ function Order() {
             page: 1,
             limit: 100,
             search: {
-                user_id:user?.userData?._id
+                user_id: user?.userData?._id
             }
         }
         ApiHit(json, searchOrder).then(res => {
@@ -52,7 +54,7 @@ function Order() {
         })
     }
 
-    const th = ['Order Ref No', 'Customer Detials', 'Company Size', 'Lead Source', 'Industry', 'Products', 'Action']
+    const th = ['Order Ref No', 'Lead Source', 'Customer', 'Products', 'Action']
 
     let td;
     if (OrderReducer.doc !== null) {
@@ -61,30 +63,12 @@ function Order() {
                 return (
                     <tr>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
-
-                        <td className='min-w-[100px] text-left p-2 border text-black'>
-                            <div className='flex gap-2 pb-0.5'>
-                                <i>{smallComputerIcon}</i>
-                                <Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} />
-                            </div>
-                            <div className='flex gap-2 pb-0.5'>
-                                {smallPersonIcon}
-
-                                <Title size={'xs'} title={ele?.customerDetails?.name || '-'} />
-                            </div>
-                            <div className='flex gap-2 pb-0.5'>
-                                {smallPhoneIcon}
-
-                                <Title size={'xs'} title={ele?.customerDetails?.contact || '-'} />
-                            </div>
-                            <div className='flex gap-2'>
-                                {smallMailIcon}
-                                <Title size={'xs'} title={ele?.customerDetails?.email || '-'} />
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
+                            <div className='flex justify-center'>
+                                <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'text-xs w-max'} />
                             </div>
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
                         <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex justify-center'>
                                 <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'text-xs w-max'} />
@@ -161,7 +145,7 @@ function Order() {
 
     return (
         <div className='mt-10'>
-            <div className='mt-5 p-5 bg-white overflow-scroll' style={{width:width/1.3}}>
+            <div className='mt-5 p-5 bg-white overflow-scroll' style={{ width: width / 1.3 }}>
                 <DataTable th={th} td={td} totalPages={OrderReducer?.doc?.totalPages} api={fetchData} />
             </div>
             {
@@ -192,6 +176,10 @@ function Order() {
                         }
                     </div>
                 </div>
+            }
+            {
+                costomerModal !== null &&
+                <CustomerView data={JSON.parse(costomerModal)} onClickClose={() => setCustomerModal(null)} />
             }
         </div>
     )

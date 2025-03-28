@@ -6,14 +6,16 @@ import DataTable from '../../Component/DataTable';
 
 function ProductVarientsView({ addressesArr, title, onCloseClick }) {
 
-    const th = ['Varient Name', 'price','Minimum Quantity', 'GST']
+    const th = ['Varient Name', 'Varient Unit', 'price', 'Unit Price', 'Quantity', 'GST']
 
     let td;
     td = addressesArr.map((ele, i) => {
         return (
             <tr>
-                <td className='min-w-[100px] p-2 border text-black'>{ele?.varientName + '_' + ele?.varientUnit || '-'}</td>
-                <td className='min-w-[100px] p-2 border text-black'>{ele?.price + '_' + ele?.priceUnit|| '-'}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.varientName}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.varientUnit}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.price}</td>
+                <td className='min-w-[100px] p-2 border text-black'>{ele?.priceUnit || '-'}</td>
                 <td className='min-w-[100px] p-2 border text-black'>{ele?.minQty || '-'}</td>
                 <td className='min-w-[100px] p-2 border text-black'>{ele?.gst || '-'}</td>
             </tr>
@@ -26,7 +28,7 @@ function ProductVarientsView({ addressesArr, title, onCloseClick }) {
             <div className={`relative rounded-lg card w-[80%] text-center transition-opacity duration-300`}>
                 <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2" style={{ background: Colors.ThemeBlue }} onClick={onCloseClick}>
                     <div>
-                        <Title size={'lg'} color={Colors.WHITE} title={title} />
+                        <Title size={'lg'} color={Colors.WHITE} title={'Products'} />
                     </div>
                     <div className='text-white cursor-pointer'>
                         {crossIcon}

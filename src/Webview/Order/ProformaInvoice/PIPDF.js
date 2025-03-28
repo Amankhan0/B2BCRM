@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { Colors } from "../../../Colors/color";
-import signature from '../../..//Image/signature.jpeg';
+import signature from '../../..//Image/b2bsignature.jpeg';
 import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
-import { getAuthenticatedUserWithRoles } from "../../../Storage/Storage";
 
 const PIPDF = ({ data, onClickBack }) => {
     const headerRef = useRef();

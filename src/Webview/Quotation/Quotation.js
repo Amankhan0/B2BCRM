@@ -14,6 +14,7 @@ import "jspdf-autotable";
 import QuotaionPDF from './QuotaionPDF';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import { CrossMark } from '../../SVG/Icons';
+import CustomerView from '../../Component/CustomerView';
 
 function Quotation({ selectedLeadId }) {
 
@@ -28,6 +29,7 @@ function Quotation({ selectedLeadId }) {
     const [leadData, setLeadData] = useState(null)
     const [selectedLead, setSelectedLead] = useState(null)
     const [quotationPdf, setQuotationPdf] = useState(null)
+    const [costomerModal, setCustomerModal] = useState(null)
 
     useEffect(() => {
         if (leadData === null && !selectedLeadId) {
@@ -70,7 +72,7 @@ function Quotation({ selectedLeadId }) {
         })
     }
 
-    const th = ['Quotation Ref No', 'Lead Source', 'Company Name', 'Company Size', 'Industry', 'Customer Name', 'Customer Contact', 'Customer Email', 'Products', 'Action']
+    const th = ['Quotation Ref No', 'Lead Source', 'Customer', 'Products', 'Action']
 
     let td;
     if (QuotationReducer.doc !== null) {
@@ -79,13 +81,10 @@ function Quotation({ selectedLeadId }) {
                 return (
                     <tr>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.companySize || '-'} /></td>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.industry || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.name || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.contact || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.email || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'>
+                            <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'h-7 text-xs w-max'} />
+                        </td>
                         <td className='min-w-[100px] p-2 border text-black'>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
@@ -108,13 +107,13 @@ function Quotation({ selectedLeadId }) {
         }
     }
 
-    const onChangeLead = (value) =>{
+    const onChangeLead = (value) => {
         setSelectedLead(value)
         dispatch(setQuotation(null))
     }
 
-    console.log('quotationPdf',quotationPdf);
-    
+    console.log('quotationPdf', quotationPdf);
+
 
     return (
         <div className='mt-10'>
@@ -167,7 +166,7 @@ function Quotation({ selectedLeadId }) {
             {
                 selectedLead !== null &&
                 <>
-                    <div style={{width:width/1.3}} className='mt-5 p-5 bg-white overflow-scroll'>
+                    <div style={{ width: width / 1.3 }} className='mt-5 p-5 bg-white overflow-scroll'>
                         <DataTable th={th} td={td} totalPages={QuotationReducer?.doc?.totalPages} api={fetchData} />
                     </div>
                     {
@@ -192,6 +191,10 @@ function Quotation({ selectedLeadId }) {
                         </div>
                     </div>
                 </div>
+            }
+            {
+                costomerModal !== null &&
+                <CustomerView data={JSON.parse(costomerModal)} onClickClose={() => setCustomerModal(null)} />
             }
         </div>
     )

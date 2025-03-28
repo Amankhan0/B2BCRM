@@ -823,47 +823,58 @@ export const calculateTotalSGSTAmountUsingData = (products,type) => {
 
 
 export function numberToWords(num) {
+  if (num === null || num === undefined || isNaN(num)) return 'Invalid number';
+
   // Handle negative numbers
   if (num < 0) return `minus ${numberToWords(Math.abs(num))}`;
-  
+
   // Handle zero
   if (num === 0) return 'zero';
-  
-  // Arrays for different number names
+
   const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
       'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
   const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
   const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
-  
-  // Function to convert numbers less than 1000
+
   function convertHundreds(n) {
       if (n === 0) return '';
-      
       if (n < 20) return ones[n];
-      
       if (n < 100) {
-          return tens[Math.floor(n / 10)] + 
-              (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+          return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
       }
-      
-      return ones[Math.floor(n / 100)] + ' hundred' + 
-          (n % 100 !== 0 ? ' ' + convertHundreds(n % 100) : '');
+      return ones[Math.floor(n / 100)] + ' hundred' + (n % 100 !== 0 ? ' ' + convertHundreds(n % 100) : '');
   }
-  
-  // Main conversion logic
-  let words = '';
-  let scaleIndex = 0;
-  
-  while (num > 0) {
-      if (num % 1000 !== 0) {
-          words = convertHundreds(num % 1000) + 
-              (scaleIndex > 0 ? ' ' + scales[scaleIndex] : '') + 
-              (words ? ' ' + words : '');
+
+  function convertIntegerPart(num) {
+      let words = '';
+      let scaleIndex = 0;
+
+      while (num > 0) {
+          if (num % 1000 !== 0) {
+              words = convertHundreds(num % 1000) + (scaleIndex > 0 ? ' ' + scales[scaleIndex] : '') + (words ? ' ' + words : '');
+          }
+          num = Math.floor(num / 1000);
+          scaleIndex++;
       }
-      
-      num = Math.floor(num / 1000);
-      scaleIndex++;
+
+      return words.trim();
   }
-  
-  return words.trim();
+
+  function convertDecimalPart(decimalStr) {
+      const decimalNum = parseInt(decimalStr, 10); // Convert the decimal part into a number
+      if (decimalNum === 0) return 'zero';
+      return convertHundreds(decimalNum); // Use the same logic for normal numbers
+  }
+
+  const numParts = num.toString().split('.');
+  const integerPart = parseInt(numParts[0], 10);
+  const decimalPart = numParts[1] ? numParts[1] : null;
+
+  let result = convertIntegerPart(integerPart);
+
+  if (decimalPart) {
+      result += ' point ' + convertDecimalPart(decimalPart);
+  }
+
+  return result;
 }

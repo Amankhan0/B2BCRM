@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { Colors } from "../../../Colors/color";
-import signature from '../../..//Image/signature.jpeg';
+import signature from '../../..//Image/b2bsignature.jpeg';
 import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../../utils";
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
-import { getAuthenticatedUserWithRoles, } from "../../../Storage/Storage";
 
 const POPDF = ({ data, onClickBack }) => {
 
@@ -46,7 +44,7 @@ const POPDF = ({ data, onClickBack }) => {
             setTotalSGSTAmount(s)
         }
         if (totalTaxAmount === null && totalCGSTAmount !== null && totalGSTAmount !== null && totalSGSTAmount !== null && totalAmount !== null) {
-            if (data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state) {
+            if (data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state) {
                 setTotalTaxAmount(totalAmount + totalGSTAmount)
             } else {
                 setTotalTaxAmount(totalAmount + totalCGSTAmount + totalSGSTAmount)
@@ -151,9 +149,9 @@ const POPDF = ({ data, onClickBack }) => {
             // 🟢 Add Table with Multi-Page Handling
             pdf.autoTable({
                 startY: 120,
-                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
                 body:
-                    data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
+                    data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                         data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
                             ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele?.vendorPrice) * Number(ele.qty)
@@ -185,7 +183,7 @@ const POPDF = ({ data, onClickBack }) => {
 
             currentY += 5;
 
-            if (data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state) {
+            if (data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state) {
                 if (currentY + 10 > pageHeight) {
                     pdf.addPage(); // Move to next page if not enough space
                     currentY = 10;
@@ -355,7 +353,7 @@ const POPDF = ({ data, onClickBack }) => {
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
                             {
-                                data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
+                                data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                                     <th style={{ padding: 8, border: "1px solid #ddd" }}>GST Amount (%)</th>
                                     :
                                     <>
@@ -376,7 +374,7 @@ const POPDF = ({ data, onClickBack }) => {
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.vendorPrice}</td>
                                         {
-                                            data.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
+                                            data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                                                 <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
@@ -396,7 +394,7 @@ const POPDF = ({ data, onClickBack }) => {
                 <div ref={totalRef} style={{ marginTop: 20, textAlign: "right", padding: "10px 20px", backgroundColor: "#f8f8f8", border: "1px solid #eee", borderRadius: "4px" }}>
                     <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
                     {
-                        data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.shippingAddress?.state ?
+                        data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                             <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
                             :
                             <>

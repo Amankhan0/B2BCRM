@@ -6,8 +6,9 @@ import MyInput from "../../../Component/MyInput";
 import DataTable from "../../../Component/DataTable";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { updateProductId } from "../../../utils";
-import { updateDispatchedQty } from "./dispatchUtils";
+import { ApiHit, updateProductId } from "../../../utils";
+import { checkDispatchedQty, updateDispatchedQty } from "./dispatchUtils";
+import { addDispatch, updatePO } from "../../../Constants/Constants";
 
 const AddDispatchOrder = ({ data }) => {
 
@@ -44,23 +45,23 @@ const AddDispatchOrder = ({ data }) => {
                 var newFinalJson = updateProductId(json)
                 console.log('newFinalJson',newFinalJson);
                 
-                // ApiHit(newFinalJson, addDispatch).then(res => {
-                //     if (res.status === 200) {
-                //         newFinalJson._id = poID
-                //         var manageStatus = checkDispatchedQty(newFinalJson)
-                //         if (manageStatus) {
-                //             newFinalJson.status = 'dispatched'
-                //         }else{
-                //             newFinalJson.status = 'partial_dispatched'
-                //         }
-                //         ApiHit(newFinalJson, updatePO).then(res => {
-                //             if (res.status === 200) {
-                //                 toast.success('Dispatched Sussessfully')
-                //                 window.location.reload()
-                //             }
-                //         })
-                //     }
-                // })
+                ApiHit(newFinalJson, addDispatch).then(res => {
+                    if (res.status === 200) {
+                        newFinalJson._id = poID
+                        var manageStatus = checkDispatchedQty(newFinalJson)
+                        if (manageStatus) {
+                            newFinalJson.status = 'dispatched'
+                        }else{
+                            newFinalJson.status = 'partial_dispatched'
+                        }
+                        ApiHit(newFinalJson, updatePO).then(res => {
+                            if (res.status === 200) {
+                                toast.success('Dispatched Sussessfully')
+                                window.location.pathname = '/order'
+                            }
+                        })
+                    }
+                })
             }
         }
     }

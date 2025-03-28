@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import { Colors } from "../../Colors/color";
-import signature from '../../Image/signature.jpeg';
+import signature from '../../Image/b2bsignature.jpeg';
 import { OrderInvoiceDetails } from "../OrderInvoiceDetails";
 import 'jspdf-autotable';
 import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calculateTotalGSTAmountUsingData, calculateTotalSGSTAmountUsingData, calculateTotalTaxAmountUsingData, GetFullYear, GstCalculation, numberToWords } from "../../utils";
