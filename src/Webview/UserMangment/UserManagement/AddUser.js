@@ -72,7 +72,7 @@ const AddUser = ({edit}) => {
                     json.roleId = roleData?.[selectedRole]?._id
                     json.roleName = roleData?.[selectedRole]?.roleName
                     ApiHit(json, edit?updateUser:addUser).then(res => {
-                        if (res.status === 200) {
+                        if (res.status === 200 || res.status === 201) {
                             toast.success(edit?'User updated successfully':'User added successfully')
                             window.location.pathname = '/user'
                         } else {

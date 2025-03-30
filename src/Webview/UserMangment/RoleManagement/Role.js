@@ -38,20 +38,22 @@ const Role = () => {
         })
     }
 
-    const th = ['Role Name', 'Created On', 'Action']
+    const th = ['Role Type', 'Role Name', 'Created On', 'Action']
     let td;
     if (RoleReducer.doc !== null) {
         if (RoleReducer.doc.content.length !== 0) {
             td = RoleReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleType || '-'} /></td>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={GetFullYearWithTime(ele?.updatedAt) || '-'} /></td>
                         <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex gap-2'>
                                 {
+                                    user?.roleObject?.permission?.[6]?.permission?.[0].write &&
                                     <div className='flex gap-2'>
-                                        <NavLink to={'/editrole/'+ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
+                                        <NavLink to={'/editrole/' + ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                             {editIcon}
                                         </NavLink>
                                         {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>

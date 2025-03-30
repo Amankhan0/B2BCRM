@@ -18,10 +18,13 @@ import MyLoader from '../../Component/MyLoader';
 import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon, trashbin } from '../../SVG/Icons';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import CustomerView from '../../Component/CustomerView';
+import { Status } from '../../Component/status';
 
 function Order() {
 
     const OrderReducer = useSelector(state => state.OrderReducer)
+    const PaginationReducer = useSelector(state => state.PaginationReducer)
+
     let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
@@ -40,12 +43,11 @@ function Order() {
     }, [])
 
     const fetchData = () => {
+        var search = user?.roleObject?.roleType === 'superadmin' ? {} : { "user_id": user?.userData?._id }
         var json = {
-            page: 1,
-            limit: 100,
-            search: {
-                user_id: user?.userData?._id
-            }
+            page: PaginationReducer.pagination.page,
+            limit: PaginationReducer.pagination.limit,
+            search: search
         }
         ApiHit(json, searchOrder).then(res => {
             if (res?.content) {
@@ -77,27 +79,55 @@ function Order() {
                         <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex justify-center'>
                                 {
-                                    ele.status !== InActive &&
-                                    <div className='flex gap-2'>
-                                        <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                            <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
-                                        </div>
-                                        <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                            <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
-                                        </div>
-                                        {
-                                            loader === 'cancelOrder' ?
-                                                <div className='p-2'>
-                                                    <MyLoader />
-                                                </div>
+                                    ele.status !== InActive ?
+                                        <div className='flex gap-2'>
+                                            {
+                                                user?.roleObject?.roleType === 'superadmin' ?
+                                                    <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                        <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
+                                                    </div>
+                                                    :
+                                                    user?.roleObject?.permission?.[7]?.permission?.[0]?.read &&
+                                                    <div onClick={() => setModalType('PI', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                        <p className='p-2 rounded-lg w-10' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PI</p>
+                                                    </div>
+                                            }
+                                            {
+                                                user?.roleObject?.roleType === 'superadmin' ?
+                                                    <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                        <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
+                                                    </div>
+                                                    :
+                                                    user?.roleObject?.permission?.[6]?.permission?.[0]?.read &&
+                                                    <div onClick={() => setModalType('PO', ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                        <p className={`p-2 rounded-lg w-10 `} style={{ border: `1px solid ${Colors.ThemeBlue}` }}>PO</p>
+                                                    </div>
+                                            }
+                                            {
+                                                user?.roleObject?.roleType === 'superadmin' ?
+                                                    loader === 'cancelOrder' ?
+                                                        <div className='p-2'>
+                                                            <MyLoader />
+                                                        </div>
+                                                        :
+                                                        <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                            <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
+                                                        </div>
+                                                    :
+                                                    user?.roleObject?.permission?.[2]?.permission?.[0]?.write &&
+                                                        loader === 'cancelOrder' ?
+                                                        <div className='p-2'>
+                                                            <MyLoader />
+                                                        </div>
+                                                        :
+                                                        <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                            <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
+                                                        </div>
 
-                                                :
-                                                <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                                    <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
-                                                </div>
-
-                                        }
-                                    </div>
+                                            }
+                                        </div>
+                                        :
+                                        <Status className={'bg-red-400 text-white p-1'} title={'Cancelled'} />
                                 }
                             </div>
                         </td>
@@ -106,6 +136,8 @@ function Order() {
             })
         }
     }
+
+    console.log(user?.roleObject?.permission);
 
     const onClickCancelOrder = (ele) => {
         var confirmation = window.confirm('Are you sure to cancel this order')

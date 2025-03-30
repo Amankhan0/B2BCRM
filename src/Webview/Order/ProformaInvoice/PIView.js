@@ -13,10 +13,12 @@ import { searchDispatch, searchPO, updateOrder, updateDispatch, searchPI, update
 import { Status } from '../../../Component/status';
 import toast from 'react-hot-toast';
 import PIPDF from './PIPDF';
+import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
 
 function PIView({ orderData }) {
 
     const OrderReducer = useSelector(state => state.OrderReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
 
@@ -69,7 +71,10 @@ function PIView({ orderData }) {
                             ele.status === 'Active' &&
                             <td className='min-w-[100px] p-2 border text-black flex gap-2'>
                                 <MyButton title={'Download PDF'} onClick={() => setDownloadPDF(ele)} icon={smalldownloadIcon} className={'h-7 text-xs w-max'} />
-                                <MyButton type={loader==='cancelPI'&&'loader'} title={'Cancel PI'} onClick={() => onClickCancelPI(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                {
+                                    user?.roleObject?.permission?.[7]?.permission?.[0]?.delete &&
+                                    <MyButton type={loader === 'cancelPI' && 'loader'} title={'Cancel PI'} onClick={() => onClickCancelPI(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                }
                             </td>
                         }
                     </tr>
@@ -117,7 +122,7 @@ function PIView({ orderData }) {
                 var orderJson = {
                     products: newOrder.products,
                     _id: newOrder._id
-                }                
+                }
 
                 ApiHit(json, updatePI).then(res => {
                     if (res.status === 200) {
@@ -131,11 +136,11 @@ function PIView({ orderData }) {
                                 toast.success('PI Cancel Successfully')
                                 window.location.reload()
                             }
-                            else{
+                            else {
                                 setLoader(null)
                             }
                         })
-                    }else{
+                    } else {
                         setLoader(null)
                     }
                 })

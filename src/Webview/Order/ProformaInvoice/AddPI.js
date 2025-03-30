@@ -12,10 +12,12 @@ import { setDataAction } from '../../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import PIView from './PIView';
 import ReactQuill from 'react-quill';
+import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
 
 function AddPI({ orderData }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const [data, setData] = useState(null)
     const [loader, setLoader] = useState(null)
@@ -182,9 +184,12 @@ function AddPI({ orderData }) {
                 {
                     page === 0 ?
                         <div>
-                            <div className='flex justify-end'>
-                                <MyButton title={'Generate PI'} onClick={() => setPage(1)} />
-                            </div>
+                            {
+                                user?.roleObject?.permission?.[7]?.permission?.[0]?.write &&
+                                <div className='flex justify-end'>
+                                    <MyButton title={'Generate PI'} onClick={() => setPage(1)} />
+                                </div>
+                            }
                             <PIView orderData={orderData} />
                         </div>
                         :

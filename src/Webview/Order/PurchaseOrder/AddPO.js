@@ -15,10 +15,12 @@ import { setDataAction } from '../../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import { search } from '../../../SVG/Icons';
 import ReactQuill from 'react-quill';
+import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
 
 function AddPO({ orderData }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const [data, setData] = useState(null)
     const [loader, setLoader] = useState(null)
@@ -153,7 +155,7 @@ function AddPO({ orderData }) {
     }
 
     console.log(data);
-    
+
 
     const onClickNext = () => {
         if (selectedVendor === null || gstAddresses === null || warehouseAddresses === null) {
@@ -224,9 +226,12 @@ function AddPO({ orderData }) {
                 {
                     page === 0 ?
                         <div>
-                            <div className='flex justify-end'>
-                                <MyButton title={'Generate New PO'} onClick={() => setPage(1)} />
-                            </div>
+                            {
+                                user?.roleObject?.permission?.[6]?.permission?.[0]?.write &&
+                                <div className='flex justify-end'>
+                                    <MyButton title={'Generate New PO'} onClick={() => setPage(1)} />
+                                </div>
+                            }
                             <POView orderData={orderData} />
                         </div>
                         :

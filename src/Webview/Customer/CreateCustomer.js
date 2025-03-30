@@ -82,7 +82,7 @@ function CreateCustomer() {
             } else {
                 const api = params?.id ? updateCustomer : addCustomer;
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
-                    if (res.status === 200) {
+                    if (res.status === 200 || res.status === 201) {
                         toast.success(`Customer ${params?.id ? 'updated' : 'created'} successfully`)
                         window.location.pathname = '/customer'
                     } else {

@@ -27,9 +27,9 @@ export default [
         id: 0, title: "Product", url: '/product', active: user?.roleObject?.permission?.[5]?.permission?.[0].read, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
     },
     {
-        id: 0, title: "Role", url: '/role', active: user?.roleObject?.permission?.[6]?.permission?.[0].read, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
+        id: 0, title: "Role", url: '/role', active: user?.roleObject?.roleType === 'superadmin', icon: DASHBOARDICON, blackIcon: DASHBOARDICON
     },
     {
-        id: 0, title: "User", url: '/user', active: user?.roleObject?.permission?.[7]?.permission?.[0].read, icon: DASHBOARDICON, blackIcon: DASHBOARDICON
+        id: 0, title: "User", url: '/user', active: user?.roleObject?.roleType === 'superadmin', icon: DASHBOARDICON, blackIcon: DASHBOARDICON
     },
 ]

@@ -42,13 +42,15 @@ function Quotation({ selectedLeadId }) {
         }
     }, [leadData, selectedLead, QuotationReducer])
 
+    console.log('leadData',leadData);
+    
+
     const fetchData = () => {
+        var search = user?.roleObject?.roleType === 'superadmin' ? {} : { "user_id": user?.userData?._id }
         var json = {
-            page: 1,
-            limit: 100,
-            search: {
-                user_id: user?.userData?._id
-            }
+            page: PaginationReducer.pagination.page,
+            limit: PaginationReducer.pagination.limit,
+            search: search
         }
         ApiHit(json, searchLead).then(res => {
             if (res?.content) {
@@ -70,7 +72,7 @@ function Quotation({ selectedLeadId }) {
                 dispatch(setQuotation(res))
             }
         })
-    }
+    }    
 
     const th = ['Quotation Ref No', 'Lead Source', 'Customer', 'Products', 'Action']
 
@@ -94,7 +96,8 @@ function Quotation({ selectedLeadId }) {
                                     {downloadIcon}
                                 </div>
                                 {
-                                    leadData?.content?.[0]?.status !== OrderInitiated && user?.roleObject?.permission?.[2]?.permission?.[0].write &&
+                                    JSON.parse(selectedLead)?.status!== OrderInitiated &&
+                                    user?.roleObject?.permission?.[2]?.permission?.[0].write &&
                                     <NavLink to={'/create-order/' + ele._id}>
                                         <MyButton icon={plusIcon} title={'Create Order'} className={'h-7 text-xs w-max'} />
                                     </NavLink>

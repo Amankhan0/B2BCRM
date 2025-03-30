@@ -1,18 +1,20 @@
-import { 
-    addCustomerWithoutIP, addDispatchWithoutIP, addLeadWithoutIP, addOrderWithoutIP, addPIWithoutIP, addPOWithoutIP, addProductWithoutIP, addQuotationWithoutIP, 
-    addRoleWithoutIP, addSupplierWithoutIP, addUserWithoutIP, 
-    deleteCustomerWithoutIP, deleteLeadWithoutIP, deleteOrderWithoutIP, deleteProductWithoutIP, 
-    deleteQuotationWithoutIP, deleteRoleWithoutIP, deleteSupplierWithoutIP, deleteUserWithoutIP, 
-    searchCustomerWithoutIP, searchDispatchWithoutIP, searchLeadWithoutIP, searchOrderWithoutIP, searchPIWithoutIP, searchPOWithoutIP, searchProductWithoutIP, 
-    searchQuotationWithoutIP, searchRoleWithoutIP, searchSupplierWithoutIP, searchUserWithoutIP, 
-    updateCustomerWithoutIP, updateDispatch, updateDispatchWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updatePIWithoutIP, updatePOWithoutIP, updateProductWithoutIP, 
-    updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP, 
+import {
+    addCustomerWithoutIP, addDispatchWithoutIP, addLeadWithoutIP, addOrderWithoutIP, addPIWithoutIP, addPOWithoutIP, addProductWithoutIP, addQuotationWithoutIP,
+    addRoleWithoutIP, addSupplierWithoutIP, addUserWithoutIP,
+    deleteCustomerWithoutIP, deleteLeadWithoutIP, deleteOrderWithoutIP, deleteProductWithoutIP,
+    deleteQuotationWithoutIP, deleteRoleWithoutIP, deleteSupplierWithoutIP, deleteUserWithoutIP,
+    downloadWithoutIP,
+    searchCustomerWithoutIP, searchDispatchWithoutIP, searchLeadWithoutIP, searchOrderWithoutIP, searchPIWithoutIP, searchPOWithoutIP, searchProductWithoutIP,
+    searchQuotationWithoutIP, searchRoleWithoutIP, searchSupplierWithoutIP, searchUserWithoutIP,
+    updateCustomerWithoutIP, updateDispatch, updateDispatchWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updatePIWithoutIP, updatePOWithoutIP, updateProductWithoutIP,
+    updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP,
     uploadFileWithoutIP
-  } from "../../../Constants/Constants";
-  
+} from "../../../Constants/Constants";
+
 export const panelPermisson = {
     "roleName": "",
-    "allowedEndPoints": [],
+    "roleType": "",
+    "allowedEndPoints": [uploadFileWithoutIP,searchRoleWithoutIP,addRoleWithoutIP,updateRoleWithoutIP,deleteRoleWithoutIP,searchUserWithoutIP,addUserWithoutIP,deleteUserWithoutIP,updateUserWithoutIP,downloadWithoutIP],
     "permission": [
         {
             "value": "Lead",
@@ -50,7 +52,7 @@ export const panelPermisson = {
                 }
             ],
             "readEndpoint": searchOrderWithoutIP,
-            'writeEndpoint': [addOrderWithoutIP, uploadFileWithoutIP,updateOrderWithoutIP,searchPOWithoutIP,searchPOWithoutIP,searchPIWithoutIP,addPOWithoutIP,addPIWithoutIP,addDispatchWithoutIP,searchDispatchWithoutIP,updatePOWithoutIP,updatePIWithoutIP,updateDispatchWithoutIP],
+            'writeEndpoint': [addOrderWithoutIP, updateOrderWithoutIP],
             'deleteEndpoint': deleteOrderWithoutIP
         },
         {
@@ -93,7 +95,7 @@ export const panelPermisson = {
             'deleteEndpoint': deleteProductWithoutIP
         },
         {
-            "value": "Role",
+            "value": "PO",
             "permission": [
                 {
                     "read": false,
@@ -101,12 +103,12 @@ export const panelPermisson = {
                     "delete": false
                 }
             ],
-            "readEndpoint": searchRoleWithoutIP,
-            'writeEndpoint': [addRoleWithoutIP, updateRoleWithoutIP],
-            'deleteEndpoint': deleteRoleWithoutIP
+            "readEndpoint": searchPOWithoutIP,
+            'writeEndpoint': [addPOWithoutIP, updatePOWithoutIP],
+            'deleteEndpoint': updatePOWithoutIP
         },
         {
-            "value": "User",
+            "value": "PI",
             "permission": [
                 {
                     "read": false,
@@ -114,13 +116,25 @@ export const panelPermisson = {
                     "delete": false
                 }
             ],
-            "readEndpoint": searchUserWithoutIP,
-            'writeEndpoint': [addUserWithoutIP, updateUserWithoutIP],
-            'deleteEndpoint': deleteUserWithoutIP
+            "readEndpoint": searchPIWithoutIP,
+            'writeEndpoint': [addPIWithoutIP, updatePIWithoutIP],
+            'deleteEndpoint': updatePIWithoutIP
+        },
+        {
+            "value": "Dispatch",
+            "permission": [
+                {
+                    "read": false,
+                    "write": false,
+                    "delete": false
+                }
+            ],
+            "readEndpoint": searchDispatchWithoutIP,
+            'writeEndpoint': [addDispatchWithoutIP, updateDispatchWithoutIP],
+            'deleteEndpoint': updateDispatchWithoutIP
         }
     ]
 }
-
 
 export function compileData(data) {
     const endpointMapping = {
@@ -136,7 +150,7 @@ export function compileData(data) {
         },
         "Order": {
             read: searchOrderWithoutIP,
-            write: [addOrderWithoutIP, uploadFileWithoutIP, updateOrderWithoutIP, searchPOWithoutIP, searchPIWithoutIP, addPOWithoutIP, addPIWithoutIP, addDispatchWithoutIP, searchDispatchWithoutIP, updatePOWithoutIP, updatePIWithoutIP, updateDispatchWithoutIP],
+            write: [addOrderWithoutIP, updateOrderWithoutIP],
             delete: deleteOrderWithoutIP
         },
         "Customer": {
@@ -154,16 +168,21 @@ export function compileData(data) {
             write: [addProductWithoutIP, updateProductWithoutIP],
             delete: deleteProductWithoutIP
         },
-        "Role": {
-            read: searchRoleWithoutIP,
-            write: [addRoleWithoutIP, updateRoleWithoutIP],
-            delete: deleteRoleWithoutIP
+        "PO": {
+            read: searchPOWithoutIP,
+            write: [addPOWithoutIP, updatePOWithoutIP],
+            delete: updatePOWithoutIP
         },
-        "User": {
-            read: searchUserWithoutIP,
-            write: [addUserWithoutIP, updateUserWithoutIP],
-            delete: deleteUserWithoutIP
-        }
+        "PI": {
+            read: searchPIWithoutIP,
+            write: [addPIWithoutIP, updatePIWithoutIP],
+            delete: updatePIWithoutIP
+        },
+        "Dispatch": {
+            read: searchDispatchWithoutIP,
+            write: [addDispatchWithoutIP, updateDispatch],
+            delete: updateDispatch
+        },
     };
 
     return {
@@ -174,4 +193,103 @@ export function compileData(data) {
             deleteEndpoint: endpointMapping[item.value]?.delete || null
         }))
     };
+}
+
+export const superAdminRoleData = {
+    allowedEndPoints: [
+        searchUserWithoutIP, addUserWithoutIP, updateUserWithoutIP, deleteUserWithoutIP,
+        searchRoleWithoutIP, addRoleWithoutIP, updateRoleWithoutIP, deleteRoleWithoutIP,
+        searchCustomerWithoutIP, addCustomerWithoutIP, updateCustomerWithoutIP, deleteCustomerWithoutIP,
+        searchSupplierWithoutIP, addSupplierWithoutIP, updateSupplierWithoutIP, deleteSupplierWithoutIP,
+        searchProductWithoutIP, addProductWithoutIP, updateProductWithoutIP, deleteProductWithoutIP,
+        searchLeadWithoutIP, addLeadWithoutIP, updateLeadWithoutIP, deleteLeadWithoutIP,
+        searchQuotationWithoutIP, addQuotationWithoutIP, updateQuotationWithoutIP, deleteQuotationWithoutIP,
+        searchOrderWithoutIP, addOrderWithoutIP, updateOrderWithoutIP, deleteOrderWithoutIP,
+        searchPOWithoutIP, addPOWithoutIP, updatePOWithoutIP,
+        searchPIWithoutIP, addPIWithoutIP, updatePIWithoutIP,
+        addDispatchWithoutIP, searchDispatchWithoutIP, updateDispatchWithoutIP,
+        uploadFileWithoutIP,downloadWithoutIP
+    ],
+    "permission": [
+        {
+            "value": "Lead",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Quotation",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Order",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Customer",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Supplier",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Product",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "Role",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+        {
+            "value": "User",
+            "permission": [
+                {
+                    "read": true,
+                    "write": true,
+                    "delete": true
+                }
+            ],
+        },
+    ]
 }

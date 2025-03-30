@@ -28,8 +28,6 @@ function Lead() {
   const [quotationModal, setQuotationModal] = useState(null)
   const [costomerModal, setCustomerModal] = useState(null)
   
-
-  
   const width = window.innerWidth
   let user = getAuthenticatedUserWithRoles();
 
@@ -40,12 +38,11 @@ function Lead() {
   }, [LeadReducer])
 
   const fetchData = () => {
+    var search = user?.roleObject?.roleType === 'superadmin'?{}:{"user_id": user?.userData?._id}
     var json = {
       page: PaginationReducer.pagination.page,
       limit: PaginationReducer.pagination.limit,
-      search: {
-        "user_id": user?.userData?._id,
-      }
+      search: search
     }
     ApiHit(json, searchLead).then(res => {
       if (res?.content) {

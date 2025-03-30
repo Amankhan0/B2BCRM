@@ -64,9 +64,13 @@ function Product() {
             </td>
             <td className='min-w-[100px] p-2 border text-black'>
               <div className='flex gap-2'>
-                <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-product/${ele?._id}`) }} >
+                {
+                  user?.roleObject?.permission?.[5]?.permission?.[0].write &&
+                  <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-product/${ele?._id}`) }} >
                   {editIcon}
                 </div>
+                }
+                
                 {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
                   {deleteIcon}
                 </div> */}

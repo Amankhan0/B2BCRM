@@ -14,10 +14,12 @@ import { Colors } from '../../../Colors/color';
 import DispatchOrder from '../Dispatch/DispatchOrder';
 import POProductsView from './POProductView';
 import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon } from '../../../SVG/Icons';
+import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
 
 function POView({ orderData }) {
 
     const OrderReducer = useSelector(state => state.OrderReducer)
+    let user = getAuthenticatedUserWithRoles();
 
     const dispatch = useDispatch()
     const [loader, setLoader] = useState(null)
@@ -46,7 +48,7 @@ function POView({ orderData }) {
         })
     }
 
-    const th = ['Order Ref No', 'Supplier Details','Products', 'Status', 'Action']
+    const th = ['Order Ref No', 'Supplier Details', 'Products', 'Status', 'Action']
 
     let td;
     if (OrderReducer.PO !== null) {
@@ -91,14 +93,20 @@ function POView({ orderData }) {
                                 <MyButton title={'cancelled'} bg={Colors.DARKRED} className={'h-5 text-xs w-max'} />
                             }
                             {
-                                ele.status === 'Active' || ele.status === "partial_dispatched"?
-                                <>
-                                    <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
-                                    <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
-                                    <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
-                                </>
-                                :
-                                ''
+                                ele.status === 'Active' || ele.status === "partial_dispatched" ?
+                                    <>
+                                        <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                        {
+                                            user?.roleObject?.permission?.[8]?.permission?.[0]?.write &&
+                                            <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                        }
+                                        {
+                                            user?.roleObject?.permission?.[6]?.permission?.[0]?.delete &&
+                                            <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                        }
+                                    </>
+                                    :
+                                    ''
                             }
                         </td>
 
@@ -110,11 +118,11 @@ function POView({ orderData }) {
 
     const onClickCloseMannually = (ele) => {
         var json = {
-            _id:ele._id,
-            status :'close_mannually'
+            _id: ele._id,
+            status: 'close_mannually'
         }
-        ApiHit(json,updatePO).then(res=>{
-            if(res.status === 200){
+        ApiHit(json, updatePO).then(res => {
+            if (res.status === 200) {
                 toast.success('Mannually close successfully')
             }
         })

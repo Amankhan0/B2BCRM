@@ -6,7 +6,7 @@ import DataTable from '../../Component/DataTable';
 
 function QuotationProductsView({ productsArr, title, onCloseClick }) {
 
-    const th = ['Product Name', 'HSN No', 'Make', 'Varient Name','Price','Quantity','CGST','SGST', 'GST']
+    const th = ['Product Name', 'HSN No', 'Make', 'Varient Name','Price','Quantity', 'GST']
 
     let td;
     td = productsArr.map((ele, i) => {
@@ -19,8 +19,6 @@ function QuotationProductsView({ productsArr, title, onCloseClick }) {
                 {/* <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.varientUnit || '-'}</td> */}
                 <td className='min-w-[100px] p-2 border text-black'>{ele?.price || '-'}</td>
                 <td className='min-w-[100px] p-2 border text-black'>{ele?.qty || '-'}</td>
-                <td className='min-w-[100px] p-2 border text-black'>{ele?.cgst || '-'}</td>
-                <td className='min-w-[100px] p-2 border text-black'>{ele?.sgst || '-'}</td>
                 <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>
             </tr>
         )

@@ -54,6 +54,7 @@ const User = () => {
                         <td className='min-w-[100px] p-2 border text-black'>
                             <div className='flex gap-2'>
                                 {
+                                    user?.roleObject?.permission?.[7]?.permission?.[0].write &&
                                     <div className='flex gap-2'>
                                         <NavLink to={'/edituser/'+ele?._id} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                             {editIcon}
