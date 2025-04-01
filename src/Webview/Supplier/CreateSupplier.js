@@ -182,8 +182,6 @@ function CreateCustomer() {
                 const api = params?.id ? updateSupplier : addSupplier;
 
                 ApiHit(ApiReducer?.apiJson, api).then(res => {
-                    console.log('res', res);
-
                     if (res.status === 200 || res.status === 201) {
                         toast.success(`Supplier ${params?.id ? 'updated' : 'created'} successfully`)
                         window.location.pathname = '/supplier'

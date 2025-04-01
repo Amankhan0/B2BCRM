@@ -31,11 +31,9 @@ function Customer() {
 
   useLayoutEffect(() => {
 
-    console.log(supplierReducer?.doc);
     if (supplierReducer?.doc === null) {
       fetchData()
 
-      console.log('use layout is running inside if');
     }
   }, [])
 
@@ -63,19 +61,19 @@ function Customer() {
         return (
           <tr>
             <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.name || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
+            <td className='w-[100rem] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
+            <td className='w-[100rem] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
+            <td className='w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
             <td className='min-w-[100px] p-2 border text-black'>
               <MyButton onClick={() => setShowGstAddress(i)} icon={smallEyeIcon} title={'View GST Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className='min-w-[90px] p-2 border text-black'>
               <MyButton onClick={() => setShowWarehouseAddress(i)} icon={smallEyeIcon} title={'View Warehouse Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className='w-[50px] p-2 border text-black'>
               <MyButton onClick={() => setshowBankDetails(i)} icon={smallEyeIcon} title={'View Bank Details'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className='w-[40px] p-2 border text-black'>
               <div className='flex gap-2'>
                 {
                    user?.roleObject?.permission?.[4]?.permission?.[0].write &&
