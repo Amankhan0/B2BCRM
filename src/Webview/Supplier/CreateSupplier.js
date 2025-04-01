@@ -99,13 +99,13 @@ function CreateCustomer() {
         ).required('GST document is required'),
         msmeNo: Yup.string()
             // .matches(/^UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]{7}$/, 'Invalid MSME number format')
-            .required('MSME number is required'),
+            ,
         msme: Yup.array().of(
             Yup.object().shape({
                 title: Yup.string(),
                 url: Yup.string(),
             })
-        ).required('MSME document is required'),
+        ),
         tdstcs: Yup.array().of(
             Yup.object().shape({
                 title: Yup.string(),

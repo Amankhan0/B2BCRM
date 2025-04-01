@@ -164,7 +164,7 @@ const PIPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
+            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -206,8 +206,17 @@ const PIPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount}`, pageWidth - 195, currentY);
+            const text = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`;
 
+            // Define maximum width before text overflows
+            const maxWidth = 180; // Adjust as needed
+            
+            // Split text into multiple lines if necessary
+            const wrappedText = pdf.splitTextToSize(text, maxWidth);
+            
+            // Print the text, automatically handling overflow
+            pdf.text(wrappedText, pageWidth - 195, currentY);
+            
             currentY += 10;
 
             // if (currentY > pageHeight - 60) {
@@ -383,7 +392,7 @@ const PIPDF = ({ data, onClickBack }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
                 </div>
 
                 {/* Terms & Notes */}

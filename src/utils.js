@@ -825,52 +825,66 @@ export const calculateTotalSGSTAmountUsingData = (products,type) => {
 export function numberToWords(num) {
   if (num === null || num === undefined || isNaN(num)) return 'Invalid number';
 
-  // Handle negative numbers
   if (num < 0) return `minus ${numberToWords(Math.abs(num))}`;
-
-  // Handle zero
   if (num === 0) return 'zero';
 
   const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
       'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
   const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-  const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
+  
+  const scales = ['', 'thousand', 'lakh', 'crore']; // Indian number system scales
 
   function convertHundreds(n) {
       if (n === 0) return '';
       if (n < 20) return ones[n];
-      if (n < 100) {
-          return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
-      }
+      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
       return ones[Math.floor(n / 100)] + ' hundred' + (n % 100 !== 0 ? ' ' + convertHundreds(n % 100) : '');
   }
 
-  function convertIntegerPart(num) {
+  function convertIndianFormat(num) {
       let words = '';
-      let scaleIndex = 0;
+      let parts = [];
 
-      while (num > 0) {
-          if (num % 1000 !== 0) {
-              words = convertHundreds(num % 1000) + (scaleIndex > 0 ? ' ' + scales[scaleIndex] : '') + (words ? ' ' + words : '');
+      if (num >= 10000000) { // Crore
+          parts.push(Math.floor(num / 10000000));
+          num %= 10000000;
+      }
+      if (num >= 100000) { // Lakh
+          parts.push(Math.floor(num / 100000));
+          num %= 100000;
+      }
+      if (num >= 1000) { // Thousand
+          parts.push(Math.floor(num / 1000));
+          num %= 1000;
+      }
+      if (num > 0) {
+          parts.push(num);
+      }
+
+      const scaleNames = ['', 'thousand', 'lakh', 'crore'];
+      let scaleIndex = parts.length - 1;
+
+      for (let part of parts) {
+          if (part !== 0) {
+              words += (words ? ' ' : '') + convertHundreds(part) + (scaleIndex > 0 ? ' ' + scaleNames[scaleIndex] : '');
           }
-          num = Math.floor(num / 1000);
-          scaleIndex++;
+          scaleIndex--;
       }
 
       return words.trim();
   }
 
   function convertDecimalPart(decimalStr) {
-      const decimalNum = parseInt(decimalStr, 10); // Convert the decimal part into a number
+      const decimalNum = parseInt(decimalStr, 10);
       if (decimalNum === 0) return 'zero';
-      return convertHundreds(decimalNum); // Use the same logic for normal numbers
+      return convertHundreds(decimalNum);
   }
 
   const numParts = num.toString().split('.');
   const integerPart = parseInt(numParts[0], 10);
   const decimalPart = numParts[1] ? numParts[1] : null;
 
-  let result = convertIntegerPart(integerPart);
+  let result = convertIndianFormat(integerPart);
 
   if (decimalPart) {
       result += ' point ' + convertDecimalPart(decimalPart);
@@ -878,3 +892,4 @@ export function numberToWords(num) {
 
   return result;
 }
+

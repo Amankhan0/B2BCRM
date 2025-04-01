@@ -199,7 +199,7 @@ const QuotaionPDF = ({ data }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
+            pdf.text(`Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`, pageWidth - 195, currentY);
 
             currentY += 10;
 
@@ -354,7 +354,7 @@ const QuotaionPDF = ({ data }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
                 </div>
 
                 {/* Terms & Notes - This is just for reference in the browser, actual PDF uses text */}

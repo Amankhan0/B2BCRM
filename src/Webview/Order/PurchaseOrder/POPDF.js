@@ -221,8 +221,16 @@ const POPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount} (${numberToWords(totalTaxAmount)})`, pageWidth - 195, currentY);
+            const text = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`;
 
+            // Define maximum width before text overflows
+            const maxWidth = 180; // Adjust as needed
+
+            // Split text into multiple lines if necessary
+            const wrappedText = pdf.splitTextToSize(text, maxWidth);
+
+            // Print the text, automatically handling overflow
+            pdf.text(wrappedText, pageWidth - 195, currentY);
             currentY += 10;
 
             // 🟢 Terms & Conditions with Multi-Page Handling
@@ -242,9 +250,9 @@ const POPDF = ({ data, onClickBack }) => {
                 currentY = 15;
             }
             pdf.text(`Thanking you,`, pageWidth - 175, currentY);
-            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
-            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
-            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY + 5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY + 10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY + 15);
 
             pdf.addImage(
                 signature,
@@ -402,7 +410,7 @@ const POPDF = ({ data, onClickBack }) => {
                                 <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
                             </>
                     }
-                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount} ({numberToWords(totalTaxAmount)})</span></h3>
+                    <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
                 </div>
 
                 {/* Terms & Notes */}
