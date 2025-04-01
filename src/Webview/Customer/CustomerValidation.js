@@ -150,7 +150,7 @@ export const CustomerValidation = (json) => {
 export const CustomerValidationSchema = Yup.object().shape({
   natureOfCompany: Yup.string().required('Nature of company is required'),
   companyName: Yup.string().required('Company name is required'),
-  companySize: Yup.string().required('Company size is required'),
+  companySize: Yup.string(),
   industry: Yup.string().required('Industry is required'),
   designation: Yup.string().required('Designation is required'),
   name: Yup.string().required('Name is required'),
@@ -189,18 +189,16 @@ export const CustomerValidationSchema = Yup.object().shape({
     })
   ).min(1, 'At least one Shipping address is required').required('At least one Shipping address is required'),
   pancardNo: Yup.string()
-    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format')
-    .required('PAN card number is required'),
+    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card number format'),
   gstNo: Yup.string()
-    .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format')
-    .required('GST number is required'),
+    .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format'),
   gst: Yup.array().of(
     Yup.object().shape({
       title: Yup.string(),
       url: Yup.string(),
-    })).required("GST is required"),
+    })),
   pancard: Yup.array().of(Yup.object().shape({
     title: Yup.string(),
     url: Yup.string()
-  })).required('PAN card required'),
+  })),
 });
