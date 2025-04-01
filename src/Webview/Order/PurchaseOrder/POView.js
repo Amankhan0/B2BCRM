@@ -149,28 +149,30 @@ function POView({ orderData }) {
 
 
     const onClickCancelPO = (ele, i) => {
-        var confirmation = window.confirm('Are you sure to cancel PO')
+        var confirmation = window.confirm('Are you sure to cancel PI')
         if (confirmation) {
-            setLoader('cancelPO')
-            var PoData = updateProductId(OrderReducer?.PO?.content[i])
+            setLoader('cancelPI')
+            var POData = updateProductId(OrderReducer?.PO?.content[i])
             var NewOrderData = updateProductId(orderData)
-            if (PoData && NewOrderData) {
+
+            if (POData && NewOrderData) {
                 var json = {
                     status: 'cancel',
                     _id: ele?._id
                 }
                 ApiHit(json, updatePO).then(res => {
                     if (res.status === 200) {
-                        var newOrder = removeMatchingQty(PoData, NewOrderData)
+                        var newOrder = removeMatchingQty(POData, NewOrderData)
                         var orderJson = {
                             products: newOrder.products,
                             _id: newOrder._id
                         }
                         ApiHit(orderJson, updateOrder).then(res => {
                             if (res.status === 200) {
-                                toast.success('Order Cancel Successfully')
+                                toast.success('PI Cancel Successfully')
                                 window.location.reload()
-                            } else {
+                            }
+                            else {
                                 setLoader(null)
                             }
                         })

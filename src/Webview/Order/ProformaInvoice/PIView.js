@@ -117,13 +117,6 @@ function PIView({ orderData }) {
                     status: 'cancel',
                     _id: ele?._id
                 }
-
-                var newOrder = removeMatchingQty(PIData, NewOrderData)
-                var orderJson = {
-                    products: newOrder.products,
-                    _id: newOrder._id
-                }
-
                 ApiHit(json, updatePI).then(res => {
                     if (res.status === 200) {
                         var newOrder = removeMatchingQty(PIData, NewOrderData)
