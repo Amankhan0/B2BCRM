@@ -46,7 +46,7 @@ function Quotation({ selectedLeadId }) {
     
 
     const fetchData = () => {
-        var search = user?.roleObject?.roleType === 'superadmin' ? {} : { "user_id": user?.userData?._id }
+        var search = user?.roleObject?.roleType === 'superadmin' ? {} : {  }
         var json = {
             page: PaginationReducer.pagination.page,
             limit: PaginationReducer.pagination.limit,

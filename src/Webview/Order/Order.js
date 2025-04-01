@@ -43,7 +43,7 @@ function Order() {
     }, [])
 
     const fetchData = () => {
-        var search = user?.roleObject?.roleType === 'superadmin' ? {} : { "user_id": user?.userData?._id }
+        var search = user?.roleObject?.roleType === 'superadmin' ? {} : {}
         var json = {
             page: PaginationReducer.pagination.page,
             limit: PaginationReducer.pagination.limit,
@@ -114,15 +114,17 @@ function Order() {
                                                             <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
                                                         </div>
                                                     :
-                                                    user?.roleObject?.permission?.[2]?.permission?.[0]?.write &&
+                                                    user?.roleObject?.permission?.[2]?.permission?.[0]?.write ?
                                                         loader === 'cancelOrder' ?
-                                                        <div className='p-2'>
-                                                            <MyLoader />
-                                                        </div>
+                                                            <div className='p-2'>
+                                                                <MyLoader />
+                                                            </div>
+                                                            :
+                                                            <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
+                                                                <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
+                                                            </div>
                                                         :
-                                                        <div onClick={() => onClickCancelOrder(ele)} className='cursor-pointer' style={{ color: Colors.ThemeBlue }}>
-                                                            <p className='p-2 rounded-lg' style={{ border: `1px solid ${Colors.ThemeBlue}` }}>Cancel Order</p>
-                                                        </div>
+                                                        ''
 
                                             }
                                         </div>
@@ -137,7 +139,7 @@ function Order() {
         }
     }
 
-    console.log(user?.roleObject?.permission);
+    console.log(user?.roleObject);
 
     const onClickCancelOrder = (ele) => {
         var confirmation = window.confirm('Are you sure to cancel this order')
