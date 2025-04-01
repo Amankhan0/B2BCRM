@@ -104,6 +104,8 @@ function PIView({ orderData }) {
         return orderData;
     }
 
+    console.log(' user?.roleObject?.permission', user?.roleObject?.permission);
+    
 
     const onClickCancelPI = (ele, i) => {
         var confirmation = window.confirm('Are you sure to cancel PI')

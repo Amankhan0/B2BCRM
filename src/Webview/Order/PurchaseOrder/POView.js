@@ -95,7 +95,10 @@ function POView({ orderData }) {
                             {
                                 ele.status === 'Active' || ele.status === "partial_dispatched" ?
                                     <>
-                                        <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                        {
+                                            user?.roleObject?.permission?.[6]?.permission?.[0]?.delete &&
+                                            <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                        }
                                         {
                                             user?.roleObject?.permission?.[8]?.permission?.[0]?.write &&
                                             <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
