@@ -6,7 +6,7 @@ import Title from "../../../Component/Title";
 import DataTable from "../../../Component/DataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { ApiHit, GetFullYearWithTime } from "../../../utils";
-import { searchRole, searchUser } from "../../../Constants/Constants";
+import { searchRole, searchUser, tableTdClass } from "../../../Constants/Constants";
 import { setRole } from "../../../Store/Action/RoleAction";
 import { deleteIcon, editIcon } from "../../../Icons/Icon";
 import { setUser } from "../../../Store/Action/UserAction";
@@ -17,6 +17,7 @@ const User = () => {
     const UserReducer = useSelector(state => state.UserReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
     let user = getAuthenticatedUserWithRoles();
+    const width = window.innerWidth
 
     const dispatch = useDispatch()
 
@@ -46,12 +47,12 @@ const User = () => {
             td = UserReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.firstName + ' ' + ele?.lastName || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.username || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.firstName + ' ' + ele?.lastName || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.contact || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.email || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.username || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.roleName || '-'} /></td>
+                        <td className={tableTdClass}>
                             <div className='flex gap-2'>
                                 {
                                     user?.roleObject?.permission?.[7]?.permission?.[0].write &&
@@ -90,7 +91,7 @@ const User = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-5 p-3 card">
+            <div style={{ width: width / 1.3 }} className='mt-5 p-5 bg-white overflow-scroll'>
                 <DataTable th={th} td={td} totalPages={UserReducer?.doc?.totalPages} api={fetchData} />
             </div>
         </div>

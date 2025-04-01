@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchProduct } from '../../Constants/Constants';
+import { searchProduct, tableTdClass } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -23,6 +23,7 @@ function Product() {
   let user = getAuthenticatedUserWithRoles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const width = window.innerWidth
 
   const [showVarients, setShowVarients] = useState(null)
   const [showShippingAddress, setShowShippingAddress] = useState(null)
@@ -56,13 +57,13 @@ function Product() {
       td = productReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.productName || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.make || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.hsnNo || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.productName || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.make || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.hsnNo || '-'} /></td>
+            <td className={tableTdClass}>
               <MyButton onClick={() => setShowVarients(i)} icon={smallEyeIcon} title={'View Varients'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}>
               <div className='flex gap-2'>
                 {
                   user?.roleObject?.permission?.[5]?.permission?.[0].write &&
@@ -99,7 +100,7 @@ function Product() {
 
         </div>
       </div>
-      <div className='mt-5 p-5 bg-white'>
+      <div style={{ width: width / 1.3 }} className='mt-5 p-5 bg-white overflow-scroll'>
         <DataTable th={th} td={td} totalPages={productReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {

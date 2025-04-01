@@ -6,7 +6,7 @@ import Title from "../../../Component/Title";
 import DataTable from "../../../Component/DataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { ApiHit, GetFullYearWithTime } from "../../../utils";
-import { searchRole } from "../../../Constants/Constants";
+import { searchRole, tableTdClass } from "../../../Constants/Constants";
 import { setRole } from "../../../Store/Action/RoleAction";
 import { deleteIcon, editIcon } from "../../../Icons/Icon";
 import { getAuthenticatedUserWithRoles } from "../../../Storage/Storage";
@@ -16,6 +16,7 @@ const Role = () => {
     const RoleReducer = useSelector(state => state.RoleReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
     let user = getAuthenticatedUserWithRoles();
+    const width = window.innerWidth
 
     const dispatch = useDispatch()
 
@@ -45,10 +46,10 @@ const Role = () => {
             td = RoleReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleType || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.roleName || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={GetFullYearWithTime(ele?.updatedAt) || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.roleType || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.roleName || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={GetFullYearWithTime(ele?.updatedAt) || '-'} /></td>
+                        <td className={tableTdClass}>
                             <div className='flex gap-2'>
                                 {
                                     user?.roleObject?.permission?.[6]?.permission?.[0].write &&
@@ -88,7 +89,7 @@ const Role = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-5 p-3 card">
+            <div style={{ width: width / 1.3 }} className='mt-5 p-5 bg-white overflow-scroll'>
                 <DataTable th={th} td={td} totalPages={RoleReducer?.doc?.totalPages} api={fetchData} />
             </div>
         </div>

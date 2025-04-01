@@ -200,3 +200,4 @@ export const InActive = "InActive"
 export const QuotationInitiated = "Quotation_Initiated"
 export const OrderInitiated = "Order_Initiated"
 export const selectClass = "mt-1 w-full outline-none h-10 text-md rounded-lg border border-black placeholder:normal-case hover:border-slate-400 pl-2"
+export const tableTdClass = 'min-w-[150px] p-2 border text-black'

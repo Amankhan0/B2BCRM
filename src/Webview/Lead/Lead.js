@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchLead, updateLead } from '../../Constants/Constants';
+import { searchLead, tableTdClass, updateLead } from '../../Constants/Constants';
 import { setLead } from '../../Store/Action/LeadAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -59,18 +59,18 @@ function Lead() {
       td = LeadReducer.doc.content.map((ele, i) => {
         return (
           <tr className=''>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.leadRefNo || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.leadRefNo || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+            <td className={tableTdClass}>
               <div className='rounded-md p-1.5' style={{ background: ele?.status === 'InActive' ? Colors.RED : Colors.lightgreen }}>
                 <Title size={'xs'} title={ele?.status || '-'} />
               </div>
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}>
               <MyButton title={'Customer Details'} onClick={()=>setCustomerModal(JSON.stringify(ele?.customerDetails))} className={'h-7 text-xs w-max'} />
             </td>
                         
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}>
               <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
             </td>
             <td className='h-12 p-3 border text-black flex gap-2 items-center'>
@@ -132,7 +132,7 @@ function Lead() {
           }
         </div>
       </div>
-      <div style={{ width: width / 1.3 }} className={`mt-5 p-5 bg-whit overflow-scroll`}>
+      <div style={{ width: width / 1.3 }} className={`mt-5 p-5 bg-white overflow-scroll`}>
         <DataTable th={th} td={td} totalPages={LeadReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {

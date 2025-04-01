@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { Active, InActive, OrderInitiated, QuotationInitiated, searchOrder, updateLead, updateOrder } from '../../Constants/Constants';
+import { Active, InActive, OrderInitiated, QuotationInitiated, searchOrder, tableTdClass, updateLead, updateOrder } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { crossIcon, smallEyeIcon } from '../../Icons/Icon';
@@ -64,19 +64,19 @@ function Order() {
             td = OrderReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className={tableTdClass}>
                             <div className='flex justify-center'>
                                 <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'text-xs w-max'} />
                             </div>
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}>
                             <div className='flex justify-center'>
                                 <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'text-xs w-max'} />
                             </div>
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}>
                             <div className='flex justify-center'>
                                 {
                                     ele.status !== InActive ?

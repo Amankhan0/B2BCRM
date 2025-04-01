@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchCustomer } from '../../Constants/Constants';
+import { searchCustomer, tableTdClass } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -20,6 +20,7 @@ function Customer() {
   const PaginationReducer = useSelector(state => state.PaginationReducer)
   const customerReducer = useSelector(state => state.CustomerReducer)
   let user = getAuthenticatedUserWithRoles();
+  const width = window.innerWidth
 
   const navigate = useNavigate();
 
@@ -57,17 +58,17 @@ function Customer() {
       td = customerReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.name || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.email || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.contact || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.name || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.email || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.contact || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.gstNo || '-'} /></td>
+            <td className={tableTdClass}>
               <MyButton onClick={() => setShowBillingAddress(i)} icon={smallEyeIcon} title={'View Billing Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}>
               <MyButton onClick={() => setShowShippingAddress(i)} icon={smallEyeIcon} title={'View Shipping Addresses'} className={'h-7 text-xs w-max'} />
             </td>
-            <td className='min-w-[100px] p-2 border text-black'>
+            <td className={tableTdClass}>
               <div className='flex gap-2'>
                 {
                   user?.roleObject?.permission?.[3]?.permission?.[0].write &&
@@ -103,7 +104,7 @@ function Customer() {
           }
         </div>
       </div>
-      <div className='mt-5 p-5 bg-white'>
+      <div style={{ width: width / 1.3 }} className='mt-5 p-5 bg-white overflow-scroll'>
         <DataTable th={th} td={td} totalPages={customerReducer?.doc?.totalPages} api={fetchData} />
       </div>
       {

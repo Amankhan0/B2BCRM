@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { OrderInitiated, searchLead, searchQuotation, selectClass } from '../../Constants/Constants';
+import { OrderInitiated, searchLead, searchQuotation, selectClass, tableTdClass } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
@@ -82,15 +82,15 @@ function Quotation({ selectedLeadId }) {
             td = QuotationReducer.doc.content.map((ele, i) => {
                 return (
                     <tr>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className={tableTdClass}>
                             <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'h-7 text-xs w-max'} />
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}>
                             <MyButton onClick={() => setShowProducts(i)} icon={smallEyeIcon} title={'View Products'} className={'h-7 text-xs w-max'} />
                         </td>
-                        <td className='min-w-[100px] p-2 border text-black'>
+                        <td className={tableTdClass}>
                             <div className='flex gap-2'>
                                 <div onClick={() => setQuotationPdf(ele)} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
                                     {downloadIcon}
