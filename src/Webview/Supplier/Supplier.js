@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchCustomer, searchLead, searchSupplier, tableTdClass } from '../../Constants/Constants';
+import { deleteSupplier, searchCustomer, searchLead, searchSupplier, tableTdClass } from '../../Constants/Constants';
 import { setSupplier } from '../../Store/Action/SupplierAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -13,6 +13,7 @@ import SupplierGstAddressView from './SupplierGstAddressView';
 import SupplierWarehouseAddressView from './SupplierWarehouseAdddressView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import SupplierBankDetailsView from './SupplierBankDetailsView';
+import toast from 'react-hot-toast';
 
 function Customer() {
 
@@ -52,7 +53,7 @@ function Customer() {
     })
   }
 
-  const th = ['Company Name','Nature Of Company', 'Company Size','Industry', 'Supplier Name', 'Email Address', 'Contact', 'GST No.', 'GST Addresses', 'Warehouse Addresses', 'Bank Details', 'Action']
+  const th = ['Company Name', 'Nature Of Company', 'Company Size', 'Industry', 'Supplier Name', 'Email Address', 'Contact', 'GST No.', 'GST Addresses', 'Warehouse Addresses', 'Bank Details', 'Action']
 
   let td;
   if (supplierReducer?.doc !== null) {
@@ -80,15 +81,17 @@ function Customer() {
             <td className='w-[40px] p-2 border text-black'>
               <div className='flex gap-2'>
                 {
-                   user?.roleObject?.permission?.[4]?.permission?.[0].write &&
-                   <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-supplier/${ele?._id}`) }} >
-                   {editIcon}
-                 </div>
+                  user?.roleObject?.permission?.[4]?.permission?.[0].write &&
+                  <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-supplier/${ele?._id}`) }} >
+                    {editIcon}
+                  </div>
                 }
-               
-                {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
-                  {deleteIcon}
-                </div> */}
+                {
+                  user?.roleObject?.roleType === 'superadmin' &&
+                  <div onClick={() => onClickDeleteSupplier(ele?._id)} className='cursor-pointer' style={{ color: Colors.RED }}>
+                    {deleteIcon}
+                  </div>
+                }
               </div>
             </td>
           </tr>
@@ -97,7 +100,20 @@ function Customer() {
     }
   }
 
-  // console.log('supplierReducer', supplierReducer?.doc?.content[showGstAddress || 0]?.billingAddresses, showGstAddress);
+  const onClickDeleteSupplier = (id) => {
+    var confimation = window.confirm('Are you sure to delete supplier')
+    if(confimation){
+      var json = {
+        _id: id
+      }
+      ApiHit(json, deleteSupplier).then(res => {
+        if(res){
+          window.location.pathname = '/supplier'
+          toast.success(res?.message)
+        }
+      })
+    }
+  }
 
 
   return (

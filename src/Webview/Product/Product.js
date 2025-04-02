@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchProduct, tableTdClass } from '../../Constants/Constants';
+import { deleteProduct, searchProduct, tableTdClass } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -14,6 +14,7 @@ import CustomerShippingAddressView from './CustomerShippingAdddressView';
 import { setProduct } from '../../Store/Action/ProductAction';
 import ProductVarientsView from './ProductVarientsView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import toast from 'react-hot-toast';
 // import LeadProductsView from './LeadProductsView';
 
 function Product() {
@@ -68,13 +69,15 @@ function Product() {
                 {
                   user?.roleObject?.permission?.[5]?.permission?.[0].write &&
                   <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-product/${ele?._id}`) }} >
-                  {editIcon}
-                </div>
+                    {editIcon}
+                  </div>
                 }
-                
-                {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
-                  {deleteIcon}
-                </div> */}
+                {
+                  user?.roleObject?.roleType === 'superadmin' &&
+                  <div onClick={() => onClickDeleteProduct(ele?._id)} className='cursor-pointer' style={{ color: Colors.RED }}>
+                    {deleteIcon}
+                  </div>
+                }
               </div>
             </td>
           </tr>
@@ -83,8 +86,20 @@ function Product() {
     }
   }
 
-  // console.log('productReducer', productReducer?.doc?.content[showVarients || 0]?.billingAddresses, showVarients);
-
+  const onClickDeleteProduct = (id) => {
+    var confimation = window.confirm('Are you sure to delete product')
+    if(confimation){
+      var json = {
+        _id: id
+      }
+      ApiHit(json, deleteProduct).then(res => {
+        if(res){
+          window.location.pathname = '/product'
+          toast.success(res?.message)
+        }
+      })
+    }
+  }
 
   return (
     <div className='mt-10'>

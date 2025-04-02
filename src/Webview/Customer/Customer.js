@@ -3,7 +3,7 @@ import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchCustomer, tableTdClass } from '../../Constants/Constants';
+import { deleteCustomer, searchCustomer, tableTdClass } from '../../Constants/Constants';
 import { setCustomer } from '../../Store/Action/CustomerAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
@@ -13,6 +13,7 @@ import LeadProductsView from '../Lead/LeadProductsView';
 import CustomerBillingAddressView from './CustomerBillingAddressView';
 import CustomerShippingAddressView from './CustomerShippingAdddressView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
+import toast from 'react-hot-toast';
 // import LeadProductsView from './LeadProductsView';
 
 function Customer() {
@@ -50,7 +51,7 @@ function Customer() {
     })
   }
 
-  const th = ['Company Name','Nature Of Company', 'Company Size','Industry','Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
+  const th = ['Company Name', 'Nature Of Company', 'Company Size', 'Industry', 'Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
 
   let td;
   if (customerReducer?.doc !== null) {
@@ -77,17 +78,34 @@ function Customer() {
                 {
                   user?.roleObject?.permission?.[3]?.permission?.[0].write &&
                   <div className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }} onClick={() => { navigate(`/edit-customer/${ele?._id}`) }} >
-                  {editIcon}
-                </div>
+                    {editIcon}
+                  </div>
                 }
-               
-                {/* <div className='cursor-pointer' style={{ color: Colors.RED }}>
-                  {deleteIcon}
-                </div> */}
+                {
+                  user?.roleObject?.roleType === 'superadmin' &&
+                  <div onClick={() => onClickDeleteCustomer(ele?._id)} className='cursor-pointer' style={{ color: Colors.RED }}>
+                    {deleteIcon}
+                  </div>
+                }
               </div>
             </td>
           </tr>
         )
+      })
+    }
+  }
+
+  const onClickDeleteCustomer = (id) => {
+    var confimation = window.confirm('Are you sure to delete customer')
+    if(confimation){
+      var json = {
+        _id: id
+      }
+      ApiHit(json, deleteCustomer).then(res => {
+        if(res){
+          window.location.pathname = '/customer'
+          toast.success(res?.message)
+        }
       })
     }
   }
