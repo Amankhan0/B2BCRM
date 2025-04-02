@@ -13,7 +13,6 @@ import SupplierGstAddressView from './SupplierGstAddressView';
 import SupplierWarehouseAddressView from './SupplierWarehouseAdddressView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import SupplierBankDetailsView from './SupplierBankDetailsView';
-// import LeadProductsView from './LeadProductsView';
 
 function Customer() {
 
