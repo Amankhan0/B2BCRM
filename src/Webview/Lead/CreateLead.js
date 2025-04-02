@@ -115,7 +115,7 @@ function CreateLead({ edit }) {
             {
               customers?.map((ele, i) => {
                 return (
-                  ele.name !== null && <option selected={ele?.name === selectedCustomer?.name} value={ele._id}>{ele.name}</option>
+                  ele.name !== null && <option selected={ele?.name === selectedCustomer?.name} value={ele._id}>{ele?.companyName}({ele?.name})</option>
                 )
               })
             }

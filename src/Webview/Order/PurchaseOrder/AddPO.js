@@ -219,6 +219,9 @@ function AddPO({ orderData }) {
         })
     }
 
+    console.log('vendorData',vendorData);
+    
+
     return (
         data &&
         <div className='p-5'>
