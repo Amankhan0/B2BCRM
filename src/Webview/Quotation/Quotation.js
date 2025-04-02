@@ -74,7 +74,7 @@ function Quotation({ selectedLeadId }) {
         })
     }    
 
-    const th = ['Quotation Ref No', 'Lead Source', 'Customer', 'Products', 'Action']
+    const th = ['Quotation Ref No', 'Comapny Name','Lead Source', 'Customer', 'Products', 'Action']
 
     let td;
     if (QuotationReducer.doc !== null) {
@@ -83,6 +83,7 @@ function Quotation({ selectedLeadId }) {
                 return (
                     <tr>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.quotationRefNo || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
                         <td className={tableTdClass}>
                             <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'h-7 text-xs w-max'} />
@@ -144,7 +145,7 @@ function Quotation({ selectedLeadId }) {
                                 }
                                 <div className='w-full mt-7'>
                                     {
-                                        selectedLead !== null && user?.roleObject?.permission?.[1]?.permission?.[0].write &&
+                                        JSON.parse(selectedLead)?.status !== "Order_Initiated" && selectedLead !== null && user?.roleObject?.permission?.[1]?.permission?.[0].write &&
                                         <NavLink to={'/create-quotation/' + JSON.parse(selectedLead)._id}>
                                             <MyButton className={'p-2.5'} title={'Create Quotation'} />
                                         </NavLink>
@@ -155,8 +156,9 @@ function Quotation({ selectedLeadId }) {
                     </div>
                 </>
             }
+            {console.log('selectedLead',selectedLeadId)}
             {
-                selectedLeadId &&
+                selectedLeadId  && JSON.parse(selectedLeadId)?.status !== "Order_Initiated" &&
                 <div className='w-max mt-7 ml-5'>
                     {
                         selectedLead !== null && user?.roleObject?.permission?.[1]?.permission?.[0].write &&

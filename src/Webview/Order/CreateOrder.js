@@ -176,7 +176,7 @@ function CreateOrder() {
                         {
                             customer?.content?.map((ele, i) => {
                                 return (
-                                    <option selected={selectedCustomer !== null ? selectedCustomer.name + selectedCustomer.pancardNo === ele.name + ele.pancardNo : false} value={ele._id}>{ele.name}{ele.companyName && ele.companyName !== null && `(${ele.companyName})`}</option>
+                                    <option selected={selectedCustomer !== null ? selectedCustomer.name + selectedCustomer.pancardNo === ele.name + ele.pancardNo : false} value={ele._id}>{ele.companyName && ele.companyName !== null && `(${ele.companyName})`} ({ele.name})</option>
                                 )
                             })
                         }

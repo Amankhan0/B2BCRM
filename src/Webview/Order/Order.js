@@ -56,7 +56,7 @@ function Order() {
         })
     }
 
-    const th = ['Order Ref No', 'Lead Source', 'Customer', 'Products', 'Action']
+    const th = ['Order Ref No', 'Comapny Name','Lead Source', 'Customer', 'Products', 'Action']
 
     let td;
     if (OrderReducer.doc !== null) {
@@ -65,6 +65,7 @@ function Order() {
                 return (
                     <tr>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
                         <td className={tableTdClass}>
                             <div className='flex justify-center'>

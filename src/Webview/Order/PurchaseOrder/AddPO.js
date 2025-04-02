@@ -16,11 +16,13 @@ import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import { search } from '../../../SVG/Icons';
 import ReactQuill from 'react-quill';
 import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
+import { OrderInvoiceDetails } from '../../OrderInvoiceDetails';
 
 function AddPO({ orderData }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
     let user = getAuthenticatedUserWithRoles();
+    const [content, setContent] = useState(OrderInvoiceDetails.companyDetails.permissions);
 
     const [data, setData] = useState(null)
     const [loader, setLoader] = useState(null)
@@ -196,6 +198,7 @@ function AddPO({ orderData }) {
             warehouseAddresses: vendorData[Number(selectedVendor)].warehouseAddresses[warehouseAddresses]
         }
         newData.supplierDetails = vendroDetails
+        newData.termsAndConditions = content        
         ApiHit(newData, addPO).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -358,9 +361,9 @@ function AddPO({ orderData }) {
                                 <div className='mb-1'>
                                     <Title title={'Terms and conditions'} size={'lg'} color={Colors.BLACK} />
                                     <ReactQuill
-                                        value={data?.termsAndConditions}
+                                        value={content}
                                         style={{ height: '60vh' }}
-                                        onChange={(e) => onChangetermsAndConditions(e)}
+                                        onChange={setContent}
                                         modules={{
                                             toolbar: [
                                                 ["bold", "italic", "underline"], // Formatting options

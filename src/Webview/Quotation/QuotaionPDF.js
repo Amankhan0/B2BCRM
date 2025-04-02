@@ -61,7 +61,7 @@ const QuotaionPDF = ({ data }) => {
             const originalAspectRatio = 3.5; // You'll need to calculate this or know it beforehand
             const desiredWidth = 50;
             const proportionalHeight = desiredWidth / originalAspectRatio;
-            const proportionalHeightForSignature = desiredWidth / 1; 
+            const proportionalHeightForSignature = desiredWidth / 1;
             const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
 
             // 🟢 Add Header with Text
@@ -208,15 +208,19 @@ const QuotaionPDF = ({ data }) => {
                 pdf.addPage();
                 currentY = 15;
             }
-            const termsText = termsRef.current.innerText.split("\n").map(line => [line]);
-            pdf.autoTable({
-                startY: currentY,
-                body: termsText,
-                theme: 'plain',
-                styles: { fontSize: 9, cellPadding: 2 },
-                margin: { left: 10, right: 10 }
-            });
-            currentY = pdf.lastAutoTable.finalY + 10;
+            if(data?.termsAndConditions !== "<p><strong></strong></p>"){
+                const termsText = termsRef.current.innerText.split("\n").map(line => [line]);
+            
+                pdf.autoTable({
+                    startY: currentY,
+                    body: termsText,
+                    theme: 'plain',
+                    styles: { fontSize: 9, cellPadding: 2 },
+                    margin: { left: 10, right: 10 }
+                });
+                currentY = pdf.lastAutoTable.finalY + 10;
+            }
+            currentY += 10;
 
             // 🟢 Add Signature
             if (currentY > pageHeight - 40) {
@@ -224,9 +228,9 @@ const QuotaionPDF = ({ data }) => {
                 currentY = 15;
             }
             pdf.text(`Thanking you,`, pageWidth - 175, currentY);
-            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
-            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
-            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY + 5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY + 10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY + 15);
 
             pdf.addImage(
                 signature,
@@ -243,6 +247,9 @@ const QuotaionPDF = ({ data }) => {
             console.error("Error generating PDF:", error);
         }
     };
+
+    console.log('data', data);
+
 
     return (
         <div>
@@ -357,15 +364,25 @@ const QuotaionPDF = ({ data }) => {
                     <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
                 </div>
 
+
+                {
+                    data?.termsAndConditions !== "<p><strong></strong></p>" &&
+                    <>
+
+                        <div ref={termsRef} style={{ marginTop: 20, padding: "10px 15px", border: "1px solid #f0f0f0", borderRadius: "4px" }}>
+                            <h3 style={{ color: Colors.ThemeBlue, marginBottom: 10 }}>Terms & Conditions</h3>
+                            <div dangerouslySetInnerHTML={{
+                                __html: data.termsAndConditions
+                                    .replace(/<p><br><\/p>/g, '')  // Empty <p><br></p> hatao
+                                    .replace(/<br\s*\/?>/g, '')  // Extra <br> hatao
+                            }} />
+                        </div>
+                    </>
+
+                }
+
                 {/* Terms & Notes - This is just for reference in the browser, actual PDF uses text */}
-                <div ref={termsRef} style={{ marginTop: 20, padding: "10px 15px", border: "1px solid #f0f0f0", borderRadius: "4px" }}>
-                    <h3 style={{ color: Colors.ThemeBlue, marginBottom: 10 }}>Terms & Conditions</h3>
-                    <div dangerouslySetInnerHTML={{
-                        __html: data.termsAndConditions
-                            .replace(/<p><br><\/p>/g, '')  // Empty <p><br></p> hatao
-                            .replace(/<br\s*\/?>/g, '')  // Extra <br> hatao
-                    }} />
-                </div>
+
 
                 {/* Signature - will be captured separately */}
                 <div ref={signatureRef} className="mt-20 px-20 flex justify-between">

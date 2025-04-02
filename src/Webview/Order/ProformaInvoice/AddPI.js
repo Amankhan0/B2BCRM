@@ -13,11 +13,13 @@ import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import PIView from './PIView';
 import ReactQuill from 'react-quill';
 import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
+import { OrderInvoiceDetails } from '../../OrderInvoiceDetails';
 
 function AddPI({ orderData }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
     let user = getAuthenticatedUserWithRoles();
+    const [content, setContent] = useState(OrderInvoiceDetails.companyDetails.permissions);
 
     const [data, setData] = useState(null)
     const [loader, setLoader] = useState(null)
@@ -150,6 +152,8 @@ function AddPI({ orderData }) {
         delete newData._id
         newData.status = 'Active'
         newData.paymentTerm = { type: paymentTerm, days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : null }
+        newData.termsAndConditions = content
+        
         ApiHit(newData, addPI).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -251,9 +255,9 @@ function AddPI({ orderData }) {
                             :
                             <div>
                                 <ReactQuill
-                                    value={data?.termsAndConditions}
+                                    value={content}
                                     style={{ height: '60vh' }}
-                                    onChange={(e) => onChangetermsAndConditions(e)}
+                                    onChange={setContent}
                                     modules={{
                                         toolbar: [
                                             ["bold", "italic", "underline"], // Formatting options

@@ -51,7 +51,7 @@ function Lead() {
     })
   }
 
-  const th = ['Lead Ref No', 'Lead Source', 'Status', 'Customer', 'Products', 'Action']
+  const th = ['Lead Ref No', 'Comapny Name','Lead Source', 'Status', 'Customer', 'Products', 'Action']
 
   let td;
   if (LeadReducer.doc !== null) {
@@ -60,6 +60,7 @@ function Lead() {
         return (
           <tr className=''>
             <td className={tableTdClass}><Title size={'xs'} title={ele?.leadRefNo || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
             <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
             <td className={tableTdClass}>
               <div className='rounded-md p-1.5' style={{ background: ele?.status === 'InActive' ? Colors.RED : Colors.lightgreen }}>

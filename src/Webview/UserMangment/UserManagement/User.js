@@ -40,7 +40,7 @@ const User = () => {
         })
     }
 
-    const th = ['Full Name', 'Contact', 'Email', 'UserName', 'Role Type', 'Action']
+    const th = ['Full Name', 'Contact', 'Email', 'UserName', 'Role Name', 'Action']
     let td;
     if (UserReducer.doc !== null) {
         if (UserReducer.doc.content.length !== 0) {
