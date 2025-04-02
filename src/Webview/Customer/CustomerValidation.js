@@ -196,9 +196,9 @@ export const CustomerValidationSchema = Yup.object().shape({
     Yup.object().shape({
       title: Yup.string(),
       url: Yup.string(),
-    })),
+    })).nullable(true),
   pancard: Yup.array().of(Yup.object().shape({
     title: Yup.string(),
     url: Yup.string()
-  })),
+  })).nullable(true),
 });

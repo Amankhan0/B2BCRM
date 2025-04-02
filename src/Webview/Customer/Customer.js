@@ -50,7 +50,7 @@ function Customer() {
     })
   }
 
-  const th = ['Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
+  const th = ['Company Name','Nature Of Company', 'Company Size','Industry','Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
 
   let td;
   if (customerReducer?.doc !== null) {
@@ -58,6 +58,10 @@ function Customer() {
       td = customerReducer?.doc?.content?.map((ele, i) => {
         return (
           <tr>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.companyName || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.natureOfCompany || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.companySize || '-'} /></td>
+            <td className={tableTdClass}><Title size={'xs'} title={ele?.industry || '-'} /></td>
             <td className={tableTdClass}><Title size={'xs'} title={ele?.name || '-'} /></td>
             <td className={tableTdClass}><Title size={'xs'} title={ele?.email || '-'} /></td>
             <td className={tableTdClass}><Title size={'xs'} title={ele?.contact || '-'} /></td>
