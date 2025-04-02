@@ -278,7 +278,7 @@ function AddPO({ orderData }) {
                                                 {
                                                     vendorData.map((vendor, vendorIndex) => {
                                                         return (
-                                                            <option selected={selectedVendor === vendorIndex} value={vendorIndex}>{vendor.name}({vendor.contact})</option>
+                                                            <option selected={selectedVendor === vendorIndex} value={vendorIndex}>{vendor?.companyName}({vendor?.name})</option>
                                                         )
                                                     })
                                                 }
