@@ -803,6 +803,7 @@ export const calculateTotalCGSTAmountUsingData = (products,type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
     var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    console.log('cal',cal);
     if (cal) {
       productTotal = cal;
     }

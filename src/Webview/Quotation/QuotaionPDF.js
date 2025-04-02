@@ -137,7 +137,7 @@ const QuotaionPDF = ({ data }) => {
                         ])
                         : data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, ele.cgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", ele.sgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
                         ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
@@ -208,9 +208,9 @@ const QuotaionPDF = ({ data }) => {
                 pdf.addPage();
                 currentY = 15;
             }
-            if(data?.termsAndConditions !== "<p><strong></strong></p>"){
+            if (data?.termsAndConditions !== "<p><strong></strong></p>") {
                 const termsText = termsRef.current.innerText.split("\n").map(line => [line]);
-            
+
                 pdf.autoTable({
                     startY: currentY,
                     body: termsText,
@@ -328,23 +328,27 @@ const QuotaionPDF = ({ data }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.products?.map((ele, i) => (
-                                <tr key={i}>
+                            {data?.products?.map((ele, i) => {
+                                console.log(GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2));
+                                
+                                return(
+                                    <tr key={i} >
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
                                     {
                                         data.customerDetails?.shippingAddress?.state === 'Delhi' ?
-                                            <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                            <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2)} ({ele?.productVarient?.gst}%)</td>
                                             :
                                             <>
-                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
-                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
                                             </>
                                     }
-                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
+                                    < td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
                                 </tr>
-                            ))}
+                                )
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -357,8 +361,8 @@ const QuotaionPDF = ({ data }) => {
                             <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
                             :
                             <>
-                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount}</span></h3>
-                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount?.toFixed(2)}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount?.toFixed(2)}</span></h3>
                             </>
                     }
                     <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
@@ -398,13 +402,13 @@ const QuotaionPDF = ({ data }) => {
                         <img src={signature} alt="Signature" style={{ width: 150 }} />
                     </div>
                 </div>
-            </div>
+            </div >
 
             {/* Download Button */}
-            <button onClick={downloadPDF} style={{ marginTop: 20, padding: 10, backgroundColor: Colors.ThemeBlue, color: "#fff", border: "none", cursor: "pointer" }}>
+            < button onClick={downloadPDF} style={{ marginTop: 20, padding: 10, backgroundColor: Colors.ThemeBlue, color: "#fff", border: "none", cursor: "pointer" }}>
                 Download PDF
-            </button>
-        </div>
+            </button >
+        </div >
     );
 };
 

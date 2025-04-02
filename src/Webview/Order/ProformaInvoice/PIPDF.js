@@ -143,7 +143,7 @@ const PIPDF = ({ data, onClickBack }) => {
                         ])
                         : data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, ele.cgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", ele.sgst + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
                         ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
@@ -368,8 +368,8 @@ const PIPDF = ({ data, onClickBack }) => {
                                                 <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele.cgst} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
                                                 </>
                                         }
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
