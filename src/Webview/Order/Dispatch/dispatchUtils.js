@@ -11,13 +11,13 @@ export function updateDispatchedQty(products) {
             }
         } else {
             if (product.dispatchedQty === null) {
-                product.dispatchedQty = product.qty
+                product.dispatchedQty = 0
             } else {
                 if (Number(product.dispatchedQty) === Number(product.qty)) {
 
                 } else {
                     var availableQty = Number(product.qty) - Number(product.dispatchedQty)
-                    product.dispatchedQty = Number(product.dispatchedQty) + availableQty
+                    product.dispatchedQty = Number(product.dispatchedQty)
                 }
             }
         }

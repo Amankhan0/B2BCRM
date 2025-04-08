@@ -2,23 +2,22 @@ import React, { useEffect, useState } from 'react'
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { Active, InActive, OrderInitiated, QuotationInitiated, searchOrder, tableTdClass, updateLead, updateOrder } from '../../Constants/Constants';
+import { InActive, QuotationInitiated, searchOrder, tableTdClass, updateLead, updateOrder } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { crossIcon, smallEyeIcon } from '../../Icons/Icon';
 import OrderProductsView from './OrderProductsView';
-import { setOrder } from '../../Store/Action/OrderAction';
+import { setDispatch, setOrder, setPi, setPo } from '../../Store/Action/OrderAction';
 import { Colors } from '../../Colors/color';
-import PI from './PI';
 import AddPO from './PurchaseOrder/AddPO';
 import AddDispatch from './Dispatch/AddDispatch';
 import AddPI from './ProformaInvoice/AddPI';
 import toast from 'react-hot-toast';
 import MyLoader from '../../Component/MyLoader';
-import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon, trashbin } from '../../SVG/Icons';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import CustomerView from '../../Component/CustomerView';
 import { Status } from '../../Component/status';
+import FileRenderer from '../Customer/FileRenderer';
 
 function Order() {
 
@@ -35,6 +34,7 @@ function Order() {
     const [loader, setLoader] = useState(null)
     const width = window.innerWidth
     const [costomerModal, setCustomerModal] = useState(null)
+    const [clientPOModal, setClientPOModal] = useState(null)
 
     useEffect(() => {
         if (OrderReducer.doc === null) {
@@ -56,7 +56,7 @@ function Order() {
         })
     }
 
-    const th = ['Order Ref No', 'Comapny Name','Lead Source', 'Customer', 'Products', 'Action']
+    const th = ['Order Ref No', 'Comapny Name', 'Lead Source', 'Client PO', 'Customer', 'Products', 'Action']
 
     let td;
     if (OrderReducer.doc !== null) {
@@ -67,6 +67,11 @@ function Order() {
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.companyName || '-'} /></td>
                         <td className={tableTdClass}><Title size={'xs'} title={ele?.customerDetails?.leadSource || '-'} /></td>
+                        <td className={tableTdClass}>
+                            <div className='flex justify-center'>
+                                <MyButton onClick={() => setClientPOModal(JSON.stringify(ele))} title={'View Client PO'} />
+                            </div>
+                        </td>
                         <td className={tableTdClass}>
                             <div className='flex justify-center'>
                                 <MyButton onClick={() => setCustomerModal(JSON.stringify(ele?.customerDetails))} icon={smallEyeIcon} title={'View Customer'} className={'text-xs w-max'} />
@@ -178,6 +183,13 @@ function Order() {
         setSingleOrderData(data)
     }
 
+    const onClickCloseModal = () => {
+        setModal(null)
+        dispatch(setPo(null))
+        dispatch(setPi(null))
+        dispatch(setDispatch(null))
+    }
+
     return (
         <div className='mt-10'>
             <div className='mt-5 p-5 bg-white overflow-scroll' style={{ width: width / 1.3 }}>
@@ -196,7 +208,7 @@ function Order() {
                             <div>
                                 <Title size={'lg'} title={modal + ' Details'} />
                             </div>
-                            <div onClick={() => setModal(null)}>
+                            <div onClick={() => onClickCloseModal()}>
                                 {crossIcon}
                             </div>
                         </div>
@@ -209,6 +221,30 @@ function Order() {
                                     :
                                     <AddDispatch orderData={singleOrderData} />
                         }
+                    </div>
+                </div>
+            }
+            {
+                clientPOModal !== null &&
+                <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
+                    <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
+                    <div className={`relative rounded-lg card w-[80%] transition-opacity duration-300`}>
+                        <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2 text-white" style={{ background: Colors.ThemeBlue }}>
+                            <div>
+                                <Title size={'lg'} title={'Client PO Details'} />
+                            </div>
+                            <div onClick={() => setClientPOModal(null)}>
+                                {crossIcon}
+                            </div>
+                        </div>
+                        <div className="p-10 text-center">
+                            <Title size={'lg'} color={Colors.BLACK} title={'Client PO'} />
+                            <center>
+                                {
+                                    <FileRenderer fileId={JSON.parse(clientPOModal)?.po?.url} />
+                                }
+                            </center>
+                        </div>
                     </div>
                 </div>
             }

@@ -15,6 +15,8 @@ import DispatchOrder from '../Dispatch/DispatchOrder';
 import POProductsView from './POProductView';
 import { smallComputerIcon, smallMailIcon, smallPersonIcon, smallPhoneIcon } from '../../../SVG/Icons';
 import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
+import MyInput from '../../../Component/MyInput';
+import { updateDispatchedQty } from '../Dispatch/dispatchUtils';
 
 function POView({ orderData }) {
 
@@ -26,12 +28,15 @@ function POView({ orderData }) {
     const [showProducts, setShowProducts] = useState(null)
     const [dispatchModal, setDispatchModal] = useState(null)
     const [downloadPDF, setDownloadPDF] = useState(null)
+    const [closeModal, setCloseModal] = useState(null)
+    const [render, setRender] = useState(Date.now)
+
 
     useEffect(() => {
         if (OrderReducer.PO === null) {
             fetchData()
         }
-    }, [])
+    }, [render, closeModal])
 
     const fetchData = () => {
         var json = {
@@ -96,16 +101,31 @@ function POView({ orderData }) {
                                 ele.status === 'Active' || ele.status === "partial_dispatched" ?
                                     <>
                                         {
-                                            user?.roleObject?.permission?.[6]?.permission?.[0]?.delete &&
-                                            <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                            user?.roleObject?.roleType === 'superadmin' ?
+                                                <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                                :
+                                                user?.roleObject?.permission?.[6]?.permission?.[0]?.delete ?
+                                                    <MyButton type={loader === 'cancelPO' && 'loader'} title={'Cancel PO'} onClick={() => onClickCancelPO(ele, i)} icon={smallcrossIcon} className={'h-7 text-xs w-max'} />
+                                                    :
+                                                    ''
                                         }
                                         {
-                                            user?.roleObject?.permission?.[8]?.permission?.[0]?.write &&
-                                            <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                            user?.roleObject?.roleType === 'superadmin' ?
+                                                <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                                :
+                                                user?.roleObject?.permission?.[8]?.permission?.[0]?.write ?
+                                                    <MyButton title={'Dispatch'} onClick={() => setDispatchModal(JSON.stringify(ele))} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                                    :
+                                                    ''
                                         }
                                         {
-                                            user?.roleObject?.permission?.[6]?.permission?.[0]?.delete &&
-                                            <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                            user?.roleObject?.roleType === 'superadmin' ?
+                                                <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                                :
+                                                user?.roleObject?.permission?.[6]?.permission?.[0]?.delete ?
+                                                    <MyButton title={'Close mannually'} onClick={() => onClickCloseMannually(ele)} icon={smallMoneyIcon} className={'h-7 text-xs w-max'} />
+                                                    :
+                                                    ''
                                         }
                                     </>
                                     :
@@ -120,15 +140,42 @@ function POView({ orderData }) {
     }
 
     const onClickCloseMannually = (ele) => {
-        var json = {
-            _id: ele._id,
-            status: 'close_mannually'
-        }
-        ApiHit(json, updatePO).then(res => {
-            if (res.status === 200) {
-                toast.success('Mannually close successfully')
+        if (ele === 'close') {
+
+            var data = JSON.parse(closeModal)
+            var finalData = updateDispatchedQty(data.products)
+            if (finalData) {
+                var json = {
+                    ...data,
+                    products: finalData,
+                }
+                var newFinalJson = updateProductId(json)
+                if (newFinalJson) {
+                    const userInput = window.prompt("Reason");
+                    var poJson = {
+                        _id: json._id,
+                        status: 'close_mannually',
+                        products: newFinalJson.products,
+                        closeReason:userInput
+                    }
+                    // ApiHit(json, updatePO).then(res => {
+                    //     if (res.status === 200) {
+                    //         toast.success('Mannually close successfully')
+                    //     }
+                    // })
+                }
             }
-        })
+
+
+
+
+        } else {
+            var confirmation = window.confirm('Are you sure to close this PO')
+            if (confirmation) {
+                setCloseModal(JSON.stringify(ele))
+            }
+        }
+
     }
 
     function removeMatchingQty(poData, orderData) {
@@ -157,7 +204,6 @@ function POView({ orderData }) {
             setLoader('cancelPI')
             var POData = updateProductId(OrderReducer?.PO?.content[i])
             var NewOrderData = updateProductId(orderData)
-
             if (POData && NewOrderData) {
                 var json = {
                     status: 'cancel',
@@ -187,6 +233,57 @@ function POView({ orderData }) {
         }
     }
 
+    const CloseTH = ['Product Name', 'HSN No', "Make", "Varient/Unit", 'Orderd Quantity', 'Balance Quantity', 'Dispatch Quantity', 'Price', 'GST', 'CGST', 'SGST']
+    let closeTD;
+    if (JSON.parse(closeModal) !== null) {
+        closeTD = JSON.parse(closeModal)?.products?.map((ele, i) => {
+            const availableQty = ele.dispatchedQty ? ele.dispatchedQty !== null ? ele.dispatchedQty !== undefined ? ele.dispatchedQty !== 0 ? ele.dispatchedQty !== "0" ? Number(ele.dispatchedQty) > Number(ele.qty) ? Number(ele.dispatchedQty) - Number(ele.qty) : Number(ele.qty) - Number(ele.dispatchedQty) : Number(ele.qty) : Number(ele.qty) : Number(ele.qty) : Number(ele.qty) : Number(ele.qty);
+            return (
+                ele.availablePO !== '0' &&
+                <tr>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.productName || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.hsnNo || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.product_id?.make || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.qty || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black text-left'>
+                        <div className='flex justify-center'>
+                            {availableQty}
+                        </div>
+                    </td>
+                    <td className='min-w-[100px] p-2 border text-black text-left'>
+                        <div className='flex justify-center'>
+                            {
+                                availableQty !== 0 ?
+                                    <MyInput onChange={(e) => onChangeProdcuts(ele, e.target.value, i)} title={'Dispatched here'} value={ele.dummyDispatch || ele.dummyDispatch === "" ? ele.dummyDispatch : "0"} />
+                                    :
+                                    0
+                            }
+                        </div>
+                    </td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.price || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.productVarient?.gst || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.cgst || '-'}</td>
+                    <td className='min-w-[100px] p-2 border text-black'>{ele?.sgst || '-'}</td>
+                </tr>
+            )
+        })
+    }
+
+    const onChangeProdcuts = (ele, value, index) => {
+        var oldData = JSON.parse(closeModal)
+        const availableQty = oldData.products[index].dispatchedQty ? oldData.products[index].dispatchedQty !== null ? oldData.products[index].dispatchedQty !== undefined ? oldData.products[index].dispatchedQty !== 0 ? oldData.products[index].dispatchedQty !== "0" ? Number(oldData.products[index].dispatchedQty) > Number(oldData.products[index].qty) ? Number(oldData.products[index].dispatchedQty) - Number(oldData.products[index].qty) : Number(oldData.products[index].qty) - Number(oldData.products[index].dispatchedQty) : Number(oldData.products[index].qty) : Number(oldData.products[index].qty) : Number(oldData.products[index].qty) : Number(oldData.products[index].qty) : Number(oldData.products[index].qty);
+        console.log('availableQty', availableQty);
+
+        if (availableQty >= Number(value)) {
+            oldData.products[index].dummyDispatch = value
+            setCloseModal(JSON.stringify(oldData))
+            setRender(Date.now())
+        } else {
+            toast.error('Quantity not availble')
+        }
+    }
+
     return (
         downloadPDF === null ?
             <div className='mt-10'>
@@ -196,6 +293,28 @@ function POView({ orderData }) {
                 {
                     showProducts !== null &&
                     <POProductsView onCloseClick={() => setShowProducts(null)} productsArr={OrderReducer?.PO?.content?.[showProducts]?.products} title={`Order Ref No ${OrderReducer?.PO?.content?.[showProducts]?.orderRefNo}`} />
+                }
+                {
+                    closeModal !== null &&
+                    <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
+                        <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
+                        <div className={`relative rounded-lg card transition-opacity duration-300`}>
+                            <div className='flex justify-between p-2' style={{ background: Colors.ThemeBlue }}>
+                                <div>
+                                    <Title size={'lg'} color={Colors.WHITE} title={'Close'} />
+                                </div>
+                                <div onClick={() => setCloseModal(null)} className='text-white cursor-pointer'>
+                                    {crossIcon}
+                                </div>
+                            </div>
+                            <div className='mx-5 p-5'>
+                                <div className='mb-5'>
+                                    <DataTable td={closeTD} th={CloseTH} hidePagination={true} />
+                                </div>
+                                <MyButton title={'Close'} onClick={() => onClickCloseMannually('close')} />
+                            </div>
+                        </div>
+                    </div>
                 }
                 {
                     dispatchModal !== null &&

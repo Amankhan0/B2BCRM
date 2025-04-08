@@ -44,6 +44,9 @@ const AddDispatchOrder = ({ data }) => {
                 }
                 var newFinalJson = updateProductId(json)
                 console.log('newFinalJson',newFinalJson);
+
+                console.log('newFinalJson',newFinalJson);
+                
                 
                 ApiHit(newFinalJson, addDispatch).then(res => {
                     if (res.status === 200) {
@@ -88,7 +91,7 @@ const AddDispatchOrder = ({ data }) => {
                         <div className='flex justify-center'>
                             {
                                 availableQty !== 0 ?
-                                    <MyInput onChange={(e) => onChangeProdcuts(ele, e.target.value, i)} title={'Available Quantity'} value={ele.dummyDispatch || ele.dummyDispatch === "" ? ele.dummyDispatch : availableQty} />
+                                    <MyInput onChange={(e) => onChangeProdcuts(ele, e.target.value, i)} title={'Dispatched here'} value={ele.dummyDispatch || ele.dummyDispatch === "" ? ele.dummyDispatch : "0"} />
                                     :
                                     0
                             }
@@ -101,18 +104,11 @@ const AddDispatchOrder = ({ data }) => {
                 </tr>
             )
         })
-    }
-
-    console.log(data);
-    
+    }    
 
     const onChangeProdcuts = (ele, value, index) => {        
         var oldData = newData
         const availableQty = newData.products[index].dispatchedQty ? newData.products[index].dispatchedQty !== null ? newData.products[index].dispatchedQty !== undefined ? newData.products[index].dispatchedQty !== 0 ? newData.products[index].dispatchedQty !== "0" ? Number(newData.products[index].dispatchedQty) > Number(newData.products[index].qty) ? Number(newData.products[index].dispatchedQty) - Number(newData.products[index].qty) : Number(newData.products[index].qty) - Number(newData.products[index].dispatchedQty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty) : Number(newData.products[index].qty);
-        
-        console.log('availableQty',availableQty >= Number(value));
-        
-
         if (availableQty >= Number(value)) {
             newData.products[index].dummyDispatch = value
             setNewData(oldData)

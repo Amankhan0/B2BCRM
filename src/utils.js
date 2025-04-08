@@ -795,7 +795,7 @@ export const calculateTotalGSTAmountUsingData = (products,type) => {
     if (cal) {
       productTotal = cal;
     }
-    return productTotal !== 0 && total + productTotal;
+    return total + productTotal;
   }, 0);
 };
 
@@ -807,7 +807,7 @@ export const calculateTotalCGSTAmountUsingData = (products,type) => {
     if (cal) {
       productTotal = cal;
     }
-    return productTotal !== 0 && total + productTotal;
+    return total + productTotal;
   }, 0);
 };
 
@@ -818,7 +818,7 @@ export const calculateTotalSGSTAmountUsingData = (products,type) => {
     if (cal) {
       productTotal = cal;
     }
-    return productTotal !== 0 && total + productTotal;
+    return total + productTotal;
   }, 0);
 };
 

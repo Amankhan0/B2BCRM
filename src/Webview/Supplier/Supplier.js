@@ -102,19 +102,18 @@ function Customer() {
 
   const onClickDeleteSupplier = (id) => {
     var confimation = window.confirm('Are you sure to delete supplier')
-    if(confimation){
+    if (confimation) {
       var json = {
         _id: id
       }
       ApiHit(json, deleteSupplier).then(res => {
-        if(res){
+        if (res) {
           window.location.pathname = '/supplier'
           toast.success(res?.message)
         }
       })
     }
   }
-
 
   return (
     <div className='mt-10'>
@@ -134,15 +133,15 @@ function Customer() {
       </div>
       {
         showGstAddress !== null &&
-        <SupplierGstAddressView onCloseClick={() => setShowGstAddress(null)} addressesArr={supplierReducer?.doc?.content[showGstAddress || 0]?.gstAddresses} />
+        <SupplierGstAddressView onCloseClick={() => setShowGstAddress(null)} addressesArr={supplierReducer?.doc?.content[showGstAddress || 0]?.gstAddresses} data={supplierReducer?.doc?.content[showGstAddress || 0]}/>
       }
       {
         showWarehouseAddress !== null &&
-        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.warehouseAddresses} />
+        <SupplierWarehouseAddressView onCloseClick={() => setShowWarehouseAddress(null)} addressesArr={supplierReducer?.doc?.content[showWarehouseAddress || 0]?.warehouseAddresses} data={supplierReducer?.doc?.content[showGstAddress || 0]}/>
       }
       {
         showBankDetails !== null &&
-        <SupplierBankDetailsView onCloseClick={() => setshowBankDetails(null)} addressesArr={supplierReducer?.doc?.content[showBankDetails || 0]?.bankDetails} />
+        <SupplierBankDetailsView onCloseClick={() => setshowBankDetails(null)} addressesArr={supplierReducer?.doc?.content[showBankDetails || 0]?.bankDetails} data={supplierReducer?.doc?.content[showGstAddress || 0]}/>
       }
     </div>
   )

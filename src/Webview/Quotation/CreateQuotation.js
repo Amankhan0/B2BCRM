@@ -143,7 +143,7 @@ function CreateQuotation() {
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Products Details</p>
                 </div>
-                <MySelectProduct isQuotation={true} />
+                <MySelectProduct />
             </div>
             <div className='mt-5'>
                 <MyButton title={'Next'} onClick={() => onClickNext()} />

@@ -14,6 +14,7 @@ import CustomerBillingAddressView from './CustomerBillingAddressView';
 import CustomerShippingAddressView from './CustomerShippingAdddressView';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import toast from 'react-hot-toast';
+import CustomerDocumnets from './CustomerDocumnets';
 // import LeadProductsView from './LeadProductsView';
 
 function Customer() {
@@ -29,7 +30,9 @@ function Customer() {
 
   const [showBillingAddress, setShowBillingAddress] = useState(null)
   const [showShippingAddress, setShowShippingAddress] = useState(null)
+  const [documents, setDocument] = useState(null)
 
+  
   useLayoutEffect(() => {
     if (customerReducer?.doc === null) {
       fetchData()
@@ -51,7 +54,7 @@ function Customer() {
     })
   }
 
-  const th = ['Company Name', 'Nature Of Company', 'Company Size', 'Industry', 'Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Action']
+  const th = ['Company Name', 'Nature Of Company', 'Company Size', 'Industry', 'Customer Name', 'Email Addresses', 'Contact', 'GST No.', 'Billing Addresses', 'Shipping Addresses', 'Documnets','Action']
 
   let td;
   if (customerReducer?.doc !== null) {
@@ -72,6 +75,9 @@ function Customer() {
             </td>
             <td className={tableTdClass}>
               <MyButton onClick={() => setShowShippingAddress(i)} icon={smallEyeIcon} title={'View Shipping Addresses'} className={'h-7 text-xs w-max'} />
+            </td>
+            <td className={tableTdClass}>
+              <MyButton onClick={() => setDocument(i)} icon={smallEyeIcon} title={'View Documnets'} className={'h-7 text-xs w-max'} />
             </td>
             <td className={tableTdClass}>
               <div className='flex gap-2'>
@@ -136,6 +142,10 @@ function Customer() {
       {
         showShippingAddress !== null &&
         <CustomerShippingAddressView onCloseClick={() => setShowShippingAddress(null)} addressesArr={customerReducer?.doc?.content[showShippingAddress || 0]?.shippingAddresses} />
+      }
+      {
+        documents!==null &&
+        <CustomerDocumnets onClickClose={()=>setDocument(null)} data={customerReducer?.doc?.content[documents]}/>
       }
     </div>
   )

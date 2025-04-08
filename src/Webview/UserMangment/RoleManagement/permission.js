@@ -8,13 +8,13 @@ import {
     searchQuotationWithoutIP, searchRoleWithoutIP, searchSupplierWithoutIP, searchUserWithoutIP,
     updateCustomerWithoutIP, updateDispatch, updateDispatchWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updatePIWithoutIP, updatePOWithoutIP, updateProductWithoutIP,
     updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP,
-    uploadFileWithoutIP
+    uploadFileWithoutIP,searchFile
 } from "../../../Constants/Constants";
 
 export const panelPermisson = {
     "roleName": "",
     "roleType": "",
-    "allowedEndPoints": [uploadFileWithoutIP,searchRoleWithoutIP,addRoleWithoutIP,updateRoleWithoutIP,deleteRoleWithoutIP,searchUserWithoutIP,addUserWithoutIP,deleteUserWithoutIP,updateUserWithoutIP,downloadWithoutIP],
+    "allowedEndPoints": [searchFile,uploadFileWithoutIP,searchRoleWithoutIP,addRoleWithoutIP,updateRoleWithoutIP,deleteRoleWithoutIP,searchUserWithoutIP,addUserWithoutIP,deleteUserWithoutIP,updateUserWithoutIP,downloadWithoutIP],
     "permission": [
         {
             "value": "Lead",
@@ -208,7 +208,7 @@ export const superAdminRoleData = {
         searchPOWithoutIP, addPOWithoutIP, updatePOWithoutIP,
         searchPIWithoutIP, addPIWithoutIP, updatePIWithoutIP,
         addDispatchWithoutIP, searchDispatchWithoutIP, updateDispatchWithoutIP,
-        uploadFileWithoutIP,downloadWithoutIP
+        uploadFileWithoutIP,downloadWithoutIP,searchFile
     ],
     "permission": [
         {

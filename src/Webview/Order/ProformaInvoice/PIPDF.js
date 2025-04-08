@@ -93,6 +93,9 @@ const PIPDF = ({ data, onClickBack }) => {
                 { align: 'right', maxWidth: 35 }
             );
 
+            pdf.text(`Date: ${GetFullYear(Date.now())}`, pageWidth - 13, currentY + 16, { align: 'right', maxWidth: 35 });
+            pdf.text(`Order Ref No: ${data?.orderRefNo}`, pageWidth - 13, currentY + 20, { align: 'right', maxWidth: 35 });
+
             currentY += 25;
 
             // Add Horizontal Line
@@ -110,21 +113,30 @@ const PIPDF = ({ data, onClickBack }) => {
             pdf.setFont("helvetica", "normal");
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(8);
-
+            const maxAddressWidth = pageWidth - 130; // leave margins on both sides
             // 🟢 Customer Info
             pdf.text(`Company Name: ${data?.customerDetails?.companyName || '-'}`, 15, currentY + 7);
             pdf.text(`Customer Name: ${data?.customerDetails?.name || '-'}`, 15, currentY + 12);
             pdf.text(`Customer Contact: ${data?.customerDetails?.contact || '-'}`, 15, currentY + 17);
             pdf.text(`Customer Email: ${data?.customerDetails?.email || '-'}`, 15, currentY + 22);
-            pdf.text(`Address: ${data?.customerDetails?.billingAddress?.address}, ${data?.customerDetails?.billingAddress?.state},`, 15, currentY + 27);
-            pdf.text(`${data?.customerDetails?.billingAddress?.city} ${data?.customerDetails?.billingAddress?.pinCode}`, 15, currentY + 32);
-            pdf.text(`GST No: ${data?.customerDetails?.gstNo}`, 15, currentY + 37);
+
+            const customerAddress = `Address: ${data?.customerDetails?.billingAddress?.address}, ${data?.customerDetails?.billingAddress?.state},`
+            const customerSubAddress = `${data?.customerDetails?.billingAddress?.city} ${data?.customerDetails?.billingAddress?.pinCode}`
+            const wrappedcustomerAddress = pdf.splitTextToSize(customerAddress, maxAddressWidth);
+            const wrappedcustomerSubAddress = pdf.splitTextToSize(customerSubAddress, maxAddressWidth);
+            pdf.text(wrappedcustomerAddress, 15, currentY + 27);
+            pdf.text(wrappedcustomerSubAddress, 15, currentY + 37);
+            pdf.text(`GST No: ${data?.customerDetails?.gstNo}`, 15, currentY + 42);
 
             // Shipping info
             pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
-            pdf.text(`Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`, pageWidth / 2, currentY + 12);
-            pdf.text(`${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`, pageWidth / 2, currentY + 17);
 
+            const supplierAddress = `Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`
+            const supplierSubAddress = `${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`
+            const wrappedsupplierAddress = pdf.splitTextToSize(supplierAddress, maxAddressWidth);
+            const wrappedSubAddress = pdf.splitTextToSize(supplierSubAddress, maxAddressWidth);
+            pdf.text(wrappedsupplierAddress, pageWidth / 2, currentY + 12);
+            pdf.text(wrappedSubAddress, pageWidth / 2, currentY + 22);
             currentY += 17;
 
             pdf.setLineWidth(0.5);
@@ -139,11 +151,11 @@ const PIPDF = ({ data, onClickBack }) => {
                     data.customerDetails?.shippingAddress?.state === 'Delhi' ?
                         data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2) + " " + "(" + ele?.productVarient?.gst + "%" + ")", (Number(ele.price) * Number(ele.qty))?.toFixed(2)
                         ])
                         : data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
+                            ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", (Number(ele.price) * Number(ele.qty))?.toFixed(2)
                         ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
@@ -164,7 +176,7 @@ const PIPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 195, currentY);
+            pdf.text(`Total Amount: ${totalAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -175,7 +187,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total GST: ${totalGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             } else {
@@ -185,7 +197,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total CGST: ${totalCGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
                 currentY += 5;
 
@@ -195,7 +207,7 @@ const PIPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total SGST: ${totalSGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             }
@@ -210,13 +222,13 @@ const PIPDF = ({ data, onClickBack }) => {
 
             // Define maximum width before text overflows
             const maxWidth = 180; // Adjust as needed
-            
+
             // Split text into multiple lines if necessary
             const wrappedText = pdf.splitTextToSize(text, maxWidth);
-            
+
             // Print the text, automatically handling overflow
             pdf.text(wrappedText, pageWidth - 195, currentY);
-            
+
             currentY += 10;
 
             // if (currentY > pageHeight - 60) {
@@ -240,9 +252,9 @@ const PIPDF = ({ data, onClickBack }) => {
                 currentY = 15;
             }
             pdf.text(`Thanking you,`, pageWidth - 175, currentY);
-            pdf.text(`Best Regards`, pageWidth - 175, currentY+5);
-            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY+10);
-            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY+15);
+            pdf.text(`Best Regards`, pageWidth - 175, currentY + 5);
+            pdf.text(`${data?.regards?.name}`, pageWidth - 175, currentY + 10);
+            pdf.text(`${data?.regards?.contact}`, pageWidth - 175, currentY + 15);
 
             pdf.addImage(
                 signature,
@@ -365,14 +377,14 @@ const PIPDF = ({ data, onClickBack }) => {
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
                                         {
                                             data.customerDetails?.shippingAddress?.state === 'Delhi' ?
-                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2)} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
                                                 </>
                                         }
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.price) * Number(ele.qty)}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{(Number(ele?.price) * Number(ele.qty))?.toFixed(2)}</td>
                                     </tr>
                                 )
                             })
@@ -385,11 +397,11 @@ const PIPDF = ({ data, onClickBack }) => {
                     <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
                     {
                         data?.customerDetails?.shippingAddress?.state === 'Delhi' ?
-                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
+                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount?.toFixed(2)}</span></h3>
                             :
                             <>
-                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount}</span></h3>
-                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount?.toFixed(2)}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount?.toFixed(2)}</span></h3>
                             </>
                     }
                     <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>

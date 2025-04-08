@@ -94,6 +94,9 @@ const POPDF = ({ data, onClickBack }) => {
                 { align: 'right', maxWidth: 35 }
             );
 
+            pdf.text(`Date: ${GetFullYear(Date.now())}`, pageWidth - 13, currentY + 16,{ align: 'right', maxWidth: 35 });
+            pdf.text(`Order Ref No: ${data?.orderRefNo}`, pageWidth - 13, currentY + 20,{ align: 'right', maxWidth: 35 });
+
             currentY += 25;
 
             // Add Horizontal Line
@@ -118,12 +121,15 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.text(`${OrderInvoiceDetails?.companyDetails?.address?.city} ${OrderInvoiceDetails?.companyDetails?.address?.pinCode}`, 15, currentY + 17);
             pdf.text(`GST No: ${OrderInvoiceDetails?.companyDetails?.gstNo}`, 15, currentY + 22);
 
+            const maxAddressWidth = pageWidth - 130; // leave margins on both sides
             // Shipping info
             pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
-            pdf.text(`Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`, pageWidth / 2, currentY + 12);
-            pdf.text(`${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`, pageWidth / 2, currentY + 17);
-
-
+            const shippingAddress = `Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`
+            const shippingSubAddress = `${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`
+            const wrappedshippingAddress  = pdf.splitTextToSize(shippingAddress, maxAddressWidth);
+            const wrappedshippingSubAddress  = pdf.splitTextToSize(shippingSubAddress, maxAddressWidth);
+            pdf.text(wrappedshippingAddress, pageWidth / 2, currentY + 12);
+            pdf.text(wrappedshippingSubAddress, pageWidth / 2, currentY + 22);
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
             currentY += 35;
@@ -138,9 +144,15 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.setFontSize(8);
 
             pdf.text(`Company Name: ${data?.supplierDetails?.companyName}`, 15, currentY + 7);
-            pdf.text(`Address: ${data?.supplierDetails?.gstAddresses?.address}, ${data?.supplierDetails?.gstAddresses?.state},`, 15, currentY + 12);
-            pdf.text(`${data?.supplierDetails?.gstAddresses?.city}, ${data?.supplierDetails?.gstAddresses?.pinCode}, ${data?.supplierDetails?.gstAddresses?.landmark}`, 15, currentY + 17);
-            pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 22);
+            const supplierAddress = `Address: ${data?.supplierDetails?.gstAddresses?.address}, ${data?.supplierDetails?.gstAddresses?.state},`
+            const wrappedsupplierAddress  = pdf.splitTextToSize(supplierAddress, maxAddressWidth);
+            pdf.text(wrappedsupplierAddress, 15, currentY + 12);
+
+            const supplierSubAddress = `${data?.supplierDetails?.gstAddresses?.city}, ${data?.supplierDetails?.gstAddresses?.pinCode}, ${data?.supplierDetails?.gstAddresses?.landmark}`
+            const wrappedSubsupplierAddress  = pdf.splitTextToSize(supplierSubAddress, maxAddressWidth);
+            pdf.text(wrappedSubsupplierAddress, 15, currentY + 20);
+
+            pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 24);
 
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
@@ -154,11 +166,11 @@ const POPDF = ({ data, onClickBack }) => {
                     data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                         data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele?.vendorPrice) * Number(ele.qty)
+                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2) + " " + "(" + ele?.productVarient?.gst + "%" + ")", (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ])
                         : data.products.map(ele => [
                             `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
-                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2), GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2), Number(ele?.vendorPrice) * Number(ele.qty)
+                            ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ]),
                 theme: 'grid',
                 headStyles: { fillColor: Colors.ThemeBlue, textColor: '#fff', fontSize: 10 },
@@ -190,8 +202,7 @@ const POPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
-
+                pdf.text(`Total GST: ${totalGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
                 currentY += 5;
             } else {
                 if (currentY + 10 > pageHeight) {
@@ -200,18 +211,15 @@ const POPDF = ({ data, onClickBack }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
-
+                pdf.text(`Total CGST: ${totalCGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
                 currentY += 5;
-
                 if (currentY + 10 > pageHeight) {
                     pdf.addPage(); // Move to next page if not enough space
                     currentY = 10;
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
-
+                pdf.text(`Total SGST: ${totalSGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
                 currentY += 5;
             }
 
@@ -375,6 +383,8 @@ const POPDF = ({ data, onClickBack }) => {
                     <tbody>
                         {
                             data?.products?.map((ele, i) => {
+                                console.log('--?.toFixed(2)',ele);
+                                
                                 return (
                                     <tr>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
@@ -386,11 +396,11 @@ const POPDF = ({ data, onClickBack }) => {
                                                 <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)} ({ele?.productVarient?.gst / 2}%)</td>
-                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
+                                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
                                                 </>
                                         }
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{Number(ele?.vendorPrice) * Number(ele.qty)}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{(Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)}</td>
                                     </tr>
                                 )
                             })

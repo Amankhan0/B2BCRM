@@ -3,10 +3,14 @@ import { Colors } from '../../Colors/color';
 import { crossIcon } from '../../Icons/Icon';
 import Title from '../../Component/Title';
 import DataTable from '../../Component/DataTable';
+import FileRenderer from '../Customer/FileRenderer';
 
-function SupplierGstAddressView({ addressesArr, title, onCloseClick }) {
+function SupplierGstAddressView({ addressesArr, title, onCloseClick, data }) {
 
-    const th = ['Address', 'Landmark', 'Country','State', 'City', 'Pin Code']
+    const th = ['Address', 'Landmark', 'Country', 'State', 'City', 'Pin Code']
+
+    console.log('addressesArr', addressesArr);
+
 
     let td;
     td = addressesArr.map((ele, i) => {
@@ -28,15 +32,35 @@ function SupplierGstAddressView({ addressesArr, title, onCloseClick }) {
             <div className={`relative rounded-lg card w-[80%] text-center transition-opacity duration-300`}>
                 <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2" style={{ background: Colors.ThemeBlue }} onClick={onCloseClick}>
                     <div>
-                        <Title size={'lg'} color={Colors.WHITE} title={title} />
+                        <Title size={'lg'} color={Colors.WHITE} title={'GST And Pan Details'} />
                     </div>
                     <div className='text-white cursor-pointer'>
                         {crossIcon}
                     </div>
                 </div>
-                <div className='p-10'>
-                    <DataTable hidePagination={true} th={th} td={td} />
+                <div className='h-[80vh] overflow-scroll p-10'>
+                    <div className=''>
+                        <DataTable hidePagination={true} th={th} td={td} />
+                    </div>
+                    <div className="mt-10">
+                        <Title size={'lg'} color={Colors.BLACK} title={'GST Documnet'} />
+                        <center>
+                            {
+                                <FileRenderer fileId={data?.gst?.[0]?.url} />
+                            }
+                        </center>
+                    </div>
+
+                    <div className="mt-10">
+                        <Title size={'lg'} color={Colors.BLACK} title={'Pan Documnet'} />
+                        <center>
+                            {
+                                <FileRenderer fileId={data?.pancard?.[0]?.url} />
+                            }
+                        </center>
+                    </div>
                 </div>
+
             </div>
         </div>
     )
