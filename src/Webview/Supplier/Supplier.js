@@ -1,9 +1,9 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
 import DataTable from '../../Component/DataTable';
 import { ApiHit } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSupplier, searchCustomer, searchLead, searchSupplier, tableTdClass } from '../../Constants/Constants';
+import { deleteSupplier, searchSupplier, tableTdClass } from '../../Constants/Constants';
 import { setSupplier } from '../../Store/Action/SupplierAction';
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
