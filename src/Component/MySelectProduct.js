@@ -93,6 +93,9 @@ const MySelectProduct = ({ isQuotation }) => {
         dispatch(setDataAction(oldJson, SET_API_JSON))
     }
 
+    console.log('ApiReducer',ApiReducer);
+    
+
     return (
         <div className="p-5">
             {
@@ -107,6 +110,7 @@ const MySelectProduct = ({ isQuotation }) => {
                 <div>
                     {
                         ApiReducer?.apiJson?.products?.map?.((ele, index) => {
+                            
                             return (
                                 <div className="grid grid-cols-6 gap-4 my-5">
                                     {
