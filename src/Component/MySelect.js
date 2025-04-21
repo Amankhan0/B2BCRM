@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setDataAction } from '../Store/Action/SetDataAction'
 import { SET_API_JSON, SET_CREATE_TRIP_JSON } from '../Store/ActionName/ActionName'
 
-function MySelect({ selectedValue, name, disable, title, error, createTripJson, important, uppercase, options, onChange,keyName }) {
+function MySelect({ selectedValue, name, disable, title, error, createTripJson, important, uppercase, options, onChange, keyName }) {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
@@ -33,7 +33,7 @@ function MySelect({ selectedValue, name, disable, title, error, createTripJson, 
                 {
                     options?.map((option, index) => {
                         return (
-                            <option value={keyName === 'varientName'?option.varientName+option.varientUnit:option._id} selected={selectedValue === option}>{option?.[keyName]}</option>
+                            <option value={keyName === 'varientName' ? option.varientName + option.varientUnit : option._id} selected={selectedValue === option?.productName}>{option?.[keyName]}</option>
                         )
                     })
                 }

@@ -129,7 +129,7 @@ const POPDF = ({ data, onClickBack }) => {
             const wrappedshippingAddress  = pdf.splitTextToSize(shippingAddress, maxAddressWidth);
             const wrappedshippingSubAddress  = pdf.splitTextToSize(shippingSubAddress, maxAddressWidth);
             pdf.text(wrappedshippingAddress, pageWidth / 2, currentY + 12);
-            pdf.text(wrappedshippingSubAddress, pageWidth / 2, currentY + 22);
+            pdf.text(wrappedshippingSubAddress, pageWidth / 2, currentY + 25);
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
             currentY += 35;
@@ -150,9 +150,9 @@ const POPDF = ({ data, onClickBack }) => {
 
             const supplierSubAddress = `${data?.supplierDetails?.gstAddresses?.city}, ${data?.supplierDetails?.gstAddresses?.pinCode}, ${data?.supplierDetails?.gstAddresses?.landmark}`
             const wrappedSubsupplierAddress  = pdf.splitTextToSize(supplierSubAddress, maxAddressWidth);
-            pdf.text(wrappedSubsupplierAddress, 15, currentY + 20);
+            pdf.text(wrappedSubsupplierAddress, 15, currentY + 21.5);
 
-            pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 24);
+            pdf.text(`GST No: ${data?.supplierDetails?.gstNo}`, 15, currentY + 25);
 
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);

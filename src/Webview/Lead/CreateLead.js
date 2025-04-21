@@ -105,6 +105,9 @@ function CreateLead({ edit }) {
     dispatch(setDataAction(oldJson, SET_API_JSON))
   }
 
+  console.log('selectedCustomer',selectedCustomer);
+  
+
   return (
     <div className='m-10'>
       <div className='mb-5'>
@@ -115,7 +118,7 @@ function CreateLead({ edit }) {
             {
               customers?.map((ele, i) => {
                 return (
-                  ele.name !== null && <option selected={ele?.name === selectedCustomer?.name} value={ele._id}>{ele?.companyName} ({ele?.name})</option>
+                  ele.name !== null && <option selected={ele?.gstNo === selectedCustomer?.gstNo} value={ele._id}>{ele?.companyName} ({ele?.name})</option>
                 )
               })
             }

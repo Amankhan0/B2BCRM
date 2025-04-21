@@ -122,13 +122,6 @@ const MySelectProduct = ({ isQuotation }) => {
                                             :
                                             <MyInput disable={true} value={ele.productVarient?.varientName || '0'} title={'Product Varient'} name={'productVarient'} placeholder={'Enter Product Varient'} />
                                     }
-                                    {/* {
-                                        isQuotation &&
-                                        <>
-                                            <MyInput disable={true} value={ele.cgst || '0'} title={'CGST'} name={'cgst'} placeholder={'Enter CGST'} />
-                                            <MyInput disable={true} value={ele.sgst || '0'} title={'SGCT'} name={'sgst'} placeholder={'Enter SGCT'} />
-                                        </>
-                                    } */}
                                     {
                                         ele.product_id &&
                                         <>

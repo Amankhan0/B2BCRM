@@ -49,7 +49,7 @@ function Quotation({ selectedLeadId }) {
         var search = user?.roleObject?.roleType === 'superadmin' ? {} : {  }
         var json = {
             page: PaginationReducer.pagination.page,
-            limit: PaginationReducer.pagination.limit,
+            limit: 100,
             search: search
         }
         ApiHit(json, searchLead).then(res => {
@@ -117,7 +117,6 @@ function Quotation({ selectedLeadId }) {
     }
 
     console.log('quotationPdf', quotationPdf);
-
 
     return (
         <div className='mt-10'>
