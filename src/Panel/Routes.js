@@ -116,7 +116,7 @@ const PanelRoutes = () => {
           <Route path="/edituser/:id" exact element={<EditUser />} />
         }
         <Route path="/" exact element={<Dashboard />} />
-        <Route path="/profile" exact element={<Profile />} />
+        {/* <Route path="/profile" exact element={<Profile />} /> */}
       </Routes>
     </>
   );

@@ -242,6 +242,7 @@ function Login() {
                 placeholder="Enter your password" 
                 important={true}
                 error={true}
+                type='password'
                 className="focus:border-blue-500 transition-colors duration-300"
               />
             </div>
