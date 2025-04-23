@@ -284,7 +284,7 @@ function CreateCustomer() {
                         <MyInputCommon name={'companyName'} title={'Company Name'} placeholder={'Enter Company Name'} validate={validateField} errorMsg={errors[`companyName`]} />
                     </div>
                     <div>
-                        <MySelectCommon selectedValue={ApiReducer?.apiJson?.natureOfCompany} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} validate={validateField} errorMsg={errors[`natureOfCompany`]} />
+                        <MySelectCommon enableSearch selectedValue={ApiReducer?.apiJson?.natureOfCompany} name={'natureOfCompany'} title={'Nature of Company'} placeholder={'Enter Nature of Company'} options={natureOfCompanyOptions} validate={validateField} errorMsg={errors[`natureOfCompany`]} />
                     </div>
                     <div>
                         <MyInputCommon name={'companySize'} title={'Company Size'} placeholder={'Enter Company Size'} validate={validateField} errorMsg={errors[`companySize`]} />
@@ -334,10 +334,10 @@ function CreateCustomer() {
 
                                             <MyInputCommon value={ele?.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].address`]} />
                                             <MyInputCommon value={ele?.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].landmark`]} />
-                                            <MySelectCommon selectedValue={ele?.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'gstAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`gstAddresses[${index}].country`]} />
-                                            <MySelectCommon selectedValue={ele?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'gstAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`gstAddresses[${index}].state`]} />
-                                            <MySelectCommon selectedValue={ele?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'gstAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`gstAddresses[${index}].city`]} />
-                                            <MyInputCommon value={ele?.pinCode} title={'Pin Code'} name={'pinCode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pinCode', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].pinCode`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele?.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'gstAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`gstAddresses[${index}].country`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'gstAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`gstAddresses[${index}].state`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'gstAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`gstAddresses[${index}].city`]} />
+                                            <MyInputCommon enableSearch value={ele?.pinCode} title={'Pin Code'} name={'pinCode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pinCode', 'gstAddresses') }} errorMsg={errors[`gstAddresses[${index}].pinCode`]} />
 
                                             <div className="flex items-center mt-5">
                                                 <MyButton onClick={() => handleRemove(index, 'gstAddresses')} title={'Remove'} bg={'darkred'} icon={deleteIcon} />
@@ -373,9 +373,9 @@ function CreateCustomer() {
 
                                             <MyInputCommon value={ele.address} title={'Address'} name={'address'} placeholder={'Enter Address'} onChange={(e) => { onChange(e.target.value, index, 'address', 'warehouseAddresses') }} errorMsg={errors[`warehouseAddresses[${index}].address`]} />
                                             <MyInputCommon value={ele.landmark} title={'Landmark'} name={'landmark'} placeholder={'Enter Landmark'} onChange={(e) => { onChange(e.target.value, index, 'landmark', 'warehouseAddresses') }} errorMsg={errors[`warehouseAddresses[${index}].landmark`]} />
-                                            <MySelectCommon selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'warehouseAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`warehouseAddresses[${index}].country`]} />
-                                            <MySelectCommon selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'warehouseAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`warehouseAddresses[${index}].state`]} />
-                                            <MySelectCommon selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'warehouseAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`warehouseAddresses[${index}].city`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'state', index, 'warehouseAddresses')} placeholder={'Enter Country'} options={options} errorMsg={errors[`warehouseAddresses[${index}].country`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'city', index, 'warehouseAddresses')} placeholder={'Enter State'} options={state} errorMsg={errors[`warehouseAddresses[${index}].state`]} />
+                                            <MySelectCommon enableSearch selectedValue={ele.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'pincode', index, 'warehouseAddresses')} placeholder={'Enter City'} options={city} errorMsg={errors[`warehouseAddresses[${index}].city`]} />
                                             <MyInputCommon value={ele.pinCode} title={'Pin Code'} name={'pinCode'} placeholder={'Enter Pin Code'} onChange={(e) => { onChange(e.target.value, index, 'pinCode', 'warehouseAddresses') }} errorMsg={errors[`warehouseAddresses[${index}].pinCode`]} />
 
                                             <div className="flex items-center mt-5">

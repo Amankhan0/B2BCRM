@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SET_API_JSON } from '../Store/ActionName/ActionName';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../Store/Action/SetDataAction';
-import { dropdownArrowIcon } from '../SVG/Icons'; // Import your icon
+import { dropdownArrowIcon } from '../SVG/Icons';
 
 function MySelect({
   selectedValue,
@@ -19,11 +19,15 @@ function MySelect({
   placeholder,
   errorMsg,
   validate,
+  enableSearch,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+  const searchInputRef = useRef(null); // Added search input ref
   const [isAbove, setIsAbove] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState(options);
 
   const ApiReducer = useSelector((state) => state.ApiReducer);
 
@@ -32,6 +36,10 @@ function MySelect({
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setIsAbove(checkIfDropdownShouldOpenAbove());
+    if(!isOpen && enableSearch){
+      setSearchTerm('');
+      setFilteredOptions(options);
+    }
   };
 
   const handleOptionClick = (option) => {
@@ -60,19 +68,19 @@ function MySelect({
     const buttonRect = buttonRef.current.getBoundingClientRect();
     const windowHeight = window.innerHeight;
 
-    return buttonRect.bottom + 200 > windowHeight; // 200 is an estimated dropdown height
+    return buttonRect.bottom + 200 > windowHeight;
   };
 
   const onChangeText = (value) => {
     const newJson = ApiReducer.apiJson;
     if (parent) {
       newJson[parent] = { ...newJson[parent], [name]: value };
-      if(validate){
+      if (validate) {
         validate(`${parent}.${name}`, value);
       }
     } else {
       newJson[name] = value;
-      if(validate){
+      if (validate) {
         validate(`${name}`, value);
       }
     }
@@ -85,7 +93,22 @@ function MySelect({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-// console.log(error, title, ApiReducer.apiJsonError)
+
+  useEffect(() => {
+    if (enableSearch) {
+      const filtered = options?.filter(option =>
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+    }
+  }, [searchTerm, options, enableSearch]);
+
+  useEffect(() => {
+    if (isOpen && enableSearch && searchInputRef.current) {
+      searchInputRef.current.focus(); // Focus on search input when dropdown opens
+    }
+  }, [isOpen, enableSearch]);
+
   return (
     <div ref={dropdownRef} className="relative">
       <label className="block text-sm font-medium text-gray-700">
@@ -105,25 +128,42 @@ function MySelect({
       </button>
 
       {isOpen && (
-        <ul
+        <div
           className={`absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
             isAbove ? 'bottom-full mb-1' : 'top-full mt-1'
           }`}
-          style={{ maxHeight: '200px', overflowY: 'auto' }}
+          style={{ maxHeight: '300px', overflowY: 'auto' }}
         >
-          {options?.map((option) => (
-            <li
-              key={option?.value}
-              onClick={() => handleOptionClick(option)}
-              className="block cursor-pointer select-none py-2 px-4 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              {option?.label}
-            </li>
-          ))}
-        </ul>
+          {enableSearch && (
+            <input
+              ref={searchInputRef} // Set the ref to the search input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 border-b border-gray-200"
+            />
+          )}
+
+          <ul style={{ maxHeight: '250px', overflowY: 'auto' }}>
+            {filteredOptions?.map((option) => (
+              <li
+                key={option?.value}
+                onClick={() => handleOptionClick(option)}
+                className="block cursor-pointer select-none py-2 px-4 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                {option?.label}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
-      {!errorMsg && <p className='w-full text-red-600'>{error && ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}</p>}
-      {errorMsg && <p className='w-full text-red-600'>{errorMsg}</p>}
+      {!errorMsg && (
+        <p className="w-full text-red-600">
+          {error && ApiReducer.apiJsonError[name] ? title + ' is Required' : ''}
+        </p>
+      )}
+      {errorMsg && <p className="w-full text-red-600">{errorMsg}</p>}
     </div>
   );
 }
