@@ -27,7 +27,7 @@ function LeadProductsView({ productsArr, title, onCloseClick }) {
     return (
         <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5`} role="dialog">
             <div className="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"></div>
-            <div className={`relative rounded-lg card w-[80%] text-center transition-opacity duration-300`}>
+            <div className={`relative rounded-lg card w-[80%] overflow-scroll text-center transition-opacity duration-300`}>
                 <div className="flex justify-between rounded-tl-lg rounded-tr-lg p-2" style={{ background: Colors.ThemeBlue }} onClick={onCloseClick}>
                     <div>
                         <Title size={'lg'} color={Colors.WHITE} title={title} />

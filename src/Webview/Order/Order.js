@@ -192,6 +192,9 @@ function Order() {
 
     return (
         <div className='mt-10'>
+            <div className='card p-4'>
+                <Title title={'Order'} size={'lg'} color={Colors.BLACK}/>
+            </div>
             <div className='mt-5 p-5 bg-white overflow-scroll' style={{ width: width / 1.3 }}>
                 <DataTable th={th} td={td} totalPages={OrderReducer?.doc?.totalPages} api={fetchData} />
             </div>

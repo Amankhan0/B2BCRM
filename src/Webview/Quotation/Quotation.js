@@ -7,7 +7,7 @@ import { OrderInitiated, searchLead, searchQuotation, selectClass, tableTdClass 
 import MyButton from '../../Component/MyButton';
 import Title from '../../Component/Title';
 import { NavLink } from 'react-router-dom';
-import { downloadIcon, plusIcon, smallEyeIcon } from '../../Icons/Icon';
+import { downloadIcon, plusIcon, smalldownloadIcon, smallEyeIcon } from '../../Icons/Icon';
 import { setQuotation } from '../../Store/Action/QuotationAction';
 import QuotationProductsView from './QuotationProductsView';
 import "jspdf-autotable";
@@ -94,7 +94,7 @@ function Quotation({ selectedLeadId }) {
                         <td className={tableTdClass}>
                             <div className='flex gap-2'>
                                 <div onClick={() => setQuotationPdf(ele)} className='cursor-pointer' style={{ color: Colors.GRADIENTFIRST }}>
-                                    {downloadIcon}
+                                    <MyButton icon={smalldownloadIcon} title={'Download'} className={'h-7 text-xs w-max'}/>
                                 </div>
                                 {
                                     JSON.parse(selectedLead)?.status!== OrderInitiated &&

@@ -53,7 +53,7 @@ function POView({ orderData }) {
         })
     }
 
-    const th = ['Order Ref No', 'Supplier Details', 'Products', 'Status', 'Action']
+    const th = ['Order Ref No','PO Ref No', 'Supplier Details', 'Products', 'Status', 'Action']
 
     let td;
     if (OrderReducer.PO !== null) {
@@ -62,6 +62,7 @@ function POView({ orderData }) {
                 return (
                     <tr>
                         <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.orderRefNo || '-'} /></td>
+                        <td className='min-w-[100px] p-2 border text-black'><Title size={'xs'} title={ele?.poRefNo || '-'} /></td>
                         <td className='min-w-[100px] text-left p-2 border text-black'>
                             <div className='flex gap-2 pb-0.5'>
                                 <i>{smallComputerIcon}</i>

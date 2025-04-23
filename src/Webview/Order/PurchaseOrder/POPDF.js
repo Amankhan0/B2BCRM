@@ -95,7 +95,7 @@ const POPDF = ({ data, onClickBack }) => {
             );
 
             pdf.text(`Date: ${GetFullYear(Date.now())}`, pageWidth - 13, currentY + 16,{ align: 'right', maxWidth: 35 });
-            pdf.text(`Order Ref No: ${data?.orderRefNo}`, pageWidth - 13, currentY + 20,{ align: 'right', maxWidth: 35 });
+            pdf.text(`${data?.poRefNo?'PO':'Order'} Ref No: ${data?.poRefNo?data?.poRefNo:data?.orderRefNo}`, pageWidth - 13, currentY + 20,{ align: 'right', maxWidth: 60 });
 
             currentY += 25;
 
@@ -191,7 +191,7 @@ const POPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount}`, pageWidth - 195, currentY);
+            pdf.text(`Total Amount: ${totalAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -319,7 +319,7 @@ const POPDF = ({ data, onClickBack }) => {
                     <div className="flex justify-end text-right">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>PURCHASE ORDER</h3>
-                            <p className="text-xs p-0.5">Order Ref No: <b>{data?.orderRefNo}</b></p>
+                            <p className="text-xs p-0.5">{data?.poRefNo?'PO':'Order'} Ref No: <b>{data?.poRefNo?data?.poRefNo:data?.orderRefNo}</b></p>
                             <p className="text-xs p-0.5">Date: <b>{GetFullYear(Date.now())}</b></p>
                             <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
                         </div>
@@ -393,7 +393,7 @@ const POPDF = ({ data, onClickBack }) => {
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.vendorPrice}</td>
                                         {
                                             data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
-                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))} ({ele?.productVarient?.gst}%)</td>
+                                                <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2)} ({ele?.productVarient?.gst}%)</td>
                                                 :
                                                 <>
                                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2)} ({ele?.productVarient?.gst / 2}%)</td>
@@ -413,11 +413,11 @@ const POPDF = ({ data, onClickBack }) => {
                     <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
                     {
                         data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
-                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount}</span></h3>
+                            <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount?.toFixed(2)}</span></h3>
                             :
                             <>
-                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount}</span></h3>
-                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total CGST: <span style={{ fontWeight: "bold" }}>₹{totalCGSTAmount?.toFixed(2)}</span></h3>
+                                <h3 style={{ margin: 0 }}>Total SGST: <span style={{ fontWeight: "bold" }}>₹{totalSGSTAmount?.toFixed(2)}</span></h3>
                             </>
                     }
                     <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>

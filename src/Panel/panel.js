@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { getHeadingFromPathname } from '../utils';
 import { getAuthenticatedUser } from '../Storage/Storage';
+import Profile from '../Webview/Profile';
 
 const SidebarItem = ({ item, onClick }) => {
 
@@ -93,6 +94,7 @@ export default function Main() {
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth)
     const [showNotification, setShowNotification] = useState(false)
     const location = useLocation();
+    const [toggleProfile ,setToggleProfile] = useState(false)
 
 
 
@@ -126,6 +128,11 @@ export default function Main() {
 
     var UserName = getAuthenticatedUser()?.sub?.split('')[0]
 
+
+    const handleToggleProfile = (flag)=>{
+
+        setToggleProfile(!flag)
+    }
     return (
         <div>
             <div className={reduxSidebar?.doc}>
@@ -193,8 +200,11 @@ export default function Main() {
                                     </h1>
                             }
                             <div className='flex items-center gap-x-3' style={{ color: Colors.BLACK }}>
-                                <NavLink to='/profile' onCanPlay={() => setSideBarTitle('Profile')} ><div className={`w-8 h-8 text-center text-xl rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></NavLink>
+                                <div className='cursor-pointer' onClick={()=>handleToggleProfile(toggleProfile)} onCanPlay={() => setSideBarTitle('Profile')} ><div className={`w-8 h-8 text-center text-xl rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></div>
                             </div>
+                            {
+                                toggleProfile && <Profile/>
+                            }
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >
                             {(SubReducer?.currentPlan?.everify < 5 || SubReducer?.currentPlan?.trackandtrace < 5 || SubReducer?.currentPlan?.trip < 5) && showPopUpExpire &&

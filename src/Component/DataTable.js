@@ -41,7 +41,7 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
             </div>
             {
                 td && !hidePagination &&
-                <div className='mt-5 flex justify-end'>
+                <div className='mt-5'>
                     <MyPagination
                         currentPage={PaginationReducer?.pagination?.page}
                         totalPages={totalPages}

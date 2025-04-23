@@ -124,7 +124,7 @@ const QuotaionPDF = ({ data }) => {
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
             currentY += 35;
-
+ 
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
                 startY: 90,
@@ -169,7 +169,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total GST: ${totalGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total GST: ${totalGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
                 currentY += 5;
             } else {
                 if (currentY + 10 > pageHeight) {
@@ -178,7 +178,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total CGST: ${totalCGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total CGST: ${totalCGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
                 currentY += 5;
 
@@ -188,7 +188,7 @@ const QuotaionPDF = ({ data }) => {
                 }
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "normal");
-                pdf.text(`Total SGST: ${totalSGSTAmount}`, pageWidth - 195, currentY);
+                pdf.text(`Total SGST: ${totalSGSTAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
                 currentY += 5;
             }
@@ -197,11 +197,22 @@ const QuotaionPDF = ({ data }) => {
                 pdf.addPage(); // Move to next page if not enough space
                 currentY = 10;
             }
+            
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`, pageWidth - 195, currentY);
-
-            currentY += 10;
+            
+            // Construct the long string
+            const totalText = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`;
+            
+            // Wrap the text to fit within a width (e.g., 180)
+            const wrappedText = pdf.splitTextToSize(totalText, 180);
+            
+            // Draw the wrapped text
+            pdf.text(wrappedText, pageWidth - 195, currentY);
+            
+            // Adjust currentY based on number of lines
+            currentY += wrappedText.length * 10; // 10 is line height
+            
 
             // 🟢 Add Terms & Conditions
             if (currentY > pageHeight - 60) {
