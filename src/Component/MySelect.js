@@ -37,9 +37,10 @@ function MySelect({ selectedValue, name, disable, title, error, createTripJson, 
                 {!selectedValue && <option value={''}>Select Item</option>}
                 {
                     options?.map((option, index) => {
-                        console.log('selectedValue === option?.[name]',selectedValue , option?.[keyName]);
+                        {console.log('selectedValue',selectedValue);
+                        }
                         return (
-                            <option value={keyName === 'varientName' ? option.varientName + option.varientUnit : option._id} selected={selectedValue === option?.[keyName]}>{option?.[keyName]}</option>
+                            <option value={keyName === 'varientName' ? option.varientName + option.varientUnit : option._id} selected={keyName === 'productName'?selectedValue===option?.[keyName]+option?.make :selectedValue === option?.[keyName]}>{option?.[keyName]} {keyName === 'productName'&&`(${option?.make})`}</option>
                         )
                     })
                 }

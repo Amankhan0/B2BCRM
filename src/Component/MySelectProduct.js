@@ -29,7 +29,7 @@ const MySelectProduct = ({ isQuotation }) => {
     const fetchData = () => {
         var json = {
             page: PaginationReducer.pagination.page,
-            limit: PaginationReducer.pagination.limit,
+            limit: 1000,
             search: {
 
             }
@@ -115,7 +115,7 @@ const MySelectProduct = ({ isQuotation }) => {
                                 <div className="grid grid-cols-6 gap-4 my-5">
                                     {
                                         !isQuotation ?
-                                            <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
+                                            <MySelect disable={isQuotation && true} selectedValue={ele.product_id?.productName+ele.product_id?.make} onChange={(e) => onChange(e.target.value, index, 'product_id')} title={'Product'} options={products?.map((item, i) => item)} keyName={'productName'} />
                                             :
                                             <MyInput disable={true} value={ele.product_id.productName || '0'} title={'Product Name'} name={'productName'} placeholder={'Enter Product Name'} />
                                     }
