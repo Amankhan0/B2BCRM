@@ -82,7 +82,7 @@ function CreateLead({ edit }) {
   const fetchData = () => {
     var json = {
       page: 1,
-      limit: 10,
+      limit: 100,
       search: {}
     }
     ApiHit(json, searchCustomer).then(res => {
