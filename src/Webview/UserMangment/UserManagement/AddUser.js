@@ -55,6 +55,9 @@ const AddUser = ({edit}) => {
         })
     }        
 
+    console.log('state',state);
+    
+
     const onClickSubmit = () => {
         if (selectedRole === null) {
             toast.error('Role is required')
@@ -128,8 +131,8 @@ const AddUser = ({edit}) => {
                     </div>
 
                     <MySelectCommon selectedValue={ApiReducer?.apiJson?.country} title={'Country'} name={'country'} onChange={(e) => handleChange(e, 'country')} placeholder={'Enter Country'} options={options} error={true} errorMsg={ApiReducer?.apiJson?.country ? '' : ApiReducer?.apiJsonError?.country} />
-                    <MySelectCommon selectedValue={ApiReducer?.apiJson?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'state')} placeholder={'Enter State'} options={state} error={true} errorMsg={ApiReducer?.apiJson?.state ? '' : ApiReducer?.apiJsonError?.state} />
-                    <MySelectCommon selectedValue={ApiReducer?.apiJson?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'city')} placeholder={'Enter City'} options={city} error={true} errorMsg={ApiReducer?.apiJson?.city ? '' : ApiReducer?.apiJsonError?.city} />
+                    <MySelectCommon enableSearch={true} selectedValue={ApiReducer?.apiJson?.state} title={'State'} name={'state'} onChange={(e) => handleChange(e, 'state')} placeholder={'Enter State'} options={state} error={true} errorMsg={ApiReducer?.apiJson?.state ? '' : ApiReducer?.apiJsonError?.state} />
+                    <MySelectCommon enableSearch={true} selectedValue={ApiReducer?.apiJson?.city} title={'City'} name={'city'} onChange={(e) => handleChange(e, 'city')} placeholder={'Enter City'} options={city} error={true} errorMsg={ApiReducer?.apiJson?.city ? '' : ApiReducer?.apiJsonError?.city} />
 
                     <div>
                         <MyInput name={'pinCode'} placeholder={'Enter pinCode'} title={'Pincode'} error={ApiReducer?.apiJson?.pinCode === '' ? true : !ApiReducer?.apiJson?.pinCode ? true : !ApiReducer?.apiJsonError?.pinCode ? true : false} />

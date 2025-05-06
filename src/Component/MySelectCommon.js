@@ -100,6 +100,8 @@ function MySelect({
         option.label.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredOptions(filtered);
+    }else{
+      setFilteredOptions(options);
     }
   }, [searchTerm, options, enableSearch]);
 
@@ -108,6 +110,9 @@ function MySelect({
       searchInputRef.current.focus(); // Focus on search input when dropdown opens
     }
   }, [isOpen, enableSearch]);
+
+  console.log('filteredOptions',filteredOptions);
+  
 
   return (
     <div ref={dropdownRef} className="relative">
