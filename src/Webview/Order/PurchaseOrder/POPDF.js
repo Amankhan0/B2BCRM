@@ -123,13 +123,13 @@ const POPDF = ({ data, onClickBack }) => {
 
             const maxAddressWidth = pageWidth - 130; // leave margins on both sides
             // Shipping info
-            pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
+            // pdf.text(`Company Name: ${data?.customerDetails?.companyName}`, pageWidth / 2, currentY + 7);
             const shippingAddress = `Address: ${data?.customerDetails?.shippingAddress?.address}, ${data?.customerDetails?.shippingAddress?.state},`
             const shippingSubAddress = `${data?.customerDetails?.shippingAddress?.city}, ${data?.customerDetails?.shippingAddress?.pinCode}, ${data?.customerDetails?.shippingAddress?.landmark}`
             const wrappedshippingAddress  = pdf.splitTextToSize(shippingAddress, maxAddressWidth);
             const wrappedshippingSubAddress  = pdf.splitTextToSize(shippingSubAddress, maxAddressWidth);
-            pdf.text(wrappedshippingAddress, pageWidth / 2, currentY + 12);
-            pdf.text(wrappedshippingSubAddress, pageWidth / 2, currentY + 25);
+            pdf.text(wrappedshippingAddress, pageWidth / 2, currentY + 7);
+            pdf.text(wrappedshippingSubAddress, pageWidth / 2, currentY + 15);
             pdf.setLineWidth(0.5);
             pdf.line(10, currentY + 30, pageWidth - 10, currentY + 30);
             currentY += 35;
@@ -161,15 +161,15 @@ const POPDF = ({ data, onClickBack }) => {
             // 🟢 Add Table with Multi-Page Handling
             pdf.autoTable({
                 startY: 120,
-                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ? [['Product','Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
                 body:
                     data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                         data.products.map(ele => [
-                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
                             ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2) + " " + "(" + ele?.productVarient?.gst + "%" + ")", (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ])
                         : data.products.map(ele => [
-                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
                             ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ]),
                 theme: 'grid',
@@ -339,7 +339,7 @@ const POPDF = ({ data, onClickBack }) => {
                         </div>
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
-                            <p className="text-xs p-0.5">Company Name : {data?.customerDetails?.companyName || '-'}</p>
+                            
                             <p className="text-xs p-0.5">Address : {data?.customerDetails?.shippingAddress?.address || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.city + ' ' + data?.customerDetails?.shippingAddress?.landmark || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.state + ' ' + data?.customerDetails?.shippingAddress?.pinCode || '-'}</p>
@@ -364,7 +364,8 @@ const POPDF = ({ data, onClickBack }) => {
                 <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 20 }}>
                     <thead>
                         <tr style={{ backgroundColor: Colors.ThemeBlue, color: "#fff", textAlign: "left" }}>
-                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Product / Varient</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Product</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Varient</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>HSN</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
@@ -387,7 +388,8 @@ const POPDF = ({ data, onClickBack }) => {
                                 
                                 return (
                                     <tr>
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.hsnNo}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.vendorPrice}</td>
