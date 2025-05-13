@@ -773,9 +773,9 @@ export function updateProductIdWithAvailablePOPIDispatch(data) {
 }
 
 export const GstCalculation = (amount, value) => {
-  var newValue = value > 10 ? "0." + value : "0.0" + value
+  var newValue = value  
   if (newValue) {
-    return amount * Number(newValue)
+    return (amount * Number(newValue))/100
   }
 }
 

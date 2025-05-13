@@ -340,6 +340,10 @@ const QuotaionPDF = ({ data }) => {
                         </thead>
                         <tbody>
                             {data?.products?.map((ele, i) => {
+                                console.log('Number(ele?.price)',Number(ele?.price));
+                                console.log('Number(ele?.qty)',Number(ele?.qty));
+                                console.log('Number(ele?.gst)',Number(ele?.productVarient?.gst)/2);
+                            
                                 console.log(GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2));
                                 
                                 return(
