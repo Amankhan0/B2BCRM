@@ -850,7 +850,11 @@ export function numberToWords(num) {
   if (thousand) words += convertHundreds(thousand) + ' thousand ';
   if (hundreds) words += convertHundreds(hundreds);
 
-  return words.trim();
+  return toTitleCase(words.trim());
 }
 
-
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) => {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}

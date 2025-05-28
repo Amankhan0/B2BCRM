@@ -118,7 +118,7 @@ const QuotaionPDF = ({ data }) => {
 
             // Quotation Details
             pdf.text(`Quotation Ref No: ${data?.quotationRefNo}`, pageWidth - 10, currentY + 7, { align: 'right' });
-            pdf.text(`Date: ${GetFullYear(Date.now())}`, pageWidth - 10, currentY + 12, { align: 'right' });
+            pdf.text(`Date: ${GetFullYear(Number(data?.createdAt))}`, pageWidth - 10, currentY + 12, { align: 'right' });
 
             // Add Horizontal Line
             pdf.setLineWidth(0.5);
@@ -312,11 +312,10 @@ const QuotaionPDF = ({ data }) => {
                         <div className="text-right">
                             <h3 className="text-lg font-semibold" style={{ color: Colors.ThemeBlue }}>Quotation</h3>
                             <p className="text-xs">Quotation Ref No: <b>{data?.quotationRefNo}</b></p>
-                            <p className="text-xs">Date: <b>{GetFullYear(Date.now())}</b></p>
+                            <p className="text-xs">Date: <b>{GetFullYear(Number(data?.createdAt))}</b></p>
                         </div>
                     </div>
                 </div>
-
 
                 {/* Table will be rendered using autoTable */}
                 <div style={{ marginTop: 20 }}>
@@ -382,7 +381,6 @@ const QuotaionPDF = ({ data }) => {
                     }
                     <h3 style={{ margin: 0 }}>Total Taxable Amount: <span style={{ fontWeight: "bold" }}>₹{totalTaxAmount?.toFixed(2)} ({numberToWords(totalTaxAmount?.toFixed(2))})</span></h3>
                 </div>
-
 
                 {
                     data?.termsAndConditions !== "<p><strong></strong></p>" &&

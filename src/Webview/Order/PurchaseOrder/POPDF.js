@@ -161,15 +161,15 @@ const POPDF = ({ data, onClickBack }) => {
             // 🟢 Add Table with Multi-Page Handling
             pdf.autoTable({
                 startY: 120,
-                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ? [['Product','Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                head: data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ? [['Product','Variant','Unit', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product','Variant','Unit', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
                 body:
                     data.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                         data.products.map(ele => [
-                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}`,`${ele.productVarient.varientUnit}`,
                             ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst))?.toFixed(2) + " " + "(" + ele?.productVarient?.gst + "%" + ")", (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ])
                         : data.products.map(ele => [
-                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}`,`${ele.productVarient.varientUnit}`,
                             ele.qty, ele?.vendorPrice, GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), GstCalculation(Number(ele?.vendorPrice) * Number(ele.qty), Number(ele?.productVarient?.gst) / 2)?.toFixed(2), (Number(ele?.vendorPrice) * Number(ele.qty))?.toFixed(2)
                         ]),
                 theme: 'grid',
@@ -191,7 +191,7 @@ const POPDF = ({ data, onClickBack }) => {
             }
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "normal");
-            pdf.text(`Total Amount: ${totalAmount?.toFixed(2)}`, pageWidth - 195, currentY);
+            pdf.text(`Amount: ${totalAmount?.toFixed(2)}`, pageWidth - 195, currentY);
 
             currentY += 5;
 
@@ -366,6 +366,7 @@ const POPDF = ({ data, onClickBack }) => {
                         <tr style={{ backgroundColor: Colors.ThemeBlue, color: "#fff", textAlign: "left" }}>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Product</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Varient</th>
+                            <th style={{ padding: 8, border: "1px solid #ddd" }}>Unit</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>HSN</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                             <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
@@ -389,7 +390,8 @@ const POPDF = ({ data, onClickBack }) => {
                                 return (
                                     <tr>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName}</td>
-                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientName}</td>
+                                        <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientUnit}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.hsnNo}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.vendorPrice}</td>
@@ -412,7 +414,7 @@ const POPDF = ({ data, onClickBack }) => {
 
                 {/* Total Calculation - Capture it as an image */}
                 <div ref={totalRef} style={{ marginTop: 20, textAlign: "right", padding: "10px 20px", backgroundColor: "#f8f8f8", border: "1px solid #eee", borderRadius: "4px" }}>
-                    <h3 style={{ margin: 0 }}>Total Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
+                    <h3 style={{ margin: 0 }}>Amount: <span style={{ fontWeight: "bold" }}>₹{totalAmount}</span></h3>
                     {
                         data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state ?
                             <h3 style={{ margin: 0 }}>Total GST: <span style={{ fontWeight: "bold" }}>₹{totalGSTAmount?.toFixed(2)}</span></h3>
