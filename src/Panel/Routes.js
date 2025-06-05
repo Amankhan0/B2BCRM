@@ -22,6 +22,8 @@ import Profile from "../Webview/Profile";
 import EditAddRole from "../Webview/UserMangment/RoleManagement/EditRole";
 import EditAddLead from "../Webview/Lead/EditLead";
 import EditUser from "../Webview/UserMangment/UserManagement/EditUser";
+import OnlineLead from "../Webview/OnlineLead";
+import OnlineCreateLead from "../Webview/OnlineCreateLead";
 
 const PanelRoutes = () => {
 
@@ -30,6 +32,14 @@ const PanelRoutes = () => {
   return (
     <>
       <Routes>
+        {
+          // user?.roleObject?.permission?.[0]?.permission?.[0].read &&
+          <Route path="/online-lead" exact element={<OnlineLead />} />
+        }
+        {
+          // user?.roleObject?.permission?.[0]?.permission?.[0].read &&
+          <Route path="/online-lead/pick/:id" exact element={<OnlineCreateLead />} />
+        }
         {
           // user?.roleObject?.permission?.[0]?.permission?.[0].read &&
           <Route path="/lead" exact element={<Lead />} />
