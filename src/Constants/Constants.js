@@ -191,6 +191,13 @@ export const addPIWithoutIP = OrderMicroServiceWithoutIP + 'addPI'
 export const searchPIWithoutIP = OrderMicroServiceWithoutIP + 'searchPI'
 export const updatePIWithoutIP = OrderMicroServiceWithoutIP + 'updatePI'
 
+
+
+
+// Website lead
+export const searchWebsiteLead = BASEURL + '/api/' + 'searchWebsiteLead'
+export const updateWebsiteLead = BASEURL + '/api/' + 'updateWebsiteLead'
+
 //Build Version
 export const buildVersion = 1.01
 

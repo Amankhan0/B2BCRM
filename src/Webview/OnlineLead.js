@@ -2,74 +2,43 @@ import React, { useEffect, useState } from "react";
 import DataTable from "../Component/DataTable";
 import { Colors } from "../Colors/color";
 import Title from "../Component/Title";
-import { tableTdClass } from "../Constants/Constants";
+import { searchWebsiteLead, tableTdClass } from "../Constants/Constants";
 import { NavLink } from "react-router-dom";
 import { phone, phoneIcon, smallphoneIcon } from "../SVG/Icons";
 import { smalluserIcon, userIcon } from "../Icons/Icon";
+import { ApiHit } from "../utils";
+import { useSelector } from "react-redux";
 
 const OnlineLead = () => {
 
 
     const [data, setData] = useState(null);
     const width = window.innerWidth
-
+    const PaginationReducer = useSelector(state => state.PaginationReducer)
     useEffect(() => {
         if (data === null) {
-            setData({
-                doc: {
-                    docs: [
-                        {
-                            "category": "construction-materials",
-                            "product": "aggregates",
-                            "name": "Aman",
-                            "contactNo": "0123456789",
-                            "pincode": "110017",
-                            "adsSource": "Organic Lead",
-                            "_id": "skjfnbsi435345dsfgfsjbdsf",
-                            "status": "picked",
-                        }, {
-                            "category": "construction-materials",
-                            "product": "aggregates",
-                            "name": "Aman",
-                            "contactNo": "0123456789",
-                            "pincode": "110017",
-                            "adsSource": "Organic Lead",
-                            "_id": "skjfnbsi435345dsfgfsjbdsf",
-                            "status": "pending",
-                        }, {
-                            "category": "construction-materials",
-                            "product": "aggregates",
-                            "name": "Aman",
-                            "contactNo": "0123456789",
-                            "pincode": "110017",
-                            "adsSource": "Organic Lead",
-                            "_id": "skjfnbsi435345dsfgfsjbdsf",
-                            "status": "pending",
-                        }, {
-                            "category": "construction-materials",
-                            "product": "aggregates",
-                            "name": "Aman",
-                            "contactNo": "0123456789",
-                            "pincode": "110017",
-                            "adsSource": "Organic Lead",
-                            "_id": "skjfnbsi435345dsfgfsjbdsf",
-                            "status": "picked",
-                        }
-                    ],
-                    totalPages: 1,
-                }
-            })
+            fetchData()
         }
     }, [data])
 
-    const fetchData = (page, limit) => {
-
+    const fetchData = () => {
+        var json = {
+            page: PaginationReducer.pagination.page,
+            limit: PaginationReducer.pagination.limit,
+            search: {}
+        }
+        ApiHit(json, searchWebsiteLead).then((res) => {
+            console.log('res website lead ---- ', res);
+            if (res?.content) {
+                setData(res);
+            }
+        })
     }
 
     const th = ["Name", "Contact No", "Category", "Product", "Pincode", 'Status', 'Action'];
     let td;
     if (data !== null) {
-        td = data?.doc?.docs?.map((ele, i) => {
+        td = data?.content?.map((ele, i) => {
             return (
                 <tr key={i}>
                     <td className={tableTdClass}>
@@ -118,7 +87,7 @@ const OnlineLead = () => {
             <div style={{ width: width / 1.3 }} className={`mt-5 p-5 bg-white overflow-scroll`}>
                 {
                     data !== null &&
-                    <DataTable th={th} td={td} totalPages={data?.doc?.totalPages} api={fetchData} />
+                    <DataTable th={th} td={td} totalPages={data?.totalPages} api={fetchData} />
                 }
             </div>
         </div>

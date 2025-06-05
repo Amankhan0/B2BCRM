@@ -10,10 +10,10 @@ import MyButton from '../../Component/MyButton';
 import { LeadValidation } from './LeadValidation';
 import { ApiHit, ObjIsEmpty, updateProductId } from '../../utils';
 import toast from 'react-hot-toast';
-import { Active, addLead, searchCustomer, selectClass, updateLead } from '../../Constants/Constants';
+import { Active, addLead, searchCustomer, selectClass, updateLead, updateWebsiteLead } from '../../Constants/Constants';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 
-function CreateLead({ edit }) {
+function CreateLead({ edit, isOnlineLead, onLineLeadId }) {
 
   const [decision, setDecision] = useState(false)
   const [customers, setCustomers] = useState(null)
@@ -28,6 +28,7 @@ function CreateLead({ edit }) {
     if (!decision && !edit) {
       var oldJson = ApiReducer.apiJson
       oldJson.customerDetails = {
+        ...oldJson.customerDetails,
         isDecisionTaker: true
       }
       setDecision(true)
@@ -67,8 +68,19 @@ function CreateLead({ edit }) {
             ApiHit(json, edit ? updateLead : addLead).then(res => {
               setLoader(false)
               if (res.status === 200) {
-                toast.success(edit ? 'Lead Updated successfully' : 'Lead created successfully')
-                window.location.pathname = '/lead'
+                if (isOnlineLead) {
+                  var onlineLeadJson = {
+                    _id: onLineLeadId,
+                    status: 'picked',
+                  }
+                  ApiHit(onlineLeadJson, updateWebsiteLead).then(res => {
+                    toast.success(edit ? 'Lead Updated successfully' : 'Lead created successfully')
+                    window.location.pathname = '/lead'
+                  })
+                } else {
+                  toast.success(edit ? 'Lead Updated successfully' : 'Lead created successfully')
+                  window.location.pathname = '/lead'
+                }
               } else {
                 toast.error(res.message)
               }
@@ -105,8 +117,8 @@ function CreateLead({ edit }) {
     dispatch(setDataAction(oldJson, SET_API_JSON))
   }
 
-  console.log('selectedCustomer',selectedCustomer);
-  
+  console.log('selectedCustomer', selectedCustomer);
+
 
   return (
     <div className='m-10'>
