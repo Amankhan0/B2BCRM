@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Panel from './Panel/panel';
 import Login from './Webview/Account/Login';
-import { getAuthenticatedUser, getAuthenticatedUserWithRoles } from './Storage/Storage';
+import { getAuthenticatedUserWithRoles } from './Storage/Storage';
 import "react-quill/dist/quill.snow.css";
 
 function App() {

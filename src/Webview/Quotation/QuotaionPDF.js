@@ -128,15 +128,15 @@ const QuotaionPDF = ({ data }) => {
             // 🟢 Add Table (Handles Multi-Page Automatically)
             pdf.autoTable({
                 startY: 90,
-                head: data.customerDetails?.shippingAddress?.state === 'Delhi' ? [['Product / Variant', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product / Variant', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
+                head: data.customerDetails?.shippingAddress?.state === 'Delhi' ? [['Product','Variant','Unit', 'Qty', 'Rate', 'GST Amount (%) ', 'Amount']] : [['Product','Variant','Unit', 'Qty', 'Rate', 'CGST Amount (%)', 'SGST Amount (%)', 'Amount']],
                 body:
                     data.customerDetails?.shippingAddress?.state === 'Delhi' ?
                         data.products.map(ele => [
-                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}`,`${ele.productVarient.varientUnit}`,
                             ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty), Number(ele?.productVarient?.gst)) + " " + "(" + ele?.productVarient?.gst + "%" + ")", Number(ele.price) * Number(ele.qty)
                         ])
                         : data.products.map(ele => [
-                            `${ele.product_id.productName} / ${ele.productVarient.varientName}${ele.productVarient.varientUnit}`,
+                            `${ele.product_id.productName}`,`${ele.productVarient.varientName}`,`${ele.productVarient.varientUnit}`,
                             ele.qty, ele.price, GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", GstCalculation(Number(ele?.price) * Number(ele.qty),Number(ele?.productVarient?.gst)/2)?.toFixed(2) + " " + "(" + ele?.productVarient?.gst / 2 + "%" + ")", Number(ele.price) * Number(ele.qty)
                         ]),
                 theme: 'grid',
@@ -322,7 +322,9 @@ const QuotaionPDF = ({ data }) => {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr style={{ backgroundColor: Colors.ThemeBlue, color: "#fff", textAlign: "left" }}>
-                                <th style={{ padding: 8, border: "1px solid #ddd" }}>Product / Varient</th>
+                                <th style={{ padding: 8, border: "1px solid #ddd" }}>Product</th>
+                                <th style={{ padding: 8, border: "1px solid #ddd" }}>Varient</th>
+                                <th style={{ padding: 8, border: "1px solid #ddd" }}>Unit</th>
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
                                 <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
                                 {
@@ -347,7 +349,10 @@ const QuotaionPDF = ({ data }) => {
                                 
                                 return(
                                     <tr key={i} >
-                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName + ' / ' + ele?.productVarient?.varientName + ele?.productVarient?.varientUnit}</td>
+                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName}</td>
+                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientName}</td>
+                                    <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.productVarient?.varientUnit}</td>
+                                    
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.qty}</td>
                                     <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.price}</td>
                                     {
