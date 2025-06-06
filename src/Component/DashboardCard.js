@@ -1,51 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { ApiHit } from '../utils'
-import { getTrip } from '../Constants/Constants'
-import { Colors } from '../Colors/color'
+import React from "react";
+import { Colors } from "../Colors/color";
 
-const DashboardCard = ({ title, type, icon, themeColor,onClick,activeCard }) => {
+const DashboardCard = ({ TotalNum, Title, Icon, iconBG, onClick, activeBg }) => {
 
-    const [data,setData] = useState(null)
-
-
-    useEffect(()=>{
-        if(data === null){
-            fetchData()
-        }
-    },[])
-
-    const fetchData = () =>{
-        var json = {
-            "page": 1,
-            "limit": 1,
-            "search": {
-                "user_id": user?._id,
-                "find":type
-            },
-            "populate": "user_id",
-            "showShareableTrip": false,
-            "showQRCodeTrips": false
-        }
-        ApiHit(json,getTrip).then(res=>{
-            if(res?.status === 200){
-                setData(res?.doc?.totalDocs)
-            }
-        })
-    }
-
-    return (
-      <div className={`card p-7 cursor-pointer`} onClick={onClick} style={{border:activeCard === type?'0.5px solid'+Colors.ThemeBlue:'blue'}}>
-        <div className='flex justify-between'>
-          <div>
-            <p className='text-xl font-bold text-black mb-2'>{data}</p>
-            <p>{title}</p>
-          </div>
-          <div>
-            <p style={{ color: themeColor }}>{icon}</p>
-          </div>
-        </div>
+  return (
+    <div onClick={onClick} style={{ background: activeBg ? '#e2e8f0' : '#fff', border: activeBg ? `1px solid ${Colors}` : 'none' }} className={`rounded-lg p-7 hover:bg-slate-300`}>
+      <div className="flex justify-between space-x-1">
+        <p className="text-xl font-semibold text-slate-700 dark:text-navy-100">
+          {TotalNum}
+        </p>
+        <p style={{ color: iconBG }}>{Icon}</p>
       </div>
-    )
-  }
+      <p className="mt-1 text-xs+">{Title}</p>
+    </div>
+  )
+}
 
-export default DashboardCard
+export default DashboardCard;

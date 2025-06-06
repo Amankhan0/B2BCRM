@@ -8,7 +8,8 @@ import {
   Truck, 
   Package, 
   Shield, 
-  UserCircle 
+  UserCircle, 
+  LayoutDashboard
 } from "lucide-react";
 
 let user = getAuthenticatedUserWithRoles();
@@ -16,6 +17,14 @@ let user = getAuthenticatedUserWithRoles();
 console.log('navigationuser', user?.roleObject?.permission?.[0]?.permission?.[0].read);
 
 export default [
+  {
+    id: 0, 
+    title: "Dashboard", 
+    url: '/', 
+    active: user?.roleObject?.permission?.[0]?.permission?.[0].read, 
+    icon: <LayoutDashboard  size={20} />, 
+    blackIcon: <LayoutDashboard  size={20} />
+  },
   {
     id: 0, 
     title: "Online Lead", 

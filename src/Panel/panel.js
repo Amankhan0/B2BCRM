@@ -94,7 +94,7 @@ export default function Main() {
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth)
     const [showNotification, setShowNotification] = useState(false)
     const location = useLocation();
-    const [toggleProfile ,setToggleProfile] = useState(false)
+    const [toggleProfile, setToggleProfile] = useState(false)
 
 
 
@@ -129,7 +129,7 @@ export default function Main() {
     var UserName = getAuthenticatedUser()?.sub?.split('')[0]
 
 
-    const handleToggleProfile = (flag)=>{
+    const handleToggleProfile = (flag) => {
 
         setToggleProfile(!flag)
     }
@@ -142,7 +142,7 @@ export default function Main() {
                             <div className="flex justify-between px-3 py-3 border-b-[0.5px]" >
                                 <h1 className="flex items-center gap-2" style={{ color: Colors.WHITE }}>
                                     <img className='w-[200px] p-0.5' src={'https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75'} />
-                                    {isSmallScreen < 700 && <div className='px-5' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
+                                    {isSmallScreen < 700 && <div className='px-5 text-black' onClick={() => handleSidebar(reduxSidebar.doc === 'is-sidebar-open' ? '' : 'is-sidebar-open')}><IoIosArrowDropleftCircle size={25} /></div>}
                                 </h1>
                             </div>
                             <div className="nav-wrapper my-5 h-[calc(100%-4.5rem)] overflow-x-hidden pb-6" data-simplebar="init"><div className="simplebar-wrapper" style={{ margin: '0px 0px -24px' }}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{ right: '0px', bottom: '0px' }}>
@@ -200,10 +200,10 @@ export default function Main() {
                                     </h1>
                             }
                             <div className='flex items-center gap-x-3' style={{ color: Colors.BLACK }}>
-                                <div className='cursor-pointer' onClick={()=>handleToggleProfile(toggleProfile)} onCanPlay={() => setSideBarTitle('Profile')} ><div className={`w-8 h-8 text-center text-xl rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></div>
+                                <div className='cursor-pointer' onClick={() => handleToggleProfile(toggleProfile)} onCanPlay={() => setSideBarTitle('Profile')} ><div className={`w-8 h-8 text-center text-xl rounded-full shadow-xl	`} style={{ background: Colors.ThemeBlue, color: Colors.WHITE }}>{UserName}</div></div>
                             </div>
                             {
-                                toggleProfile && <Profile/>
+                                toggleProfile && <Profile />
                             }
                         </div>
                         <div className='px-2 md:px-8 lg:px-10' >

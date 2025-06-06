@@ -11,8 +11,6 @@ function DataTable({ th, td, api, hidePagination, totalPages }) {
 
     console.log('SidebarReducer', SidebarReducer?.doc);
 
-    var width = window.innerWidth
-
     return (
         <div className='bg-white'>
             <div>

@@ -35,7 +35,7 @@ const OnlineLead = () => {
         })
     }
 
-    const th = ["Name", "Contact No", "Category", "Product", "Pincode", 'Status', 'Action'];
+    const th = ["Name", "Contact No", "Category", "Product", "Pincode", 'Source','Status', 'Action'];
     let td;
     if (data !== null) {
         td = data?.content?.map((ele, i) => {
@@ -56,7 +56,7 @@ const OnlineLead = () => {
                     <td className={tableTdClass}>{ele.category}</td>
                     <td className={tableTdClass}>{ele.product}</td>
                     <td className={tableTdClass}>{ele.pincode}</td>
-                    {/* <td className={tableTdClass}>{ele.adsSource}</td> */}
+                    <td className={tableTdClass}>{ele.adsSource}</td>
                     <td className={tableTdClass}>
                         <center>
                             <p className={ele.status === 'picked' ? 'bg-green-300 rounded-lg w-20 py-0.5 text-black' : 'bg-red-500 rounded-lg w-20 py-0.5 text-white'}>

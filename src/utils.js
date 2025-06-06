@@ -400,6 +400,10 @@ export const getHeadingFromPathname = () => {
   }
   else if (segments === 'user' || segments?.includes('edituser') || segments?.includes('adduser')) {
     return "User"
+  }else if (segments === '') {
+    return "Dashboard"
+  }else if (segments === 'online-lead') {
+    return "Online Lead"
   }
 }
 
