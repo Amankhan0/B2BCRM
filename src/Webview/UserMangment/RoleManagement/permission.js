@@ -8,13 +8,18 @@ import {
     searchQuotationWithoutIP, searchRoleWithoutIP, searchSupplierWithoutIP, searchUserWithoutIP,
     updateCustomerWithoutIP, updateDispatch, updateDispatchWithoutIP, updateLeadWithoutIP, updateOrderWithoutIP, updatePIWithoutIP, updatePOWithoutIP, updateProductWithoutIP,
     updateQuotationWithoutIP, updateRoleWithoutIP, updateSupplierWithoutIP, updateUserWithoutIP,
-    uploadFileWithoutIP,searchFile
+    uploadFileWithoutIP,searchFile,
+    searchFileWithoutIP,
+    fileUpdate,
+    fileDelete,
+    fileDeleteWithoutIP,
+    fileUpdateWithoutIP
 } from "../../../Constants/Constants";
 
 export const panelPermisson = {
     "roleName": "",
     "roleType": "",
-    "allowedEndPoints": [searchFile,uploadFileWithoutIP,searchRoleWithoutIP,addRoleWithoutIP,updateRoleWithoutIP,deleteRoleWithoutIP,searchUserWithoutIP,addUserWithoutIP,deleteUserWithoutIP,updateUserWithoutIP,downloadWithoutIP],
+    "allowedEndPoints": [searchFile,uploadFileWithoutIP,searchRoleWithoutIP,addRoleWithoutIP,updateRoleWithoutIP,deleteRoleWithoutIP,searchUserWithoutIP,addUserWithoutIP,deleteUserWithoutIP,updateUserWithoutIP,downloadWithoutIP,searchFileWithoutIP,fileUpdateWithoutIP,fileDeleteWithoutIP],
     "permission": [
         {
             "value": "Lead",
@@ -132,6 +137,19 @@ export const panelPermisson = {
             "readEndpoint": searchDispatchWithoutIP,
             'writeEndpoint': [addDispatchWithoutIP, updateDispatchWithoutIP],
             'deleteEndpoint': updateDispatchWithoutIP
+        },
+        {
+            "value": "Adds With PDF",
+            "permission": [
+                {
+                    "read": false,
+                    "write": false,
+                    "delete": false
+                }
+            ],
+            "readEndpoint": downloadWithoutIP,
+            'writeEndpoint': [searchFileWithoutIP, fileUpdateWithoutIP],
+            'deleteEndpoint': fileDeleteWithoutIP
         }
     ]
 }
@@ -183,6 +201,11 @@ export function compileData(data) {
             write: [addDispatchWithoutIP, updateDispatch],
             delete: updateDispatch
         },
+        "AdsWithPDF": {
+            read: searchFileWithoutIP,
+            write: [uploadFileWithoutIP, fileUpdateWithoutIP],
+            delete: fileDeleteWithoutIP
+        },
     };
 
     return {
@@ -208,7 +231,7 @@ export const superAdminRoleData = {
         searchPOWithoutIP, addPOWithoutIP, updatePOWithoutIP,
         searchPIWithoutIP, addPIWithoutIP, updatePIWithoutIP,
         addDispatchWithoutIP, searchDispatchWithoutIP, updateDispatchWithoutIP,
-        uploadFileWithoutIP,downloadWithoutIP,searchFile
+        uploadFileWithoutIP,downloadWithoutIP,searchFile,searchFileWithoutIP,fileDeleteWithoutIP,fileUpdateWithoutIP
     ],
     "permission": [
         {

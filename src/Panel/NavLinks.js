@@ -9,7 +9,8 @@ import {
   Package, 
   Shield, 
   UserCircle, 
-  LayoutDashboard
+  LayoutDashboard,
+  File
 } from "lucide-react";
 
 let user = getAuthenticatedUserWithRoles();
@@ -96,5 +97,13 @@ export default [
     active: user?.roleObject?.roleType === 'superadmin', 
     icon: <UserCircle size={20} />, 
     blackIcon: <UserCircle size={20} />
+  },
+  {
+    id: 8, 
+    title: "PDF Ads", 
+    url: '/pdf-ads', 
+    active: user?.roleObject?.permission?.[9]?.permission?.[0].read, 
+    icon: <File size={20} />, 
+    blackIcon: <File size={20} />
   },
 ];

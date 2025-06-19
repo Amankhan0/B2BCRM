@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { crossIcon } from "../../Icons/Icon";
 import Title from "../../Component/Title";
 import { Colors } from "../../Colors/color";
-import { ApiHit } from "../../utils";
-import { download } from "../../Constants/Constants";
-import { getAuthToken, logOutAuthenticatedUser } from "../../Storage/Storage";
-import axios from "axios";
 import FileRenderer from "./FileRenderer";
 
 const CustomerDocumnets = ({ data, onClickClose }) => {

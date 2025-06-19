@@ -5,8 +5,9 @@ import { uploadFile } from "../Constants/Constants";
 import FileRenderer from "./FileRender";
 import { setDataAction } from "../Store/Action/SetDataAction";
 import { SET_API_JSON } from "../Store/ActionName/ActionName";
+import toast from "react-hot-toast";
 
-const MyFileUpload = ({ name, title, error, important, uppercase, fileType }) => {
+const MyFileUpload = ({ name, title, error, important, uppercase, fileType,ads }) => {
 
     const ApiReducer = useSelector(state => state.ApiReducer)
 
@@ -19,8 +20,16 @@ const MyFileUpload = ({ name, title, error, important, uppercase, fileType }) =>
             const formData = new FormData();
             formData.append('file', file);
             formData.append('fileName', file.name);
+            if(ads){
+                formData.append('ads', true);
+                formData.append('active', true);
+                toast.success('uploaded')
+            }
             const result = await ApiHitUploadData(formData, uploadFile);
             if (result) {
+                if(ads){
+                    window.location.reload()
+                }
                 var oldJson = ApiReducer?.apiJson
                 if (fileType === 'array') {
                     if (Array.isArray(oldJson[name])) {

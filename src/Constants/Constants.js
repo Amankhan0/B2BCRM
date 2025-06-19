@@ -1,7 +1,7 @@
 // development
 export const Protocol = 'https://'
 // export const IP = '10.0.0.237'
-// export const IP = '192.168.1.21:9090' //local
+// export const IP = '192.168.1.40:9090' //local
 // export const BASEURL = Protocol + IP
 // production
 // export const Protocol = 'https://'
@@ -33,6 +33,10 @@ export const uploadFile = uploadMicroService + 'uploadFile'
 export const searchFile = uploadMicroService + 'searchFile'
 export const activate = uploadMicroService + 'activate'
 export const download = uploadMicroService + 'download'
+export const fileDelete = uploadMicroService + 'delete'
+export const fileDeleteWithoutIP = uploadMicroServiceWithoutIP + 'delete'
+export const fileUpdate = uploadMicroService + 'update'
+export const fileUpdateWithoutIP = uploadMicroServiceWithoutIP + 'update'
 
 export const uploadFileWithoutIP = uploadMicroServiceWithoutIP + 'uploadFile'
 export const searchFileWithoutIP = uploadMicroServiceWithoutIP + 'searchFile'

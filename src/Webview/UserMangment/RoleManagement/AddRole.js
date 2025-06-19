@@ -14,6 +14,9 @@ const AddRole = ({ data }) => {
     const [render, setRender] = useState(Date.now())
     const [loader, setLoader] = useState(false)
 
+    console.log('data',data);
+    
+
     useEffect(() => {
         if (data) {
             var compile = {
@@ -47,7 +50,8 @@ const AddRole = ({ data }) => {
             if (keyName === 'read') {
                 oldJson.allowedEndPoints.push(ele.readEndpoint)
             } else if (keyName === 'write') {
-                ele.writeEndpoint.map((url, i) => {
+                console.log('oldJson.allowedEndPoints ===',ele);
+                panelPermisson?.permission?.[index]?.writeEndpoint?.map((url, i) => {
                     oldJson.allowedEndPoints.push(url)
                 })
             }
@@ -74,9 +78,7 @@ const AddRole = ({ data }) => {
                 }
                 oldPermissionData = json
             }
-            if(data){oldPermissionData._id = data._id}
-            console.log('oldPermissionData',oldPermissionData);
-            
+            if(data){oldPermissionData._id = data._id}            
             ApiHit(oldPermissionData, data ? updateRole : addRole).then(res => {
                 setLoader(false)
                 if (res.status === 200) {
@@ -117,7 +119,6 @@ console.log('permissionData',permissionData);
                 permissionData?.roleType !== "" &&
                 <>
                     {
-
                         <div className="mt-3 mb-3">
                             <MyInput value={permissionData.roleName} onChange={(e) => onChangeRoleName(e.target.value)} title={'Role Name'} placeholder={'Enter Role Name'} />
                         </div>

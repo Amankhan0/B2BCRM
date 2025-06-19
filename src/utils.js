@@ -361,13 +361,6 @@ export const TitleValue = ({ title, value }) => {
   )
 }
 
-
-
-
-
-
-
-
 export const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const regexPAN = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 export const regexVehicle = /^[A-Z|a-z]{2}\s?[0-9]{1,2}\s?[A-Z|a-z]{0,3}\s?[0-9]{4}$/;
@@ -404,6 +397,9 @@ export const getHeadingFromPathname = () => {
     return "Dashboard"
   }else if (segments === 'online-lead') {
     return "Online Lead"
+  }
+  else if (segments === 'pdf-ads') {
+    return "PDF Ads"
   }
 }
 
@@ -534,6 +530,7 @@ export const ApiHit = (json, api) => {
 }
 
 export const ApiHitUploadData = (formData, api) => {
+
   return new Promise((resolve, reject) => {
     const requestOptions = {
       method: 'POST',

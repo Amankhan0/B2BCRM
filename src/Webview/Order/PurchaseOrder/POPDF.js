@@ -6,8 +6,13 @@ import { calculateTotalAmountUsingData, calculateTotalCGSTAmountUsingData, calcu
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
+import { useSelector } from "react-redux";
+import FileRenderer from "../../../Component/FileRender";
 
 const POPDF = ({ data, onClickBack }) => {
+
+    const PDFAdsReducer = useSelector(state => state.PDFAdsReducer);
+
 
     const headerRef = useRef();
     const ourInfoRef = useRef();
@@ -51,206 +56,221 @@ const POPDF = ({ data, onClickBack }) => {
             }
         }
     }, [totalAmount])
-const downloadPDF = async () => {
-  try {
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const padding = 10;
-    let currentY = padding;
+    const downloadPDF = async () => {
+        try {
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const padding = 10;
+            let currentY = padding;
 
-    const desiredWidth = 50;
-    const logoAspectRatio = 3.5;
-    const logoHeight = desiredWidth / logoAspectRatio;
+            const desiredWidth = 50;
+            const logoAspectRatio = 3.5;
+            const logoHeight = desiredWidth / logoAspectRatio;
 
-    // 🟢 Add Logo (resized to original)
-    pdf.addImage(
-      "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
-      "PNG",
-      padding,
-      currentY-5,
-      desiredWidth,
-      logoHeight
-    );
+            // 🟢 Add Logo (resized to original)
+            pdf.addImage(
+                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+                "PNG",
+                padding,
+                currentY - 5,
+                desiredWidth,
+                logoHeight
+            );
 
-    // 🟢 Company Details
-    pdf.setFontSize(8);
-    pdf.setFont("helvetica", "bold");
-    currentY += logoHeight + 2;
+            // 🟢 Company Details
+            pdf.setFontSize(8);
+            pdf.setFont("helvetica", "bold");
+            currentY += logoHeight + 2;
 
-    pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
-    currentY += 5;
-    pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
-    currentY += 5;
-    pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
+            pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
+            currentY += 5;
+            pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
+            currentY += 5;
+            pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
 
-    // 🟢 Address on Right - Split into multiple lines dynamically
-    const rightTextY = padding + 2;
-    const companyAddress = `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`;
-    const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
-    pdf.setFontSize(8);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(wrappedRightText, pageWidth - padding, rightTextY, {
-      align: "right",
-    });
+            // 🟢 Address on Right - Split into multiple lines dynamically
+            const rightTextY = padding + 2;
+            const companyAddress = `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`;
+            const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
+            pdf.setFontSize(8);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(wrappedRightText, pageWidth - padding, rightTextY, {
+                align: "right",
+            });
 
-    pdf.text(
-      `Date: ${GetFullYear(Date.now())}`,
-      pageWidth - padding,
-      rightTextY + wrappedRightText.length * 5 + 2,
-      { align: "right" }
-    );
-    pdf.text(
-      `${data?.poRefNo ? "PO" : "Order"} Ref No: ${
-        data?.poRefNo || data?.orderRefNo
-      }`,
-      pageWidth - padding,
-      rightTextY + wrappedRightText.length * 5 + 7,
-      { align: "right" }
-    );
+            pdf.text(
+                `Date: ${GetFullYear(Date.now())}`,
+                pageWidth - padding,
+                rightTextY + wrappedRightText.length * 5 + 2,
+                { align: "right" }
+            );
+            pdf.text(
+                `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
+                }`,
+                pageWidth - padding,
+                rightTextY + wrappedRightText.length * 5 + 7,
+                { align: "right" }
+            );
 
-    // Divider
-    currentY += 20;
-    pdf.setDrawColor(67, 42, 119);
-    pdf.setLineWidth(0.5);
-    pdf.line(padding, currentY, pageWidth - padding, currentY);
-    currentY += 5;
+            // Divider
+            currentY += 20;
+            pdf.setDrawColor(67, 42, 119);
+            pdf.setLineWidth(0.5);
+            pdf.line(padding, currentY, pageWidth - padding, currentY);
+            currentY += 5;
 
-    // Billing & Shipping Addresses
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(67, 42, 119);
-    pdf.text("Billing Address", padding, currentY);
-    pdf.text("Shipping Address", pageWidth / 2 + 5, currentY);
+            // Billing & Shipping Addresses
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119);
+            pdf.text("Billing Address", padding, currentY);
+            pdf.text("Shipping Address", pageWidth / 2 + 5, currentY);
 
-    currentY += 6;
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFontSize(8);
+            currentY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
 
-    const billingLines = [
-      `Company Name: ${OrderInvoiceDetails.companyDetails.companyName}`,
-      `Address: ${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}`,
-      `${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}`,
-      `GST No: ${OrderInvoiceDetails.companyDetails.gstNo}`,
-    ];
+            const billingLines = [
+                `Company Name: ${OrderInvoiceDetails.companyDetails.companyName}`,
+                `Address: ${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}`,
+                `${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}`,
+                `GST No: ${OrderInvoiceDetails.companyDetails.gstNo}`,
+            ];
 
-    const shippingRaw = `Address: ${data.customerDetails.shippingAddress.address}, Tehsil: ${data.customerDetails.shippingAddress.city}, ${data.customerDetails.shippingAddress.state} - ${data.customerDetails.shippingAddress.pinCode}, ${data.customerDetails.shippingAddress.landmark}`;
-    const shippingLines = pdf.splitTextToSize(shippingRaw, pageWidth / 2 - 20);
-    const maxLines = Math.max(billingLines.length, shippingLines.length);
+            const shippingRaw = `Address: ${data.customerDetails.shippingAddress.address}, Tehsil: ${data.customerDetails.shippingAddress.city}, ${data.customerDetails.shippingAddress.state} - ${data.customerDetails.shippingAddress.pinCode}, ${data.customerDetails.shippingAddress.landmark}`;
+            const shippingLines = pdf.splitTextToSize(shippingRaw, pageWidth / 2 - 20);
+            const maxLines = Math.max(billingLines.length, shippingLines.length);
 
-    for (let i = 0; i < maxLines; i++) {
-      const y = currentY + i * 5;
-      if (billingLines[i]) pdf.text(billingLines[i], padding, y);
-      if (shippingLines[i]) pdf.text(shippingLines[i], pageWidth / 2 + 5, y);
-    }
+            for (let i = 0; i < maxLines; i++) {
+                const y = currentY + i * 5;
+                if (billingLines[i]) pdf.text(billingLines[i], padding, y);
+                if (shippingLines[i]) pdf.text(shippingLines[i], pageWidth / 2 + 5, y);
+            }
 
-    currentY += maxLines * 5 + 5;
-    pdf.line(padding, currentY, pageWidth - padding, currentY);
-    currentY += 5;
+            currentY += maxLines * 5 + 5;
+            pdf.line(padding, currentY, pageWidth - padding, currentY);
+            currentY += 5;
 
-    // Supplier Details
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(67, 42, 119);
-    pdf.text("Supplier Details", padding, currentY);
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(0, 0, 0);
-    currentY += 5;
+            // Supplier Details
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119);
+            pdf.text("Supplier Details", padding, currentY);
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            currentY += 5;
 
-    pdf.text(`Company Name: ${data.supplierDetails.companyName}`, padding, currentY);
-    currentY += 5;
+            pdf.text(`Company Name: ${data.supplierDetails.companyName}`, padding, currentY);
+            currentY += 5;
 
-    const supplierAddress = `${data.supplierDetails.gstAddresses.address}, ${data.supplierDetails.gstAddresses.state}`;
-    const wrappedSupplierAddress = pdf.splitTextToSize(supplierAddress, 150);
-    pdf.text(wrappedSupplierAddress, padding, currentY);
-    currentY += wrappedSupplierAddress.length * 5;
+            const supplierAddress = `${data.supplierDetails.gstAddresses.address}, ${data.supplierDetails.gstAddresses.state}`;
+            const wrappedSupplierAddress = pdf.splitTextToSize(supplierAddress, 150);
+            pdf.text(wrappedSupplierAddress, padding, currentY);
+            currentY += wrappedSupplierAddress.length * 5;
 
-    const supplierCityLine = `${data.supplierDetails.gstAddresses.city} - ${data.supplierDetails.gstAddresses.pinCode}, ${data.supplierDetails.gstAddresses.landmark}`;
-    pdf.text(supplierCityLine, padding, currentY);
-    currentY += 5;
-    pdf.text(`GST No: ${data.supplierDetails.gstNo}`, padding, currentY);
-    currentY += 7;
+            const supplierCityLine = `${data.supplierDetails.gstAddresses.city} - ${data.supplierDetails.gstAddresses.pinCode}, ${data.supplierDetails.gstAddresses.landmark}`;
+            pdf.text(supplierCityLine, padding, currentY);
+            currentY += 5;
+            pdf.text(`GST No: ${data.supplierDetails.gstNo}`, padding, currentY);
+            currentY += 7;
 
-    pdf.line(padding, currentY, pageWidth - padding, currentY);
-    currentY += 5;
+            pdf.line(padding, currentY, pageWidth - padding, currentY);
+            currentY += 5;
 
-    // Product Table - Show GST column instead of CGST/SGST
-    const headRow = [["Product", "Variant", "Unit", "Qty", "Rate", "GST (%)", "Amount"]];
+            // Product Table - Show GST column instead of CGST/SGST
+            const headRow = [["Product", "Variant", "Unit", "Qty", "Rate", "GST (%)", "Amount"]];
 
-    const body = data.products.map((ele) => {
-      const baseAmount = Number(ele.vendorPrice) * Number(ele.qty);
-      const gst = GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2);
-      
-      return [
-        ele.product_id.productName,
-        ele.productVarient.varientName,
-        ele.productVarient.varientUnit,
-        ele.qty,
-        ele.vendorPrice,
-        `${gst} (${ele.productVarient.gst}%)`,
-        baseAmount.toFixed(2),
-      ];
-    });
+            const body = data.products.map((ele) => {
+                const baseAmount = Number(ele.vendorPrice) * Number(ele.qty);
+                const gst = GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2);
 
-    pdf.autoTable({
-      startY: currentY,
-      head: headRow,
-      body,
-      theme: "grid",
-      headStyles: {
-        fillColor: Colors.ThemeBlue,
-        textColor: "#fff",
-        fontSize: 9,
-      },
-      bodyStyles: { fontSize: 8 },
-    });
+                return [
+                    ele.product_id.productName,
+                    ele.productVarient.varientName,
+                    ele.productVarient.varientUnit,
+                    ele.qty,
+                    ele.vendorPrice,
+                    `${gst} (${ele.productVarient.gst}%)`,
+                    baseAmount.toFixed(2),
+                ];
+            });
 
-    currentY = pdf.lastAutoTable.finalY + 15;
+            pdf.autoTable({
+                startY: currentY,
+                head: headRow,
+                body,
+                theme: "grid",
+                headStyles: {
+                    fillColor: Colors.ThemeBlue,
+                    textColor: "#fff",
+                    fontSize: 9,
+                },
+                bodyStyles: { fontSize: 8 },
+            });
 
-    // Totals - Show GST instead of CGST/SGST
-    pdf.setFontSize(10);
-    const totals = [
-      `Total Amount: ${totalAmount.toFixed(2)}`,
-      `Total GST: ${totalGSTAmount.toFixed(2)}`,
-      `Total Taxable Amount: ${totalTaxAmount.toFixed(2)} (${numberToWords(
-        totalTaxAmount.toFixed(2)
-      )})`,
-    ];
+            currentY = pdf.lastAutoTable.finalY + 15;
 
-    totals.forEach((line, i) => {
-      pdf.text(line, padding, currentY + i * 6);
-    });
+            // Totals - Show GST instead of CGST/SGST
+            pdf.setFontSize(10);
+            const totals = [
+                `Total Amount: ${totalAmount.toFixed(2)}`,
+                `Total GST: ${totalGSTAmount.toFixed(2)}`,
+                `Total Taxable Amount: ${totalTaxAmount.toFixed(2)} (${numberToWords(
+                    totalTaxAmount.toFixed(2)
+                )})`,
+            ];
 
-    currentY += totals.length * 6;
+            totals.forEach((line, i) => {
+                pdf.text(line, padding, currentY + i * 6);
+            });
 
-    // Terms & Conditions
-    const termsText = termsRef.current.innerText.split("\n").map((line) => [line]);
-    pdf.autoTable({
-      startY: currentY,
-      body: termsText,
-      theme: "plain",
-      styles: { fontSize: 8, cellPadding: 1 },
-      margin: { left: 10, right: 10 },
-    });
+            currentY += totals.length * 6;
 
-    currentY = pdf.lastAutoTable.finalY + 10;
+            // Terms & Conditions
+            const termsText = termsRef.current.innerText.split("\n").map((line) => [line]);
+            pdf.autoTable({
+                startY: currentY,
+                body: termsText,
+                theme: "plain",
+                styles: { fontSize: 8, cellPadding: 1 },
+                margin: { left: 10, right: 10 },
+            });
 
-    // Signature (unchanged)
-    pdf.text("Thanking you,", padding, currentY);
-    pdf.text("Best Regards", padding, currentY + 5);
-    pdf.text(`${data.regards.name}`, padding, currentY + 10);
-    pdf.text(`${data.regards.contact}`, padding, currentY + 15);
-    pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
+            currentY = pdf.lastAutoTable.finalY + 10;
 
-    // 🟢 ADD FINAL BLANK PAGE
-    pdf.addPage(); // ← this adds a blank white page at the end
+            // Signature (unchanged)
+            pdf.text("Thanking you,", padding, currentY);
+            pdf.text("Best Regards", padding, currentY + 5);
+            pdf.text(`${data.regards.name}`, padding, currentY + 10);
+            pdf.text(`${data.regards.contact}`, padding, currentY + 15);
+            pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
 
-    // Save the PDF
-    pdf.save("PurchaseOrder.pdf");
+            pdf.addPage();
+            const imgElement = document.querySelector("#file-renderer-image img");
+            if (imgElement) {
+                const imgSrc = imgElement.src;
+                const toBase64 = async (url) => {
+                    const res = await fetch(url);
+                    const blob = await res.blob();
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                };
 
-  } catch (err) {
-    console.error("PDF generation failed:", err);
-  }
-};
+                const base64Img = await toBase64(imgSrc);
+                pdf.addImage(base64Img, 'PNG', padding, padding, pageWidth - 2 * padding, 200); // Adjust height as needed
+            }
+
+            // Save the PDF
+            pdf.save("PurchaseOrder.pdf");
+
+        } catch (err) {
+            console.error("PDF generation failed:", err);
+        }
+    };
 
     const calculateTotal = (products, type) => {
 
@@ -292,7 +312,7 @@ const downloadPDF = async () => {
                     <div className="flex justify-end text-right">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>PURCHASE ORDER</h3>
-                            <p className="text-xs p-0.5">{data?.poRefNo?'PO':'Order'} Ref No: <b>{data?.poRefNo?data?.poRefNo:data?.orderRefNo}</b></p>
+                            <p className="text-xs p-0.5">{data?.poRefNo ? 'PO' : 'Order'} Ref No: <b>{data?.poRefNo ? data?.poRefNo : data?.orderRefNo}</b></p>
                             <p className="text-xs p-0.5">Date: <b>{GetFullYear(Date.now())}</b></p>
                             <p className="text-xs p-0.5">Terms of Payment: : <b>{data.paymentTerm.type} {data.paymentTerm.days !== null && data.paymentTerm.days + ' days'}</b></p>
                         </div>
@@ -312,7 +332,7 @@ const downloadPDF = async () => {
                         </div>
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>
-                            
+
                             <p className="text-xs p-0.5">Address : {data?.customerDetails?.shippingAddress?.address || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.city + ' ' + data?.customerDetails?.shippingAddress?.landmark || '-'}</p>
                             <p className="text-xs p-0.5">{data?.customerDetails?.shippingAddress?.state + ' ' + data?.customerDetails?.shippingAddress?.pinCode || '-'}</p>
@@ -358,8 +378,8 @@ const downloadPDF = async () => {
                     <tbody>
                         {
                             data?.products?.map((ele, i) => {
-                                console.log('--?.toFixed(2)',ele);
-                                
+                                console.log('--?.toFixed(2)', ele);
+
                                 return (
                                     <tr>
                                         <td style={{ padding: 8, border: "1px solid #ddd" }}>{ele?.product_id?.productName}</td>
@@ -429,6 +449,20 @@ const downloadPDF = async () => {
             <button onClick={downloadPDF} style={{ marginTop: 20, padding: 10, backgroundColor: Colors.ThemeBlue, color: "#fff", border: "none", cursor: "pointer" }}>
                 Download PDF
             </button>
+            <div style={{ display: "none" }}>
+                <div id="file-renderer-image">
+                    <div className="grid grid-cols-3">
+                    {
+                        PDFAdsReducer?.doc !== null &&
+                        PDFAdsReducer?.doc?.map((ele, i) => {
+                            return (
+                                <FileRenderer fileId={ele?._id} />
+                            )
+                        })
+                    }
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

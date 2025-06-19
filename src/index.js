@@ -18,6 +18,7 @@ import SupplierReducer from './Store/Reducer/SupplierReducer';
 import ProductReducer from './Store/Reducer/ProductReducer';
 import RoleReducer from './Store/Reducer/RoleReducer';
 import UserReducer from './Store/Reducer/UserReducer';
+import PDFAdsReducer from './Store/Reducer/PDFAdsReducer';
 
 const rootReducer = combineReducers({
   SidebarReducer: SidebarReducer,
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   SupplierReducer:SupplierReducer,
   ProductReducer:ProductReducer,
   RoleReducer:RoleReducer,
-  UserReducer:UserReducer
+  UserReducer:UserReducer,
+  PDFAdsReducer:PDFAdsReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))

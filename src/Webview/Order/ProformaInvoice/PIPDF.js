@@ -14,8 +14,14 @@ import {
 import { backIcon } from "../../../SVG/Icons";
 import Title from "../../../Component/Title";
 import { OrderInvoiceDetails } from "../../OrderInvoiceDetails";
+import { useSelector } from "react-redux";
+import FileRenderer from "../../../Component/FileRender";
 
 const PIPDF = ({ data, onClickBack }) => {
+
+  const PDFAdsReducer = useSelector(state => state.PDFAdsReducer);
+
+
   const headerRef = useRef();
   const customerInfoRef = useRef();
   const totalRef = useRef();
@@ -64,241 +70,256 @@ const PIPDF = ({ data, onClickBack }) => {
     }
   }, [totalAmount]);
 
-const downloadPDF = async () => {
-  try {
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const padding = 10;
-    let currentY = padding;
+  const downloadPDF = async () => {
+    try {
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const padding = 10;
+      let currentY = padding;
 
-    const desiredWidth = 50;
-    const logoAspectRatio = 3.5;
-    const logoHeight = desiredWidth / logoAspectRatio;
+      const desiredWidth = 50;
+      const logoAspectRatio = 3.5;
+      const logoHeight = desiredWidth / logoAspectRatio;
 
-    // Add Logo
-    pdf.addImage(
-      "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
-      "PNG",
-      padding,
-      currentY-5,
-      desiredWidth,
-      logoHeight
-    );
+      // Add Logo
+      pdf.addImage(
+        "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
+        "PNG",
+        padding,
+        currentY - 5,
+        desiredWidth,
+        logoHeight
+      );
 
-    // Company Details
-    pdf.setFontSize(8);
-    pdf.setFont("helvetica", "bold");
-    currentY += logoHeight + 2;
-
-    pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
-    currentY += 5;
-    pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
-    currentY += 5;
-    pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
-
-    // Address on Right
-    const rightTextY = padding + 2;
-    const companyAddress = `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`;
-    
-    const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
-    pdf.setFontSize(8);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(wrappedRightText, pageWidth - padding, rightTextY, {
-      align: "right",
-    });
-
-    // Calculate the height of the wrapped address text
-    const addressTextHeight = wrappedRightText.length * 4;
-    
-    // Position date and order ref below the address
-    const dateY = rightTextY + addressTextHeight + 3;
-    pdf.text(
-      `Date: ${GetFullYear(Date.now())}`,
-      pageWidth - padding,
-      dateY,
-      { align: "right" }
-    );
-    pdf.text(
-      `${data?.poRefNo ? "PO" : "Order"} Ref No: ${
-        data?.poRefNo || data?.orderRefNo
-      }`,
-      pageWidth - padding,
-      dateY + 5,
-      { align: "right" }
-    );
-
-    // Update currentY to account for the right side content
-    const rightSideHeight = addressTextHeight + 15;
-    currentY = Math.max(currentY, rightTextY + rightSideHeight);
-
-    // Divider
-    currentY += 10;
-    pdf.setDrawColor(67, 42, 119);
-    pdf.setLineWidth(0.5);
-    pdf.line(padding, currentY, pageWidth - padding, currentY);
-    currentY += 5;
-
-    // Billing & Shipping Addresses
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(67, 42, 119);
-    pdf.text("Billing Address", padding, currentY);
-    pdf.text("Shipping Address", pageWidth / 2 + 5, currentY);
-
-    currentY += 6;
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFontSize(8);
-
-    // Billing address - break down into multiple lines for better wrapping
-    const billingRaw = [
-      `Company Name: ${data.customerDetails.companyName}`,
-      `Customer Name: ${data.customerDetails.name}`,
-      `Contact: ${data.customerDetails.contact}`,
-      `Email: ${data.customerDetails.email}`,
-      `Address: ${data.customerDetails.billingAddress.address}`,
-      `${data.customerDetails.billingAddress.city}, ${data.customerDetails.billingAddress.state} - ${data.customerDetails.billingAddress.pinCode}`,
-      `GST No: ${data.customerDetails.gstNo}`,
-    ];
-
-    // Process billing lines to handle wrapping
-    const billingLines = [];
-    billingRaw.forEach(line => {
-      const wrapped = pdf.splitTextToSize(line, pageWidth / 2 - 15);
-      billingLines.push(...wrapped);
-    });
-
-    // Shipping address - break down and wrap properly
-    const shippingRaw = [
-      `Company Name: ${data.customerDetails.companyName}`,
-      `Address: ${data.customerDetails.shippingAddress.address}`,
-      `${data.customerDetails.shippingAddress.city}, ${data.customerDetails.shippingAddress.state} - ${data.customerDetails.shippingAddress.pinCode}`,
-      `Landmark: ${data.customerDetails.shippingAddress.landmark}`
-    ];
-
-    // Process shipping lines to handle wrapping
-    const shippingLines = [];
-    shippingRaw.forEach(line => {
-      const wrapped = pdf.splitTextToSize(line, pageWidth / 2 - 15);
-      shippingLines.push(...wrapped);
-    });
-
-    const maxLines = Math.max(billingLines.length, shippingLines.length);
-
-    for (let i = 0; i < maxLines; i++) {
-      const y = currentY + i * 4;
-      if (billingLines[i]) pdf.text(billingLines[i], padding, y);
-      if (shippingLines[i]) pdf.text(shippingLines[i], pageWidth / 2 + 5, y);
-    }
-
-    currentY += maxLines * 4 + 5;
-
-    // Supplier Details - only show if supplier details exist
-    if (data.supplierDetails) {
+      // Company Details
+      pdf.setFontSize(8);
       pdf.setFont("helvetica", "bold");
-      pdf.setTextColor(67, 42, 119);
-      pdf.text("Supplier Details", padding, currentY);
+      currentY += logoHeight + 2;
+
+      pdf.text(`GSTIN: ${OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
+      currentY += 5;
+      pdf.text(`CIN: ${OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
+      currentY += 5;
+      pdf.text(`PAN: ${OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
+
+      // Address on Right
+      const rightTextY = padding + 2;
+      const companyAddress = `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}, ${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode}, ${OrderInvoiceDetails.companyDetails.address.country}`;
+
+      const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
+      pdf.setFontSize(8);
       pdf.setFont("helvetica", "normal");
-      pdf.setTextColor(0, 0, 0);
-      currentY += 5;
+      pdf.text(wrappedRightText, pageWidth - padding, rightTextY, {
+        align: "right",
+      });
 
-      pdf.text(`Company Name: ${data.supplierDetails.companyName}`, padding, currentY);
-      currentY += 5;
+      // Calculate the height of the wrapped address text
+      const addressTextHeight = wrappedRightText.length * 4;
 
-      const supplierAddress = `${data.supplierDetails.gstAddresses.address}, ${data.supplierDetails.gstAddresses.state}`;
-      const wrappedSupplierAddress = pdf.splitTextToSize(supplierAddress, 150);
-      pdf.text(wrappedSupplierAddress, padding, currentY);
-      currentY += wrappedSupplierAddress.length * 5;
+      // Position date and order ref below the address
+      const dateY = rightTextY + addressTextHeight + 3;
+      pdf.text(
+        `Date: ${GetFullYear(Date.now())}`,
+        pageWidth - padding,
+        dateY,
+        { align: "right" }
+      );
+      pdf.text(
+        `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
+        }`,
+        pageWidth - padding,
+        dateY + 5,
+        { align: "right" }
+      );
 
-      const supplierCityLine = `${data.supplierDetails.gstAddresses.city} - ${data.supplierDetails.gstAddresses.pinCode}, ${data.supplierDetails.gstAddresses.landmark}`;
-      pdf.text(supplierCityLine, padding, currentY);
-      currentY += 5;
-      pdf.text(`GST No: ${data.supplierDetails.gstNo}`, padding, currentY);
-      currentY += 7;
+      // Update currentY to account for the right side content
+      const rightSideHeight = addressTextHeight + 15;
+      currentY = Math.max(currentY, rightTextY + rightSideHeight);
 
+      // Divider
+      currentY += 10;
+      pdf.setDrawColor(67, 42, 119);
+      pdf.setLineWidth(0.5);
       pdf.line(padding, currentY, pageWidth - padding, currentY);
       currentY += 5;
-    }
 
-    // Product Table - Show GST column with separate Product and Variant columns
-    const headRow = [["Product", "Variant", "HSN", "Qty", "Rate", "GST (%)", "Amount"]];
+      // Billing & Shipping Addresses
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(67, 42, 119);
+      pdf.text("Billing Address", padding, currentY);
+      pdf.text("Shipping Address", pageWidth / 2 + 5, currentY);
 
-    const body = data.products.map((ele) => {
-      const baseAmount = Number(ele.price) * Number(ele.qty);
-      
-      const gst = GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2);
-      return [
-        ele.product_id.productName,
-        ele.productVarient.varientName,
-        ele.product_id.hsnNo,
-        ele.qty,
-        ele.price,
-        `${gst} (${ele.productVarient.gst}%)`,
-        baseAmount.toFixed(2),
+      currentY += 6;
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(8);
+
+      // Billing address - break down into multiple lines for better wrapping
+      const billingRaw = [
+        `Company Name: ${data.customerDetails.companyName}`,
+        `Customer Name: ${data.customerDetails.name}`,
+        `Contact: ${data.customerDetails.contact}`,
+        `Email: ${data.customerDetails.email}`,
+        `Address: ${data.customerDetails.billingAddress.address}`,
+        `${data.customerDetails.billingAddress.city}, ${data.customerDetails.billingAddress.state} - ${data.customerDetails.billingAddress.pinCode}`,
+        `GST No: ${data.customerDetails.gstNo}`,
       ];
-    });
 
-    pdf.autoTable({
-      startY: currentY,
-      head: headRow,
-      body,
-      theme: "grid",
-      headStyles: {
-        fillColor: Colors.ThemeBlue,
-        textColor: "#fff",
-        fontSize: 9,
-      },
-      bodyStyles: { fontSize: 8 },
-    });
+      // Process billing lines to handle wrapping
+      const billingLines = [];
+      billingRaw.forEach(line => {
+        const wrapped = pdf.splitTextToSize(line, pageWidth / 2 - 15);
+        billingLines.push(...wrapped);
+      });
 
-    // Increased spacing under the table
-    currentY = pdf.lastAutoTable.finalY + 15; // Changed from 5 to 15
+      // Shipping address - break down and wrap properly
+      const shippingRaw = [
+        `Company Name: ${data.customerDetails.companyName}`,
+        `Address: ${data.customerDetails.shippingAddress.address}`,
+        `${data.customerDetails.shippingAddress.city}, ${data.customerDetails.shippingAddress.state} - ${data.customerDetails.shippingAddress.pinCode}`,
+        `Landmark: ${data.customerDetails.shippingAddress.landmark}`
+      ];
 
-    // Totals - Show GST instead of CGST and SGST
-    pdf.setFontSize(10);
-    const totals = [
-      `Total Amount: ${totalAmount.toFixed(2)}`,
-      `Total GST: ${totalGSTAmount.toFixed(2)}`,
-      `Total Taxable Amount: ${totalTaxAmount.toFixed(2)} (${numberToWords(
-        totalTaxAmount.toFixed(2)
-      )})`,
-    ];
+      // Process shipping lines to handle wrapping
+      const shippingLines = [];
+      shippingRaw.forEach(line => {
+        const wrapped = pdf.splitTextToSize(line, pageWidth / 2 - 15);
+        shippingLines.push(...wrapped);
+      });
 
-    totals.forEach((line, i) => {
-      pdf.text(line, padding, currentY + i * 6);
-    });
+      const maxLines = Math.max(billingLines.length, shippingLines.length);
 
-    currentY += totals.length * 6;
+      for (let i = 0; i < maxLines; i++) {
+        const y = currentY + i * 4;
+        if (billingLines[i]) pdf.text(billingLines[i], padding, y);
+        if (shippingLines[i]) pdf.text(shippingLines[i], pageWidth / 2 + 5, y);
+      }
 
-    // Terms & Conditions
-    const termsText = termsRef.current.innerText.split("\n").map((line) => [line]);
-    pdf.autoTable({
-      startY: currentY,
-      body: termsText,
-      theme: "plain",
-      styles: { fontSize: 8, cellPadding: 1 },
-      margin: { left: 10, right: 10 },
-    });
+      currentY += maxLines * 4 + 5;
 
-    currentY = pdf.lastAutoTable.finalY + 10;
+      // Supplier Details - only show if supplier details exist
+      if (data.supplierDetails) {
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(67, 42, 119);
+        pdf.text("Supplier Details", padding, currentY);
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(0, 0, 0);
+        currentY += 5;
 
-    // Signature
-    pdf.text("Thanking you,", padding, currentY);
-    pdf.text("Best Regards", padding, currentY + 5);
-    pdf.text(`${data.regards.name}`, padding, currentY + 10);
-    pdf.text(`${data.regards.contact}`, padding, currentY + 15);
-    pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
+        pdf.text(`Company Name: ${data.supplierDetails.companyName}`, padding, currentY);
+        currentY += 5;
 
-    // Add final blank page
-    pdf.addPage();
+        const supplierAddress = `${data.supplierDetails.gstAddresses.address}, ${data.supplierDetails.gstAddresses.state}`;
+        const wrappedSupplierAddress = pdf.splitTextToSize(supplierAddress, 150);
+        pdf.text(wrappedSupplierAddress, padding, currentY);
+        currentY += wrappedSupplierAddress.length * 5;
 
-    // Save the PDF with new filename
-    pdf.save("ProformaInvoice.pdf");
+        const supplierCityLine = `${data.supplierDetails.gstAddresses.city} - ${data.supplierDetails.gstAddresses.pinCode}, ${data.supplierDetails.gstAddresses.landmark}`;
+        pdf.text(supplierCityLine, padding, currentY);
+        currentY += 5;
+        pdf.text(`GST No: ${data.supplierDetails.gstNo}`, padding, currentY);
+        currentY += 7;
 
-  } catch (err) {
-    console.error("PDF generation failed:", err);
-  }
-};
+        pdf.line(padding, currentY, pageWidth - padding, currentY);
+        currentY += 5;
+      }
+
+      // Product Table - Show GST column with separate Product and Variant columns
+      const headRow = [["Product", "Variant", "HSN", "Qty", "Rate", "GST (%)", "Amount"]];
+
+      const body = data.products.map((ele) => {
+        const baseAmount = Number(ele.price) * Number(ele.qty);
+
+        const gst = GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2);
+        return [
+          ele.product_id.productName,
+          ele.productVarient.varientName,
+          ele.product_id.hsnNo,
+          ele.qty,
+          ele.price,
+          `${gst} (${ele.productVarient.gst}%)`,
+          baseAmount.toFixed(2),
+        ];
+      });
+
+      pdf.autoTable({
+        startY: currentY,
+        head: headRow,
+        body,
+        theme: "grid",
+        headStyles: {
+          fillColor: Colors.ThemeBlue,
+          textColor: "#fff",
+          fontSize: 9,
+        },
+        bodyStyles: { fontSize: 8 },
+      });
+
+      // Increased spacing under the table
+      currentY = pdf.lastAutoTable.finalY + 15; // Changed from 5 to 15
+
+      // Totals - Show GST instead of CGST and SGST
+      pdf.setFontSize(10);
+      const totals = [
+        `Total Amount: ${totalAmount.toFixed(2)}`,
+        `Total GST: ${totalGSTAmount.toFixed(2)}`,
+        `Total Taxable Amount: ${totalTaxAmount.toFixed(2)} (${numberToWords(
+          totalTaxAmount.toFixed(2)
+        )})`,
+      ];
+
+      totals.forEach((line, i) => {
+        pdf.text(line, padding, currentY + i * 6);
+      });
+
+      currentY += totals.length * 6;
+
+      // Terms & Conditions
+      const termsText = termsRef.current.innerText.split("\n").map((line) => [line]);
+      pdf.autoTable({
+        startY: currentY,
+        body: termsText,
+        theme: "plain",
+        styles: { fontSize: 8, cellPadding: 1 },
+        margin: { left: 10, right: 10 },
+      });
+
+      currentY = pdf.lastAutoTable.finalY + 10;
+
+      // Signature
+      pdf.text("Thanking you,", padding, currentY);
+      pdf.text("Best Regards", padding, currentY + 5);
+      pdf.text(`${data.regards.name}`, padding, currentY + 10);
+      pdf.text(`${data.regards.contact}`, padding, currentY + 15);
+      pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
+
+      pdf.addPage();
+      const imgElement = document.querySelector("#file-renderer-image img");
+      if (imgElement) {
+        const imgSrc = imgElement.src;
+        const toBase64 = async (url) => {
+          const res = await fetch(url);
+          const blob = await res.blob();
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        };
+
+        const base64Img = await toBase64(imgSrc);
+        pdf.addImage(base64Img, 'PNG', padding, padding, pageWidth - 2 * padding, 200); // Adjust height as needed
+      }
+
+      // Save the PDF with new filename
+      pdf.save("ProformaInvoice.pdf");
+
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    }
+  };
 
 
   // Helper: Convert image to base64
@@ -643,6 +664,20 @@ const downloadPDF = async () => {
       >
         Download PDF
       </button>
+      <div style={{ display: "none" }}>
+                <div id="file-renderer-image">
+                    <div className="grid grid-cols-3">
+                    {
+                        PDFAdsReducer?.doc !== null &&
+                        PDFAdsReducer?.doc?.map((ele, i) => {
+                            return (
+                                <FileRenderer fileId={ele?._id} />
+                            )
+                        })
+                    }
+                    </div>
+                </div>
+            </div>
     </div>
   );
 };

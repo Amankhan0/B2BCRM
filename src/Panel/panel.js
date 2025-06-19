@@ -96,9 +96,6 @@ export default function Main() {
     const location = useLocation();
     const [toggleProfile, setToggleProfile] = useState(false)
 
-
-
-
     const handleSidebar = (value) => {
         dispatch(setSidebar(value))
     }

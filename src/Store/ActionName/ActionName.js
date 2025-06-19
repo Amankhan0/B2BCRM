@@ -25,3 +25,7 @@ export const SET_ECHALLAN_DATA = 'SET_ECHALLAN_DATA'
 
 export const RETURN_TRIP_JSON = 'RETURN_TRIP_JSON'
 export const SET_RETURN_TRIP_VIEW = 'SET_RETURN_TRIP_VIEW'
+
+
+export const SET_PDF_ADS = 'SET_PDF_ADS'
+

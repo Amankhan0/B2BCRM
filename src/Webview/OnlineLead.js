@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 
 const OnlineLead = () => {
 
-
     const [data, setData] = useState(null);
     const width = window.innerWidth
     const PaginationReducer = useSelector(state => state.PaginationReducer)
@@ -28,7 +27,6 @@ const OnlineLead = () => {
             search: {}
         }
         ApiHit(json, searchWebsiteLead).then((res) => {
-            console.log('res website lead ---- ', res);
             if (res?.content) {
                 setData(res);
             }
