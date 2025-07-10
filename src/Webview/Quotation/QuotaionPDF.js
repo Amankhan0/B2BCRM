@@ -287,7 +287,35 @@ const QuotaionPDF = ({ data }) => {
                 };
 
                 const base64Img = await toBase64(imgSrc);
-                pdf.addImage(base64Img, 'PNG', padding, padding, pageWidth - 2 * padding, 200); // Adjust height as needed
+
+                // Load image and get natural dimensions
+                const tempImg = new Image();
+                tempImg.src = base64Img;
+
+                await new Promise((resolve) => {
+                    tempImg.onload = resolve;
+                });
+
+                const imgWidth = tempImg.naturalWidth;
+                const imgHeight = tempImg.naturalHeight;
+
+                const maxWidth = pageWidth - 2 * padding;
+                const maxHeight = pageHeight - 2 * padding;
+
+                const aspectRatio = imgWidth / imgHeight;
+
+                let displayWidth = maxWidth;
+                let displayHeight = displayWidth / aspectRatio;
+
+                if (displayHeight > maxHeight) {
+                    displayHeight = maxHeight;
+                    displayWidth = displayHeight * aspectRatio;
+                }
+
+                const x = (pageWidth - displayWidth) / 2;
+                const y = (pageHeight - displayHeight) / 2;
+
+                pdf.addImage(base64Img, 'PNG', x, y, displayWidth, displayHeight);
             }
 
 

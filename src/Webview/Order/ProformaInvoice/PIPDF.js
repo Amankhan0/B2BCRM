@@ -295,23 +295,51 @@ const PIPDF = ({ data, onClickBack }) => {
       pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
 
       pdf.addPage();
-      const imgElement = document.querySelector("#file-renderer-image img");
-      if (imgElement) {
-        const imgSrc = imgElement.src;
-        const toBase64 = async (url) => {
-          const res = await fetch(url);
-          const blob = await res.blob();
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-          });
-        };
+            const imgElement = document.querySelector("#file-renderer-image img");
+            if (imgElement) {
+                const imgSrc = imgElement.src;
+                const toBase64 = async (url) => {
+                    const res = await fetch(url);
+                    const blob = await res.blob();
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                };
 
-        const base64Img = await toBase64(imgSrc);
-        pdf.addImage(base64Img, 'PNG', padding, padding, pageWidth - 2 * padding, 200); // Adjust height as needed
-      }
+                const base64Img = await toBase64(imgSrc);
+
+                // Load image and get natural dimensions
+                const tempImg = new Image();
+                tempImg.src = base64Img;
+
+                await new Promise((resolve) => {
+                    tempImg.onload = resolve;
+                });
+
+                const imgWidth = tempImg.naturalWidth;
+                const imgHeight = tempImg.naturalHeight;
+
+                const maxWidth = pageWidth - 2 * padding;
+                const maxHeight = pageHeight - 2 * padding;
+
+                const aspectRatio = imgWidth / imgHeight;
+
+                let displayWidth = maxWidth;
+                let displayHeight = displayWidth / aspectRatio;
+
+                if (displayHeight > maxHeight) {
+                    displayHeight = maxHeight;
+                    displayWidth = displayHeight * aspectRatio;
+                }
+
+                const x = (pageWidth - displayWidth) / 2;
+                const y = (pageHeight - displayHeight) / 2;
+
+                pdf.addImage(base64Img, 'PNG', x, y, displayWidth, displayHeight);
+            }
 
       // Save the PDF with new filename
       pdf.save("ProformaInvoice.pdf");
