@@ -17,7 +17,7 @@ function MyInput({ placeholder, name, disable, title, error, important, uppercas
             newJson[name] = value;
         }
         dispatch(setDataAction(newJson, SET_API_JSON));
-    };    
+    };   
 
     return (
         <div>

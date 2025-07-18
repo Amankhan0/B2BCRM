@@ -15,7 +15,7 @@ import {
 
 let user = getAuthenticatedUserWithRoles();
 
-console.log('navigationuser', user?.roleObject?.permission?.[0]?.permission?.[0].read);
+console.log('navigationuser', user);
 
 export default [
   {

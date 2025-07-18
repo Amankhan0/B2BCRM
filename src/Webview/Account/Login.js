@@ -69,7 +69,7 @@ function Login() {
       ApiHit(json, login).then(Result => {
         if (Result?.data) {
           SetBuildVersion(buildVersion);
-          setAuthenticatedUser(Result?.data);
+          setAuthenticatedUser(Result?.data?.jwtToken);
           loadRoleData(Result);
         } else {
           setMsg({ login: 'User Not Found' });
@@ -83,7 +83,7 @@ function Login() {
   };
 
   function loadRoleData(res) {
-    let decodedJson = jwtDecode(res?.data);
+    let decodedJson = jwtDecode(res?.data?.jwtToken);
     if (decodedJson?.roleId) {
       var json = { page: 1, limit: 1, search: { _id: decodedJson?.roleId } };
       ApiHit(json, searchRole).then((Result) => {
