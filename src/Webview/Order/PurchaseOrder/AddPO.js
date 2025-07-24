@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import MyButton from '../../../Component/MyButton';
 import MyCheckBox from '../../../Component/MyCheckBox';
 import { ApiHit, updateAvaialblePO, updateProductId, updateProductIdWithPO, updateProductPOAvailableOrNot } from '../../../utils';
-import { addOrder, addPO, searchSupplier, selectClass, updateOrder } from '../../../Constants/Constants';
+import { addOrder, addPO, B2BBillingAddress, searchSupplier, selectClass, updateOrder } from '../../../Constants/Constants';
 import POView from './POView';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../../Store/Action/SetDataAction';
@@ -198,7 +198,14 @@ function AddPO({ orderData }) {
             warehouseAddresses: vendorData[Number(selectedVendor)].warehouseAddresses[warehouseAddresses]
         }
         newData.supplierDetails = vendroDetails
-        newData.termsAndConditions = content        
+        newData.termsAndConditions = content
+
+        if (data?.ownAddress && data?.ownAddress !== null) {
+            newData.ownAddress = data?.ownAddress
+        } else {
+            newData.ownAddress = B2BBillingAddress?.[0]
+        }
+
         ApiHit(newData, addPO).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -222,8 +229,8 @@ function AddPO({ orderData }) {
         })
     }
 
-    console.log('vendorData',vendorData);
-    
+    console.log('data', data);
+
 
     return (
         data &&
@@ -248,8 +255,8 @@ function AddPO({ orderData }) {
                                         <div className='mb-1'>
                                             <Title title={'Billing Address'} size={'lg'} color={Colors.BLACK} />
                                         </div>
-                                        <Title title={'A-4 Second Floor, Sarvodaya Enclave'} size={'md'} />
-                                        <Title title={'New Delhi 110017, India'} size={'md'} />
+                                        <Title title={data?.ownAddress && data?.ownAddress !== null ? data?.ownAddress?.address + ', ' + data?.ownAddress?.city : OrderInvoiceDetails?.companyDetails?.address?.address + ', ' + OrderInvoiceDetails?.companyDetails?.address?.city} size={'md'} />
+                                        <Title title={data?.ownAddress && data?.ownAddress !== null ? data?.ownAddress?.state + ' - ' + data?.ownAddress?.pinCode + ', ' + data?.ownAddress?.country : OrderInvoiceDetails?.companyDetails?.address?.state + ' - ' + OrderInvoiceDetails?.companyDetails?.address?.pinCode + ', ' + OrderInvoiceDetails?.companyDetails?.address?.country} size={'md'} />
                                     </div>
                                     <div className='border'>
                                         <div className='mb-1 p-2' style={{ background: Colors.ThemeBlue }}>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Colors } from '../../Colors/color';
 import { ApiHit, updateProductId } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { Active, addQuotation, QuotationInitiated, searchLead, updateLead } from '../../Constants/Constants';
+import { Active, addQuotation, B2BBillingAddress, QuotationInitiated, searchLead, updateLead } from '../../Constants/Constants';
 import MyButton from '../../Component/MyButton';
 import MyCheckBox from '../../Component/MyCheckBox';
 import MyInput from '../../Component/MyInput';
@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import { OrderInvoiceDetails } from '../OrderInvoiceDetails';
 import ReactQuill from 'react-quill';
+import MySelect from '../../Component/MySelect';
 
 function CreateQuotation() {
     const [content, setContent] = useState(OrderInvoiceDetails.companyDetails.quotationPermission);
@@ -53,41 +54,53 @@ function CreateQuotation() {
     }
 
     const onSubmit = () => {
-        serLoader(true)
         var json = updateProductId(ApiReducer?.apiJson)
         json.additionalNotes = 'The delivery schedule offered or committed is merely an indicative time of delivery which is not firm and the same may vary or change depending upon various factors relating to the Contract. Therefore, the Company does not assume any liability in the form of late delivery charges or penalty for having failed to maintain the time schedule.'
         json.status = Active
         json.user_id = getAuthenticatedUserWithRoles().userData?._id;
         json.termsAndConditions = content
-        ApiHit(json, addQuotation).then(res => {
-            if (res.status === 200) {
-                var leadJson = {
-                    _id: leadData?.content?.[0]?.lead_id,
-                    status: QuotationInitiated
-                }
-                ApiHit(leadJson, updateLead).then(result => {
-                    serLoader(false)
-                    if (result.status === 200) {
-                        toast.success('Quotation created successfully')
-                        window.location.pathname = '/quotation'
+        var index = B2BBillingAddress.findIndex((ele,i)=>ele?.state === json.ownAddress)
+        if(index >= 0){
+            serLoader(true)
+            json.ownAddress = B2BBillingAddress[index]
+            ApiHit(json, addQuotation).then(res => {
+                if (res.status === 200) {
+                    var leadJson = {
+                        _id: leadData?.content?.[0]?.lead_id,
+                        status: QuotationInitiated
                     }
-                })
-            } else {
-                toast.error(res.message)
-            }
-        })
+                    ApiHit(leadJson, updateLead).then(result => {
+                        serLoader(false)
+                        if (result.status === 200) {
+                            toast.success('Quotation created successfully')
+                            window.location.pathname = '/quotation'
+                        }
+                    })
+                } else {
+                    toast.error(res.message)
+                }
+            })
+        }else{
+            toast.success('Something went wrong')
+        }
     }
 
     const onClickNext = () => {
         if (!ApiReducer?.apiJson?.regards || !ApiReducer?.apiJson?.regards?.name || ApiReducer?.apiJson?.regards?.name === "" || ApiReducer?.apiJson?.regards?.contact === "" || !ApiReducer?.apiJson?.regards?.contact || ApiReducer?.apiJson?.regards?.contact?.length !== 10) {
             toast.error('regards details Is required')
-        } else {
+        } else if (!ApiReducer?.apiJson?.ownAddress) {
+            toast.error('Own billing adddress is required')
+        }
+        else {
             setPrivacyPolicy(true)
         }
     }
 
     return (
         <div className='mt-10'>
+            <div className='mb-5'>
+                <MySelect title={'Select own billing address'} options={B2BBillingAddress} name={'ownAddress'} keyName={'state'} />
+            </div>
             <div className='bg-white'>
                 <div style={{ background: Colors.ThemeBlue }}>
                     <p className='text-white p-2'>Company Details</p>

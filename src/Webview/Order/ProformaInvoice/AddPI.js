@@ -6,13 +6,14 @@ import DataTable from '../../../Component/DataTable';
 import toast from 'react-hot-toast';
 import MyButton from '../../../Component/MyButton';
 import { ApiHit, updateAvaialblePO, updateProductIdWithPO, updateProductPOAvailableOrNot } from '../../../utils';
-import { addPI, selectClass, updateOrder } from '../../../Constants/Constants';
+import { addPI, B2BBillingAddress, selectClass, updateOrder } from '../../../Constants/Constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataAction } from '../../../Store/Action/SetDataAction';
 import { SET_API_JSON } from '../../../Store/ActionName/ActionName';
 import PIView from './PIView';
 import ReactQuill from 'react-quill';
 import { getAuthenticatedUserWithRoles } from '../../../Storage/Storage';
+import { OrderInvoiceDetails } from '../../OrderInvoiceDetails';
 
 function AddPI({ orderData }) {
 
@@ -145,11 +146,22 @@ function AddPI({ orderData }) {
 
     const onSubmit = () => {
         setLoader(true)
+        console.log('data', data);
+
         var newData = updateProductIdWithPO(data, 'availablePI')
         newData.order_id = data._id
         delete newData._id
         newData.status = 'Active'
         newData.paymentTerm = { type: paymentTerm, days: paymentTerm === 'Credit' ? ApiReducer?.apiJson?.days : null }
+
+        console.log('newData', newData);
+        if(data?.ownAddress && data?.ownAddress!==null){
+            newData.ownAddress = data?.ownAddress
+        }else{
+            newData.ownAddress = B2BBillingAddress?.[0]
+        }
+        
+
         ApiHit(newData, addPI).then(res => {
             if (res.status === 201) {
                 var json = updateAvaialblePO(newData)
@@ -200,8 +212,8 @@ function AddPI({ orderData }) {
                                         <div className='mb-1'>
                                             <Title title={'Billing Address'} size={'lg'} color={Colors.BLACK} />
                                         </div>
-                                        <Title title={'A-4 Second Floor, Sarvodaya Enclave'} size={'md'} />
-                                        <Title title={'New Delhi 110017, India'} size={'md'} />
+                                        <Title title={data?.ownAddress && data?.ownAddress !== null ? data?.ownAddress?.address + ', ' + data?.ownAddress?.city : OrderInvoiceDetails?.companyDetails?.address?.address + ', ' + OrderInvoiceDetails?.companyDetails?.address?.city} size={'md'} />
+                                        <Title title={data?.ownAddress && data?.ownAddress !== null ? data?.ownAddress?.state + ' - ' + data?.ownAddress?.pinCode + ', ' + data?.ownAddress?.country : OrderInvoiceDetails?.companyDetails?.address?.state + ' - ' + OrderInvoiceDetails?.companyDetails?.address?.pinCode + ', ' + OrderInvoiceDetails?.companyDetails?.address?.country} size={'md'} />
                                     </div>
                                     <div>
                                         <div className='mb-1'>

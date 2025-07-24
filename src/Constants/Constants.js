@@ -212,3 +212,32 @@ export const QuotationInitiated = "Quotation_Initiated"
 export const OrderInitiated = "Order_Initiated"
 export const selectClass = "mt-1 w-full outline-none h-10 text-md rounded-lg border border-black placeholder:normal-case hover:border-slate-400 pl-2"
 export const tableTdClass = 'min-w-[150px] p-2 border text-black'
+
+
+
+
+
+export const B2BBillingAddress = [
+    {
+        companyName: "Headsup B2B",
+        gstNo: "07AARCA3767A1ZN",
+        panNo: "AARCA3767A",
+        cin: "U72900DL2018PTC338934",
+        address: "A-4 Second Floor",
+        city: "Sarvodaya Enclave",
+        state: "New Delhi",
+        pinCode: "110017",
+        country: "India"
+    },
+    {
+        companyName: "Headsup B2B",
+        gstNo: "08AARCA3767A1ZL",
+        panNo: "AARCA3767A",
+        cin: "U72900DL2018PTC338934",
+        address: "72/44, MANSAROVAR",
+        city: "Jaipur",
+        state: "Rajasthan",
+        pinCode: "302020",
+        country: "India"
+    }
+]
