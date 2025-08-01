@@ -258,9 +258,9 @@ export const B2BBillingAddress = [
         cin: "U72900DL2018PTC338934",
         address: "7-B Desk No 17, 3rd Floor",
         city: "Chinubhai House, NAVRNGURA, Hindu Colony",
-        state: "Ahmedabad",
-        pinCode: "Gujrat",
-        country: "380013"
+        state: "Ahmedabad, Gujrat",
+        pinCode: "380013",
+        country: "India"
     },
     
 ]
