@@ -239,5 +239,28 @@ export const B2BBillingAddress = [
         state: "Rajasthan",
         pinCode: "302020",
         country: "India"
-    }
+    },
+    {
+        companyName: "Headsup B2B",
+        gstNo: "10AARCA3767A1Z0",
+        panNo: "AARCA3767A",
+        cin: "U72900DL2018PTC338934",
+        address: "Flat 402, 4th Floor Sai Bhavana Apartment",
+        city: "Ashiana Nagar Maurya Path, ",
+        state: "Patna, Bihar",
+        pinCode: "800025",
+        country: "India"
+    },
+    {
+        companyName: "Headsup B2B",
+        gstNo: "24AARCA3767A1ZR",
+        panNo: "AARCA3767A",
+        cin: "U72900DL2018PTC338934",
+        address: "7-B Desk No 17, 3rd Floor",
+        city: "Chinubhai House, NAVRNGURA, Hindu Colony",
+        state: "Ahmedabad",
+        pinCode: "Gujrat",
+        country: "380013"
+    },
+    
 ]
