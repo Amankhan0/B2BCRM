@@ -1,0 +1,734 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+#main_div {
+  background: linear-gradient(162deg, #0885a6, #002443);
+  /* background-image: url('https://t4.ftcdn.net/jpg/06/56/23/47/360_F_656234769_2jhb8HiIazMjpB9stRG5ios0Mwq1TTrA.jpg'); */
+  /* background-image: url('https://img.freepik.com/free-photo/vivid-blurred-colorful-wallpaper-background_58702-2789.jpg'); */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#blurbg {
+  --bs-subheader-bg: #ffffff80;
+  --bs-subheader-color: #323232;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background-color: var(--bs-subheader-bg);
+  border-bottom: 1px solid var(--bs-subheader-border-bottom-color);
+  box-shadow: 0 1.6rem 3rem #0000001a;
+  color: var(--bs-subheader-color);
+  display: flex;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding: 0 0.75rem;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  will-change: backdrop-filter;
+  z-index: 1019;
+}
+
+/* Typewriter effect 1 */
+@keyframes typing {
+  0.0000%,
+  27.3488% {
+    content: "";
+  }
+  1.1395%,
+  26.2093% {
+    content: "M";
+  }
+  2.2791%,
+  25.0698% {
+    content: "Mo";
+  }
+  3.4186%,
+  23.9302% {
+    content: "Mob";
+  }
+  4.5581%,
+  22.7907% {
+    content: "Mobi";
+  }
+  5.6977%,
+  21.6512% {
+    content: "Mobil";
+  }
+  6.8372%,
+  20.5116% {
+    content: "Mobile";
+  }
+  7.9767%,
+  19.3721% {
+    content: "Mobile ";
+  }
+  9.1163%,
+  18.2326% {
+    content: "Mobile N";
+  }
+  10.2558%,
+  17.2093% {
+    content: "Mobile Nu";
+  }
+  11.2558%,
+  16.0698% {
+    content: "Mobile Num";
+  }
+  12.2558%,
+  15.9302% {
+    content: "Mobile Numb";
+  }
+  13.2558%,
+  14.7907% {
+    content: "Mobile Numbe";
+  }
+  14.2558%,
+  13.6512% {
+    content: "Mobile Number";
+  }
+
+  30.0000%,
+  51.3488% {
+    content: "";
+  }
+  31.1395%,
+  52.2093% {
+    content: "E";
+  }
+  32.2791%,
+  53.0698% {
+    content: "Em";
+  }
+  33.4186%,
+  54.9302% {
+    content: "Ema";
+  }
+  34.5581%,
+  55.7907% {
+    content: "Emai";
+  }
+  35.6977%,
+  56.6512% {
+    content: "Email";
+  }
+  36.8372%,
+  57.5116% {
+    content: "Email ";
+  }
+  37.9767%,
+  58.3721% {
+    content: "Email A";
+  }
+  39.1163%,
+  59.2326% {
+    content: "Email Ad";
+  }
+  40.2558%,
+  60.2093% {
+    content: "Email Add";
+  }
+  41.2558%,
+  61.0698% {
+    content: "Email Addr";
+  }
+  42.2558%,
+  62.9302% {
+    content: "Email Addre";
+  }
+  43.2558%,
+  63.7907% {
+    content: "Email Addres";
+  }
+  44.2558%,
+  64.6512% {
+    content: "Email Address";
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typewriter {
+  --caret: currentcolor;
+}
+
+.typewriter::before {
+  content: "";
+  animation: typing 13.5s infinite;
+}
+
+.header {
+  height: 80px;
+}
+.footer {
+  height: 50px;
+}
+.loginSignup {
+  min-height: calc(100vh - 130px);
+  overflow: hidden;
+}
+@media screen and (max-width: 768px) {
+  .loginimg {
+    background-image: none;
+  }
+  .header {
+    height: 60px;
+  }
+  .loginSignup {
+    min-height: calc(100vh - 110px);
+  }
+}
+
+/**/
+
+table tr {
+  margin-top: 20px;
+}
+
+.tooltip2 {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip2 .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: rgb(241, 238, 238);
+  color: black;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  /* margin-left: -60px; */
+}
+
+.tooltip2 .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(243, 241, 241) transparent transparent transparent;
+}
+
+.tooltip2:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 470px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(243, 241, 241) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+
+/* * {
+  scrollbar-color: #0885a6 lightblue;
+  scrollbar-width: 'thin';
+} */
+
+/* #acknowledge_card {
+  position: relative;
+  background-image: url("../src/Images/login.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
+#acknowledge_card::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.6); /* Adjust opacity here */
+/* } */
+
+.content {
+  position: relative; /* Ensure content stays on top */
+  z-index: 10000;
+  padding: 20px;
+}
+
+.flatpickr-day.selected {
+  background: #0885a6 !important; /* Set your desired background color */
+  color: white !important; /* Set text color */
+  border: 1px solid #0885a6 !important;
+}
+
+.blink-marker {
+  animation: blink 1s infinite;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+.loading-box {
+  width: 500px;
+  height: 400px; /* Adjust height as needed */
+  background-color: #f2f2f2; /* Adjust background color as needed */
+  animation: flash 1.5s infinite;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 600px;
+}
+
+.spinner {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #333;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.toolnoti {
+  position: relative;
+  display: inline-block;
+}
+
+.toolnoti .tooltiptextnoti {
+  visibility: hidden;
+  width: 250px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 20%;
+  margin-left: -60px;
+}
+
+.toolnoti:hover .tooltiptextnoti {
+  visibility: visible;
+}
+
+/* Comment this to match borders */
+.steps-list-looped {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  /* align-items: stretch; */
+  padding: 12px;
+}
+.steps-list-looped .step-wrapper {
+  text-align: center;
+  display: flex;
+  flex-flow: row nowrap;
+  /* justify-content: stretch; */
+  flex-basis: 33%;
+
+  /* flex-basis: 66%; */
+
+  margin-bottom: -1px;
+  border-bottom: 1px solid #0885a6;
+  /* You can style first and last element here */
+}
+.steps-list-looped .step-wrapper::before,
+.steps-list-looped .step-wrapper::after {
+  content: "";
+  display: block;
+  flex-basis: 100%;
+}
+.steps-list-looped .step-wrapper::before {
+  height: 50%;
+  border-bottom: 1px solid #0885a6;
+}
+.steps-list-looped .step-wrapper::after {
+  align-self: self-end;
+  margin-top: auto;
+  margin-bottom: -1px;
+  height: calc(50% + 2px);
+  border-top: 1px solid #0885a6;
+}
+.steps-list-looped .step-wrapper:first-child::before {
+  border-bottom-color: transparent;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.steps-list-looped .step-wrapper:last-child::after {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}
+
+@media only screen and (max-width: 399px) {
+  .step-wrapper {
+    flex-basis: 100% !important;
+  }
+  .step-wrapper:nth-child(1n)::after {
+    margin-right: -12px;
+    border-bottom: 1px solid #0885a6;
+    border-right: 1px solid #0885a6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  .step-wrapper:nth-child(1n + 1)::before {
+    margin-left: -12px;
+    border-top: 1px solid #0885a6;
+    border-left: 1px solid #0885a6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(1):nth-child(1n + 1) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(2):nth-child(1n + 1) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(1):nth-last-child(-n + 1) {
+    border-bottom-color: transparent;
+  }
+}
+@media only screen and (min-width: 400px) and (max-width: 749px) {
+  .step-wrapper {
+    flex-basis: 50% !important;
+  }
+  .step-wrapper:nth-child(2n)::after {
+    margin-right: -12px;
+    border-bottom: 1px solid #0885a6;
+    border-right: 1px solid #0885a6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  .step-wrapper:nth-child(2n + 1)::before {
+    margin-left: -12px;
+    border-top: 1px solid #0885a6;
+    border-left: 1px solid #0885a6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(1):nth-child(2n + 2) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(2):nth-child(2n + 2) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(3):nth-child(2n + 2) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(1):nth-last-child(-n + 2) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(2):nth-last-child(-n + 1) {
+    border-bottom-color: transparent;
+  }
+}
+@media only screen and (min-width: 750px) and (max-width: 999px) {
+  .step-wrapper {
+    flex-basis: 33.3333333333% !important;
+  }
+  .step-wrapper:nth-child(3n)::after {
+    margin-right: -12px;
+    border-bottom: 1px solid #0885a6;
+    border-right: 1px solid #0885a6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  .step-wrapper:nth-child(3n + 1)::before {
+    margin-left: -12px;
+    border-top: 1px solid #0885a6;
+    border-left: 1px solid #0885a6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(1):nth-child(3n + 3) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(2):nth-child(3n + 3) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(3):nth-child(3n + 3) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(4):nth-child(3n + 3) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(1):nth-last-child(-n + 3) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(2):nth-last-child(-n + 2) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(3):nth-last-child(-n + 1) {
+    border-bottom-color: transparent;
+  }
+}
+@media only screen and (min-width: 1000px) {
+  .step-wrapper {
+    flex-basis: 25% !important;
+  }
+  .step-wrapper:nth-child(4n)::after {
+    margin-right: -12px;
+    border-bottom: 1px solid #0885a6;
+    border-right: 1px solid #0885a6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  .step-wrapper:nth-child(4n + 1)::before {
+    margin-left: -12px;
+    border-top: 1px solid #0885a6;
+    border-left: 1px solid #0885a6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(1):nth-child(4n + 4) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(2):nth-child(4n + 4) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(3):nth-child(4n + 4) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(4):nth-child(4n + 4) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* Last line */
+  .step-wrapper:nth-last-child(5):nth-child(4n + 4) ~ .step-wrapper {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(1):nth-last-child(-n + 4) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(2):nth-last-child(-n + 3) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(3):nth-last-child(-n + 2) {
+    border-bottom-color: transparent;
+  }
+
+  /* First line (ex. 4 in row, but there is only 3) */
+  .step-wrapper:nth-child(4):nth-last-child(-n + 1) {
+    border-bottom-color: transparent;
+  }
+}
+/* Custom styling */
+.step-number {
+  color: #000;
+  width: max-content;
+  font-size: 12px;
+  /* height: 40px; */
+  /* border: 1px solid #eaeaea; */
+  /* border-radius: 50%; */
+  margin: 55px 15px;
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); */
+}
+
+.switcher {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switcher #switch-ev {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 2px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+#switch-ev:checked + .slider {
+  background-color: #2196f3;
+}
+
+#switch-ev:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+#switch-ev:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Header.css */
+.date-picker-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.date-picker-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+.date-picker-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.date-picker-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.vertical-line {
+  border-left: 2px solid black;
+  height: 100%; /* Adjust height dynamically */
+  margin: 0 auto; /* Center the line horizontally */
+  align-self: stretch; /* Make the line stretch vertically */
+}
