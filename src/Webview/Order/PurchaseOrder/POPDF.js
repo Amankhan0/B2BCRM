@@ -65,18 +65,37 @@ const POPDF = ({ data, onClickBack }) => {
             let currentY = padding;
 
             const desiredWidth = 50;
-            const logoAspectRatio = 3.5;
-            const logoHeight = desiredWidth / logoAspectRatio;
-
-            // 🟢 Add Logo (resized to original)
-            pdf.addImage(
-                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75",
-                "PNG",
-                padding,
-                currentY - 5,
-                desiredWidth,
-                logoHeight
-            );
+          const logoUrl =
+            "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+      
+          // 🟢 Load logo first to get natural aspect ratio
+          const loadImageAsBase64 = async (url) => {
+            const res = await fetch(url, { mode: "cors" });
+            const blob = await res.blob();
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            });
+          };
+      
+          const base64Logo = await loadImageAsBase64(logoUrl);
+      
+          const logoImg = new Image();
+          logoImg.src = base64Logo;
+          await new Promise((resolve) => {
+            logoImg.onload = resolve;
+          });
+      
+          const aspectRatio = logoImg.width / logoImg.height;
+          const logoHeight = desiredWidth / aspectRatio;
+      
+          // 🟢 Add Logo (fixed stretch issue)
+          pdf.addImage(base64Logo, "PNG", padding, currentY - 5, desiredWidth, logoHeight);
+            
+            
+            
 
             // 🟢 Company Details
             pdf.setFontSize(8);
@@ -92,7 +111,7 @@ const POPDF = ({ data, onClickBack }) => {
 
             // 🟢 Address on Right - Split into multiple lines dynamically
             const rightTextY = padding + 2;
-            const companyAddress = `${data?.ownAddress!==null?data?.ownAddress?.address:OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress!==null?data?.ownAddress?.city:OrderInvoiceDetails.companyDetails.address.city}, ${data?.ownAddress!==null?data?.ownAddress?.state:OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress!==null?data?.ownAddress?.pinCode:OrderInvoiceDetails.companyDetails.address.pinCode}, ${data?.ownAddress!==null?data?.ownAddress?.country:OrderInvoiceDetails.companyDetails.address.country}`;
+            const companyAddress = `${data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}, ${data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode}, ${data?.ownAddress !== null ? data?.ownAddress?.country : OrderInvoiceDetails.companyDetails.address.country}`;
             const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
             pdf.setFontSize(8);
             pdf.setFont("helvetica", "normal");
@@ -133,10 +152,10 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.setFontSize(8);
 
             const billingLines = [
-                `Company Name: ${data?.ownAddress !== null ? data?.ownAddress?.companyName:OrderInvoiceDetails.companyDetails.companyName}`,
-                `Address: ${data?.ownAddress !== null ? data?.ownAddress?.address:OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress !== null ? data?.ownAddress?.city:OrderInvoiceDetails.companyDetails.address.city}`,
-                `${data?.ownAddress !== null ? data?.ownAddress?.state:OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress !== null ? data?.ownAddress?.pinCode:OrderInvoiceDetails.companyDetails.address.pinCode}`,
-                `GST No: ${data?.ownAddress !== null ? data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}`,
+                `Company Name: ${data?.ownAddress !== null ? data?.ownAddress?.companyName : OrderInvoiceDetails.companyDetails.companyName}`,
+                `Address: ${data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}`,
+                `${data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode}`,
+                `GST No: ${data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}`,
             ];
 
             const shippingRaw = `Address: ${data.customerDetails.shippingAddress.address}, Tehsil: ${data.customerDetails.shippingAddress.city}, ${data.customerDetails.shippingAddress.state} - ${data.customerDetails.shippingAddress.pinCode}, ${data.customerDetails.shippingAddress.landmark}`;
@@ -248,76 +267,76 @@ const POPDF = ({ data, onClickBack }) => {
 
             pdf.addPage();
 
-const imgElement = document.querySelector("#file-renderer-image img");
+            const imgElement = document.querySelector("#file-renderer-image img");
 
-if (imgElement && imgElement.src) {
-    try {
-        let base64Img;
+            if (imgElement && imgElement.src) {
+                try {
+                    let base64Img;
 
-        // Check if img.src is already a base64 data URI
-        if (imgElement.src.startsWith("data:image")) {
-            base64Img = imgElement.src; // Already base64
-        } else {
-            // It's a URL, so fetch and convert to base64
-            const toBase64 = async (url) => {
-                const res = await fetch(url, { mode: 'cors' });
-                const blob = await res.blob();
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            };
+                    // Check if img.src is already a base64 data URI
+                    if (imgElement.src.startsWith("data:image")) {
+                        base64Img = imgElement.src; // Already base64
+                    } else {
+                        // It's a URL, so fetch and convert to base64
+                        const toBase64 = async (url) => {
+                            const res = await fetch(url, { mode: 'cors' });
+                            const blob = await res.blob();
+                            return new Promise((resolve, reject) => {
+                                const reader = new FileReader();
+                                reader.onloadend = () => resolve(reader.result);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(blob);
+                            });
+                        };
 
-            base64Img = await toBase64(imgElement.src);
-        }
+                        base64Img = await toBase64(imgElement.src);
+                    }
 
-        // Detect format
-        const format = base64Img.includes("image/jpeg")
-            ? "JPEG"
-            : base64Img.includes("image/png")
-            ? "PNG"
-            : "PNG"; // default fallback
+                    // Detect format
+                    const format = base64Img.includes("image/jpeg")
+                        ? "JPEG"
+                        : base64Img.includes("image/png")
+                            ? "PNG"
+                            : "PNG"; // default fallback
 
-        // Load into Image to get size
-        const tempImg = new Image();
-        tempImg.crossOrigin = "Anonymous";
-        tempImg.src = base64Img;
+                    // Load into Image to get size
+                    const tempImg = new Image();
+                    tempImg.crossOrigin = "Anonymous";
+                    tempImg.src = base64Img;
 
-        await new Promise((resolve, reject) => {
-            tempImg.onload = resolve;
-            tempImg.onerror = reject;
-        });
+                    await new Promise((resolve, reject) => {
+                        tempImg.onload = resolve;
+                        tempImg.onerror = reject;
+                    });
 
-        const imgWidth = tempImg.naturalWidth;
-        const imgHeight = tempImg.naturalHeight;
+                    const imgWidth = tempImg.naturalWidth;
+                    const imgHeight = tempImg.naturalHeight;
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const padding = 20;
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    const padding = 20;
 
-        const maxWidth = pageWidth - 2 * padding;
-        const maxHeight = pageHeight - 2 * padding;
+                    const maxWidth = pageWidth - 2 * padding;
+                    const maxHeight = pageHeight - 2 * padding;
 
-        const aspectRatio = imgWidth / imgHeight;
+                    const aspectRatio = imgWidth / imgHeight;
 
-        let displayWidth = maxWidth;
-        let displayHeight = displayWidth / aspectRatio;
+                    let displayWidth = maxWidth;
+                    let displayHeight = displayWidth / aspectRatio;
 
-        if (displayHeight > maxHeight) {
-            displayHeight = maxHeight;
-            displayWidth = displayHeight * aspectRatio;
-        }
+                    if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                    }
 
-        const x = (pageWidth - displayWidth) / 2;
-        const y = (pageHeight - displayHeight) / 2;
+                    const x = (pageWidth - displayWidth) / 2;
+                    const y = (pageHeight - displayHeight) / 2;
 
-        pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
-    } catch (error) {
-        console.error("Error loading image for PDF:", error);
-    }
-  }
+                    pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
+                } catch (error) {
+                    console.error("Error loading image for PDF:", error);
+                }
+            }
 
             // Save the PDF
             pdf.save("PurchaseOrder.pdf");
@@ -389,11 +408,11 @@ if (imgElement && imgElement.src) {
                     <div className="grid grid-cols-2">
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Billing Address</h3>
-                            <p className="text-xs p-0.5">Company Name : {data?.ownAddress !== null ? data?.ownAddress?.companyName:OrderInvoiceDetails.companyDetails.companyName}</p>
-                            <p className="text-xs p-0.5">Address : {data?.ownAddress !== null ? data?.ownAddress?.address:OrderInvoiceDetails.companyDetails.address.address}</p>
-                            <p className="text-xs p-0.5">{data?.ownAddress !== null ? data?.ownAddress?.city:OrderInvoiceDetails.companyDetails.address.city}</p>
-                            <p className="text-xs p-0.5">{data?.ownAddress !== null ? data?.ownAddress?.state:OrderInvoiceDetails.companyDetails.address.state} {data?.ownAddress !== null ? data?.ownAddress?.pinCode:OrderInvoiceDetails.companyDetails.address.pinCode} , {data?.ownAddress !== null ? data?.ownAddress?.country:OrderInvoiceDetails.companyDetails.address.country}</p>
-                            <p className="text-xs p-0.5">GSTIN: {data?.ownAddress !== null ? data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}</p>
+                            <p className="text-xs p-0.5">Company Name : {data?.ownAddress !== null ? data?.ownAddress?.companyName : OrderInvoiceDetails.companyDetails.companyName}</p>
+                            <p className="text-xs p-0.5">Address : {data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address}</p>
+                            <p className="text-xs p-0.5">{data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}</p>
+                            <p className="text-xs p-0.5">{data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} {data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode} , {data?.ownAddress !== null ? data?.ownAddress?.country : OrderInvoiceDetails.companyDetails.address.country}</p>
+                            <p className="text-xs p-0.5">GSTIN: {data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}</p>
                         </div>
                         <div>
                             <h3 style={{ color: Colors.ThemeBlue }}>Shipping Address</h3>

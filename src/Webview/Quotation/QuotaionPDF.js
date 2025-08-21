@@ -54,311 +54,593 @@ const QuotaionPDF = ({ data }) => {
         }
     }, [totalAmount])
 
+    // const downloadPDF = async () => {
+    //     try {
+    //         const pdf = new jsPDF("p", "mm", "a4");
+    //         const pageWidth = pdf.internal.pageSize.getWidth();
+    //         const pageHeight = pdf.internal.pageSize.getHeight();
+    //         const padding = 10;
+    //         let currentY = padding;
+
+    //         // Logo settings
+    //         const desiredWidth = 50;
+    //         const logoAspectRatio = 3.5;
+    //         const logoHeight = desiredWidth / logoAspectRatio;
+    //         const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+
+    //         // 🟢 Add Logo
+    //         pdf.addImage(logoUrl, "PNG", padding, currentY, desiredWidth, logoHeight);
+
+    //         // 🟢 Company Details on Left (below logo with increased spacing)
+    //         pdf.setFontSize(8);
+    //         pdf.setFont("helvetica", "bold");
+    //         pdf.setTextColor(0, 0, 0);
+    //         currentY += logoHeight + 8; // Increased spacing from 3 to 8
+
+    //         pdf.text(`GSTIN: ${data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
+    //         currentY += 5;
+    //         pdf.text(`CIN: ${data?.ownAddress !== null ? data?.ownAddress?.cin : OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
+    //         currentY += 5;
+    //         pdf.text(`PAN: ${data?.ownAddress !== null ? data?.ownAddress?.panNo : OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
+
+    //         // 🟢 Company Address on Right (formatted as two lines)
+    //         const rightTextY = padding + 2;
+    //         // Split the address into two lines
+    //         const addressLine1 = data?.ownAddress !== null ? `${data?.ownAddress?.address}, ${data?.ownAddress?.city}` : `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}`;
+    //         const addressLine2 = data?.ownAddress !== null ? `${data?.ownAddress?.state} - ${data?.ownAddress?.pinCode}, ${data?.ownAddress?.country}` : `${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode},  ${OrderInvoiceDetails.companyDetails.address.country}`;
+
+    //         pdf.setFontSize(8);
+    //         pdf.setFont("helvetica", "normal");
+    //         pdf.text(addressLine1, pageWidth - padding, rightTextY, { align: "right" });
+    //         pdf.text(addressLine2, pageWidth - padding, rightTextY + 4, { align: "right" });
+
+    //         // Calculate proper spacing (accounting for two-line address)
+    //         const addressHeight = 8; // Two lines * 4 spacing
+    //         currentY = Math.max(currentY, rightTextY + addressHeight);
+
+    //         // 🟢 Horizontal Line
+    //         currentY += 15; // Increased spacing from 10 to 15
+    //         pdf.setDrawColor(67, 42, 119);
+    //         pdf.setLineWidth(0.5);
+    //         pdf.line(padding, currentY, pageWidth - padding, currentY);
+    //         currentY += 8;
+
+    //         // 🟢 Customer & Quotation Headers
+    //         pdf.setFont("helvetica", "bold");
+    //         pdf.setTextColor(67, 42, 119);
+    //         pdf.setFontSize(10);
+    //         pdf.text("Customer", padding, currentY);
+    //         pdf.text("Quotation", pageWidth - padding, currentY, { align: "right" });
+
+    //         currentY += 8;
+    //         pdf.setFont("helvetica", "normal");
+    //         pdf.setTextColor(0, 0, 0);
+    //         pdf.setFontSize(8);
+
+    //         // 🟢 Customer Details (Left Side)
+    //         const customerStartY = currentY;
+    //         pdf.text(`Company Name: ${data?.customerDetails?.companyName || '-'}`, padding, currentY);
+    //         currentY += 5;
+    //         pdf.text(`Customer Name: ${data?.customerDetails?.name || '-'}`, padding, currentY);
+    //         currentY += 5;
+    //         pdf.text(`Contact No: ${data?.customerDetails?.contact || '-'}`, padding, currentY);
+    //         currentY += 5;
+    //         pdf.text(`Email ID: ${data?.customerDetails?.email || '-'}`, padding, currentY);
+
+    //         // 🟢 Quotation Details (Right Side)
+    //         let quotationY = customerStartY;
+    //         pdf.text(`Quotation Ref No: ${data?.quotationRefNo}`, pageWidth - padding, quotationY, { align: 'right' });
+    //         quotationY += 5;
+    //         pdf.text(`Date: ${GetFullYear(Number(data?.createdAt))}`, pageWidth - padding, quotationY, { align: 'right' });
+
+    //         currentY += 10;
+
+    //         // 🟢 Horizontal Line
+    //         pdf.line(padding, currentY, pageWidth - padding, currentY);
+    //         currentY += 8;
+
+    //         // 🟢 Product Table with GST only (no CGST/SGST)
+    //         const headRow = [['Product', 'Variant', 'HSN', 'Qty', 'Rate', 'GST Amount (%)', 'Amount']];
+
+    //         const body = data.products.map(ele => {
+    //             const baseAmount = Number(ele.price) * Number(ele.qty);
+    //             const productName = ele.product_id.productName;
+    //             const variantName = ele.productVarient.varientName;
+
+    //             return [
+    //                 productName,
+    //                 variantName,
+    //                 ele.product_id.hsnNo,
+    //                 ele.qty,
+    //                 ele.price,
+    //                 `${GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2)} (${ele.productVarient.gst}%)`,
+    //                 baseAmount.toFixed(2)
+    //             ];
+    //         });
+
+    //         pdf.autoTable({
+    //             startY: currentY,
+    //             head: headRow,
+    //             body: body,
+    //             theme: 'grid',
+    //             headStyles: {
+    //                 fillColor: Colors.ThemeBlue,
+    //                 textColor: '#fff',
+    //                 fontSize: 9
+    //             },
+    //             bodyStyles: { fontSize: 8 },
+    //             columnStyles: {
+    //                 0: { cellWidth: 35 },     // Product
+    //                 1: { cellWidth: 55 },     // Variant (increased width)
+    //                 2: { cellWidth: 20 },     // HSN
+    //                 3: { cellWidth: 12 },     // Qty
+    //                 4: { cellWidth: 13 },     // Rate
+    //                 5: { cellWidth: 25 },     // GST Amount
+    //                 6: { cellWidth: 25 }      // Amount
+    //             }
+    //         });
+
+    //         currentY = pdf.lastAutoTable.finalY + 10;
+
+    //         // 🟢 Totals Section - Show GST only
+    //         pdf.setFontSize(10);
+    //         pdf.setFont("helvetica", "normal");
+
+    //         const totals = [
+    //             `Total Amount: ${totalAmount}`,
+    //             `Total GST: ${totalGSTAmount?.toFixed(2)}`
+    //         ];
+
+    //         // Draw totals
+    //         totals.forEach((total, index) => {
+    //             if (currentY + 15 > pageHeight - 40) {
+    //                 pdf.addPage();
+    //                 currentY = padding;
+    //             }
+    //             pdf.text(total, padding, currentY);
+    //             currentY += 6;
+    //         });
+
+    //         // Total Taxable Amount with word conversion
+    //         if (currentY + 20 > pageHeight - 40) {
+    //             pdf.addPage();
+    //             currentY = padding;
+    //         }
+
+    //         const totalText = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`;
+    //         const wrappedTotalText = pdf.splitTextToSize(totalText, pageWidth - 2 * padding);
+    //         pdf.text(wrappedTotalText, padding, currentY);
+    //         currentY += wrappedTotalText.length * 5 + 10;
+
+    //         // 🟢 Terms & Conditions
+    //         if (data?.termsAndConditions && data.termsAndConditions !== "<p><strong></strong></p>") {
+    //             if (currentY + 30 > pageHeight - 40) {
+    //                 pdf.addPage();
+    //                 currentY = padding;
+    //             }
+
+    //             // Add "Terms & Conditions" header in bold
+    //             pdf.setFont("helvetica", "bold");
+    //             pdf.setFontSize(10);
+    //             pdf.setTextColor(67, 42, 119);
+    //             pdf.text("Terms & Conditions", padding, currentY);
+    //             currentY += 5; // Reduced spacing
+
+    //             // Reset font for terms content
+    //             pdf.setFont("helvetica", "normal");
+    //             pdf.setTextColor(0, 0, 0);
+    //             pdf.setFontSize(8);
+
+    //             // Remove "Terms & Conditions" from the beginning of the text if it exists
+    //             let cleanedText = termsRef.current.innerText;
+    //             if (cleanedText.startsWith("Terms & Conditions")) {
+    //                 cleanedText = cleanedText.replace(/^Terms & Conditions\s*/, "");
+    //             }
+
+    //             const termsText = cleanedText.split("\n").filter(line => line.trim() !== "").map(line => [line]);
+
+    //             pdf.autoTable({
+    //                 startY: currentY,
+    //                 body: termsText,
+    //                 theme: 'plain',
+    //                 styles: { fontSize: 8, cellPadding: 0.5 }, // Reduced padding
+    //                 margin: { left: padding, right: padding }
+    //             });
+
+    //             currentY = pdf.lastAutoTable.finalY + 5; // Reduced spacing after
+    //         }
+
+    //         // 🟢 Signature Section
+    //         if (currentY + 50 > pageHeight) {
+    //             pdf.addPage();
+    //             currentY = padding + 30;
+    //         }
+
+    //         pdf.setFontSize(10);
+    //         pdf.text("Thanking you,", padding, currentY);
+    //         pdf.text("Best Regards", padding, currentY + 5);
+    //         pdf.text(`${data?.regards?.name}`, padding, currentY + 10);
+    //         pdf.text(`${data?.regards?.contact}`, padding, currentY + 15);
+
+    //         // Add signature image on the right
+    //         pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
+
+
+
+
+
+
+
+    //         // pdf.addPage();
+
+    //         // const imgElement = document.querySelector("#file-renderer-image img");
+
+    //         // if (imgElement && imgElement.src) {
+    //         //     try {
+    //         //         let base64Img;
+
+    //         //         // Check if img.src is already a base64 data URI
+    //         //         if (imgElement.src.startsWith("data:image")) {
+    //         //             base64Img = imgElement.src; // Already base64
+    //         //         } else {
+    //         //             // It's a URL, so fetch and convert to base64
+    //         //             const toBase64 = async (url) => {
+    //         //                 const res = await fetch(url, { mode: 'cors' });
+    //         //                 const blob = await res.blob();
+    //         //                 return new Promise((resolve, reject) => {
+    //         //                     const reader = new FileReader();
+    //         //                     reader.onloadend = () => resolve(reader.result);
+    //         //                     reader.onerror = reject;
+    //         //                     reader.readAsDataURL(blob);
+    //         //                 });
+    //         //             };
+
+    //         //             base64Img = await toBase64(imgElement.src);
+    //         //         }
+
+    //         //         // Detect format
+    //         //         const format = base64Img.includes("image/jpeg")
+    //         //             ? "JPEG"
+    //         //             : base64Img.includes("image/png")
+    //         //                 ? "PNG"
+    //         //                 : "PNG"; // default fallback
+
+    //         //         // Load into Image to get size
+    //         //         const tempImg = new Image();
+    //         //         tempImg.crossOrigin = "Anonymous";
+    //         //         tempImg.src = base64Img;
+
+    //         //         await new Promise((resolve, reject) => {
+    //         //             tempImg.onload = resolve;
+    //         //             tempImg.onerror = reject;
+    //         //         });
+
+    //         //         const imgWidth = tempImg.naturalWidth;
+    //         //         const imgHeight = tempImg.naturalHeight;
+
+    //         //         const pageWidth = pdf.internal.pageSize.getWidth();
+    //         //         const pageHeight = pdf.internal.pageSize.getHeight();
+    //         //         const padding = 20;
+
+    //         //         const maxWidth = pageWidth - 2 * padding;
+    //         //         const maxHeight = pageHeight - 2 * padding;
+
+    //         //         const aspectRatio = imgWidth / imgHeight;
+
+    //         //         let displayWidth = maxWidth;
+    //         //         let displayHeight = displayWidth / aspectRatio;
+
+    //         //         if (displayHeight > maxHeight) {
+    //         //             displayHeight = maxHeight;
+    //         //             displayWidth = displayHeight * aspectRatio;
+    //         //         }
+
+    //         //         const x = (pageWidth - displayWidth) / 2;
+    //         //         const y = (pageHeight - displayHeight) / 2;
+
+    //         //         pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
+    //         //     } catch (error) {
+    //         //         console.error("Error loading image for PDF:", error);
+    //         //     }
+    //         // }
+
+
+
+
+
+
+
+
+
+    //         // 🟢 Save PDF
+    //         pdf.save("Quotation.pdf");
+
+    //     } catch (error) {
+    //         console.error("Error generating PDF:", error);
+    //     }
+    // };
+
     const downloadPDF = async () => {
         try {
-            const pdf = new jsPDF("p", "mm", "a4");
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const padding = 10;
-            let currentY = padding;
-
-            // Logo settings
-            const desiredWidth = 50;
-            const logoAspectRatio = 3.5;
-            const logoHeight = desiredWidth / logoAspectRatio;
-            const logoUrl = "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
-
-            // 🟢 Add Logo
-            pdf.addImage(logoUrl, "PNG", padding, currentY, desiredWidth, logoHeight);
-
-            // 🟢 Company Details on Left (below logo with increased spacing)
-            pdf.setFontSize(8);
-            pdf.setFont("helvetica", "bold");
-            pdf.setTextColor(0, 0, 0);
-            currentY += logoHeight + 8; // Increased spacing from 3 to 8
-
-            pdf.text(`GSTIN: ${data?.ownAddress!==null?data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
-            currentY += 5;
-            pdf.text(`CIN: ${data?.ownAddress!==null?data?.ownAddress?.cin:OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
-            currentY += 5;
-            pdf.text(`PAN: ${data?.ownAddress!==null?data?.ownAddress?.panNo:OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
-
-            // 🟢 Company Address on Right (formatted as two lines)
-            const rightTextY = padding + 2;
-            // Split the address into two lines
-            const addressLine1 = data?.ownAddress!==null?`${data?.ownAddress?.address}, ${data?.ownAddress?.city}` : `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}`;
-            const addressLine2 = data?.ownAddress!==null?`${data?.ownAddress?.state} - ${data?.ownAddress?.pinCode}, ${data?.ownAddress?.country}`:`${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode},  ${OrderInvoiceDetails.companyDetails.address.country}`;
-
-            pdf.setFontSize(8);
-            pdf.setFont("helvetica", "normal");
-            pdf.text(addressLine1, pageWidth - padding, rightTextY, { align: "right" });
-            pdf.text(addressLine2, pageWidth - padding, rightTextY + 4, { align: "right" });
-
-            // Calculate proper spacing (accounting for two-line address)
-            const addressHeight = 8; // Two lines * 4 spacing
-            currentY = Math.max(currentY, rightTextY + addressHeight);
-
-            // 🟢 Horizontal Line
-            currentY += 15; // Increased spacing from 10 to 15
-            pdf.setDrawColor(67, 42, 119);
-            pdf.setLineWidth(0.5);
-            pdf.line(padding, currentY, pageWidth - padding, currentY);
-            currentY += 8;
-
-            // 🟢 Customer & Quotation Headers
-            pdf.setFont("helvetica", "bold");
-            pdf.setTextColor(67, 42, 119);
-            pdf.setFontSize(10);
-            pdf.text("Customer", padding, currentY);
-            pdf.text("Quotation", pageWidth - padding, currentY, { align: "right" });
-
-            currentY += 8;
-            pdf.setFont("helvetica", "normal");
-            pdf.setTextColor(0, 0, 0);
-            pdf.setFontSize(8);
-
-            // 🟢 Customer Details (Left Side)
-            const customerStartY = currentY;
-            pdf.text(`Company Name: ${data?.customerDetails?.companyName || '-'}`, padding, currentY);
-            currentY += 5;
-            pdf.text(`Customer Name: ${data?.customerDetails?.name || '-'}`, padding, currentY);
-            currentY += 5;
-            pdf.text(`Contact No: ${data?.customerDetails?.contact || '-'}`, padding, currentY);
-            currentY += 5;
-            pdf.text(`Email ID: ${data?.customerDetails?.email || '-'}`, padding, currentY);
-
-            // 🟢 Quotation Details (Right Side)
-            let quotationY = customerStartY;
-            pdf.text(`Quotation Ref No: ${data?.quotationRefNo}`, pageWidth - padding, quotationY, { align: 'right' });
-            quotationY += 5;
-            pdf.text(`Date: ${GetFullYear(Number(data?.createdAt))}`, pageWidth - padding, quotationY, { align: 'right' });
-
-            currentY += 10;
-
-            // 🟢 Horizontal Line
-            pdf.line(padding, currentY, pageWidth - padding, currentY);
-            currentY += 8;
-
-            // 🟢 Product Table with GST only (no CGST/SGST)
-            const headRow = [['Product', 'Variant', 'HSN', 'Qty', 'Rate', 'GST Amount (%)', 'Amount']];
-
-            const body = data.products.map(ele => {
-                const baseAmount = Number(ele.price) * Number(ele.qty);
-                const productName = ele.product_id.productName;
-                const variantName = ele.productVarient.varientName;
-
-                return [
-                    productName,
-                    variantName,
-                    ele.product_id.hsnNo,
-                    ele.qty,
-                    ele.price,
-                    `${GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2)} (${ele.productVarient.gst}%)`,
-                    baseAmount.toFixed(2)
-                ];
+          const pdf = new jsPDF("p", "mm", "a4");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const padding = 10;
+          let currentY = padding;
+      
+          // Logo settings
+          const desiredWidth = 50;
+          const logoUrl =
+            "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+      
+          // 🟢 Load logo first to get natural aspect ratio
+          const loadImageAsBase64 = async (url) => {
+            const res = await fetch(url, { mode: "cors" });
+            const blob = await res.blob();
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
             });
-
-            pdf.autoTable({
-                startY: currentY,
-                head: headRow,
-                body: body,
-                theme: 'grid',
-                headStyles: {
-                    fillColor: Colors.ThemeBlue,
-                    textColor: '#fff',
-                    fontSize: 9
-                },
-                bodyStyles: { fontSize: 8 },
-                columnStyles: {
-                    0: { cellWidth: 35 },     // Product
-                1: { cellWidth: 55 },     // Variant (increased width)
-                2: { cellWidth: 20 },     // HSN
-                3: { cellWidth: 8 },     // Qty
-                4: { cellWidth: 13 },     // Rate
-                5: { cellWidth: 25 },     // GST Amount
-                6: { cellWidth: 25 }      // Amount
-                }
-            });
-
-            currentY = pdf.lastAutoTable.finalY + 10;
-
-            // 🟢 Totals Section - Show GST only
-            pdf.setFontSize(10);
-            pdf.setFont("helvetica", "normal");
-
-            const totals = [
-                `Total Amount: ${totalAmount}`,
-                `Total GST: ${totalGSTAmount?.toFixed(2)}`
+          };
+      
+          const base64Logo = await loadImageAsBase64(logoUrl);
+      
+          const logoImg = new Image();
+          logoImg.src = base64Logo;
+          await new Promise((resolve) => {
+            logoImg.onload = resolve;
+          });
+      
+          const aspectRatio = logoImg.width / logoImg.height;
+          const logoHeight = desiredWidth / aspectRatio;
+      
+          // 🟢 Add Logo (fixed stretch issue)
+          pdf.addImage(base64Logo, "PNG", padding, currentY, desiredWidth, logoHeight);
+      
+          // 🟢 Company Details on Left (below logo with increased spacing)
+          pdf.setFontSize(8);
+          pdf.setFont("helvetica", "bold");
+          pdf.setTextColor(0, 0, 0);
+          currentY += logoHeight + 8; // Increased spacing from 3 to 8
+      
+          pdf.text(
+            `GSTIN: ${
+              data?.ownAddress !== null
+                ? data?.ownAddress?.gstNo
+                : OrderInvoiceDetails.companyDetails.gstNo
+            }`,
+            padding,
+            currentY
+          );
+          currentY += 5;
+          pdf.text(
+            `CIN: ${
+              data?.ownAddress !== null
+                ? data?.ownAddress?.cin
+                : OrderInvoiceDetails.companyDetails.cin
+            }`,
+            padding,
+            currentY
+          );
+          currentY += 5;
+          pdf.text(
+            `PAN: ${
+              data?.ownAddress !== null
+                ? data?.ownAddress?.panNo
+                : OrderInvoiceDetails.companyDetails.panNo
+            }`,
+            padding,
+            currentY
+          );
+      
+          // 🟢 Company Address on Right (formatted as two lines)
+          const rightTextY = padding + 2;
+          const addressLine1 =
+            data?.ownAddress !== null
+              ? `${data?.ownAddress?.address}, ${data?.ownAddress?.city}`
+              : `${OrderInvoiceDetails.companyDetails.address.address}, ${OrderInvoiceDetails.companyDetails.address.city}`;
+          const addressLine2 =
+            data?.ownAddress !== null
+              ? `${data?.ownAddress?.state} - ${data?.ownAddress?.pinCode}, ${data?.ownAddress?.country}`
+              : `${OrderInvoiceDetails.companyDetails.address.state} - ${OrderInvoiceDetails.companyDetails.address.pinCode},  ${OrderInvoiceDetails.companyDetails.address.country}`;
+      
+          pdf.setFontSize(8);
+          pdf.setFont("helvetica", "normal");
+          pdf.text(addressLine1, pageWidth - padding, rightTextY, { align: "right" });
+          pdf.text(addressLine2, pageWidth - padding, rightTextY + 4, {
+            align: "right",
+          });
+      
+          const addressHeight = 8;
+          currentY = Math.max(currentY, rightTextY + addressHeight);
+      
+          // 🟢 Horizontal Line
+          currentY += 15;
+          pdf.setDrawColor(67, 42, 119);
+          pdf.setLineWidth(0.5);
+          pdf.line(padding, currentY, pageWidth - padding, currentY);
+          currentY += 8;
+      
+          // 🟢 Customer & Quotation Headers
+          pdf.setFont("helvetica", "bold");
+          pdf.setTextColor(67, 42, 119);
+          pdf.setFontSize(10);
+          pdf.text("Customer", padding, currentY);
+          pdf.text("Quotation", pageWidth - padding, currentY, { align: "right" });
+      
+          currentY += 8;
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(0, 0, 0);
+          pdf.setFontSize(8);
+      
+          // 🟢 Customer Details (Left Side)
+          const customerStartY = currentY;
+          pdf.text(
+            `Company Name: ${data?.customerDetails?.companyName || "-"}`,
+            padding,
+            currentY
+          );
+          currentY += 5;
+          pdf.text(
+            `Customer Name: ${data?.customerDetails?.name || "-"}`,
+            padding,
+            currentY
+          );
+          currentY += 5;
+          pdf.text(
+            `Contact No: ${data?.customerDetails?.contact || "-"}`,
+            padding,
+            currentY
+          );
+          currentY += 5;
+          pdf.text(
+            `Email ID: ${data?.customerDetails?.email || "-"}`,
+            padding,
+            currentY
+          );
+      
+          // 🟢 Quotation Details (Right Side)
+          let quotationY = customerStartY;
+          pdf.text(`Quotation Ref No: ${data?.quotationRefNo}`, pageWidth - padding, quotationY, {
+            align: "right",
+          });
+          quotationY += 5;
+          pdf.text(`Date: ${GetFullYear(Number(data?.createdAt))}`, pageWidth - padding, quotationY, {
+            align: "right",
+          });
+      
+          currentY += 10;
+      
+          // 🟢 Horizontal Line
+          pdf.line(padding, currentY, pageWidth - padding, currentY);
+          currentY += 8;
+      
+          // 🟢 Product Table with GST only
+          const headRow = [["Product", "Variant", "HSN", "Qty", "Rate", "GST Amount (%)", "Amount"]];
+          const body = data.products.map((ele) => {
+            const baseAmount = Number(ele.price) * Number(ele.qty);
+            const productName = ele.product_id.productName;
+            const variantName = ele.productVarient.varientName;
+            return [
+              productName,
+              variantName,
+              ele.product_id.hsnNo,
+              ele.qty,
+              ele.price,
+              `${GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2)} (${ele.productVarient.gst}%)`,
+              baseAmount.toFixed(2),
             ];
-
-            // Draw totals
-            totals.forEach((total, index) => {
-                if (currentY + 15 > pageHeight - 40) {
-                    pdf.addPage();
-                    currentY = padding;
-                }
-                pdf.text(total, padding, currentY);
-                currentY += 6;
-            });
-
-            // Total Taxable Amount with word conversion
-            if (currentY + 20 > pageHeight - 40) {
-                pdf.addPage();
-                currentY = padding;
+          });
+      
+          pdf.autoTable({
+            startY: currentY,
+            head: headRow,
+            body: body,
+            theme: "grid",
+            headStyles: {
+              fillColor: Colors.ThemeBlue,
+              textColor: "#fff",
+              fontSize: 9,
+            },
+            bodyStyles: { fontSize: 8 },
+            columnStyles: {
+              0: { cellWidth: 35 },
+              1: { cellWidth: 55 },
+              2: { cellWidth: 20 },
+              3: { cellWidth: 12 },
+              4: { cellWidth: 13 },
+              5: { cellWidth: 25 },
+              6: { cellWidth: 25 },
+            },
+          });
+      
+          currentY = pdf.lastAutoTable.finalY + 10;
+      
+          // 🟢 Totals Section
+          pdf.setFontSize(10);
+          pdf.setFont("helvetica", "normal");
+      
+          const totals = [`Total Amount: ${totalAmount}`, `Total GST: ${totalGSTAmount?.toFixed(2)}`];
+      
+          totals.forEach((total) => {
+            if (currentY + 15 > pageHeight - 40) {
+              pdf.addPage();
+              currentY = padding;
             }
-
-            const totalText = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(totalTaxAmount?.toFixed(2))})`;
-            const wrappedTotalText = pdf.splitTextToSize(totalText, pageWidth - 2 * padding);
-            pdf.text(wrappedTotalText, padding, currentY);
-            currentY += wrappedTotalText.length * 5 + 10;
-
-            // 🟢 Terms & Conditions
-            if (data?.termsAndConditions && data.termsAndConditions !== "<p><strong></strong></p>") {
-                if (currentY + 30 > pageHeight - 40) {
-                    pdf.addPage();
-                    currentY = padding;
-                }
-
-                // Add "Terms & Conditions" header in bold
-                pdf.setFont("helvetica", "bold");
-                pdf.setFontSize(10);
-                pdf.setTextColor(67, 42, 119);
-                pdf.text("Terms & Conditions", padding, currentY);
-                currentY += 5; // Reduced spacing
-
-                // Reset font for terms content
-                pdf.setFont("helvetica", "normal");
-                pdf.setTextColor(0, 0, 0);
-                pdf.setFontSize(8);
-
-                // Remove "Terms & Conditions" from the beginning of the text if it exists
-                let cleanedText = termsRef.current.innerText;
-                if (cleanedText.startsWith("Terms & Conditions")) {
-                    cleanedText = cleanedText.replace(/^Terms & Conditions\s*/, "");
-                }
-
-                const termsText = cleanedText.split("\n").filter(line => line.trim() !== "").map(line => [line]);
-
-                pdf.autoTable({
-                    startY: currentY,
-                    body: termsText,
-                    theme: 'plain',
-                    styles: { fontSize: 8, cellPadding: 0.5 }, // Reduced padding
-                    margin: { left: padding, right: padding }
-                });
-
-                currentY = pdf.lastAutoTable.finalY + 5; // Reduced spacing after
-            }
-
-            // 🟢 Signature Section
-            if (currentY + 50 > pageHeight) {
-                pdf.addPage();
-                currentY = padding + 30;
-            }
-
-            pdf.setFontSize(10);
-            pdf.text("Thanking you,", padding, currentY);
-            pdf.text("Best Regards", padding, currentY + 5);
-            pdf.text(`${data?.regards?.name}`, padding, currentY + 10);
-            pdf.text(`${data?.regards?.contact}`, padding, currentY + 15);
-
-            // Add signature image on the right
-            pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
-
-
-
-
-
-
-
+            pdf.text(total, padding, currentY);
+            currentY += 6;
+          });
+      
+          if (currentY + 20 > pageHeight - 40) {
             pdf.addPage();
-
-const imgElement = document.querySelector("#file-renderer-image img");
-
-if (imgElement && imgElement.src) {
-    try {
-        let base64Img;
-
-        // Check if img.src is already a base64 data URI
-        if (imgElement.src.startsWith("data:image")) {
-            base64Img = imgElement.src; // Already base64
-        } else {
-            // It's a URL, so fetch and convert to base64
-            const toBase64 = async (url) => {
-                const res = await fetch(url, { mode: 'cors' });
-                const blob = await res.blob();
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            };
-
-            base64Img = await toBase64(imgElement.src);
-        }
-
-        // Detect format
-        const format = base64Img.includes("image/jpeg")
-            ? "JPEG"
-            : base64Img.includes("image/png")
-            ? "PNG"
-            : "PNG"; // default fallback
-
-        // Load into Image to get size
-        const tempImg = new Image();
-        tempImg.crossOrigin = "Anonymous";
-        tempImg.src = base64Img;
-
-        await new Promise((resolve, reject) => {
-            tempImg.onload = resolve;
-            tempImg.onerror = reject;
-        });
-
-        const imgWidth = tempImg.naturalWidth;
-        const imgHeight = tempImg.naturalHeight;
-
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const padding = 20;
-
-        const maxWidth = pageWidth - 2 * padding;
-        const maxHeight = pageHeight - 2 * padding;
-
-        const aspectRatio = imgWidth / imgHeight;
-
-        let displayWidth = maxWidth;
-        let displayHeight = displayWidth / aspectRatio;
-
-        if (displayHeight > maxHeight) {
-            displayHeight = maxHeight;
-            displayWidth = displayHeight * aspectRatio;
-        }
-
-        const x = (pageWidth - displayWidth) / 2;
-        const y = (pageHeight - displayHeight) / 2;
-
-        pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
-    } catch (error) {
-        console.error("Error loading image for PDF:", error);
-    }
-}
-
-
-
-
-
-
-
-
-
-            // 🟢 Save PDF
-            pdf.save("Quotation.pdf");
-
+            currentY = padding;
+          }
+      
+          const totalText = `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(
+            totalTaxAmount?.toFixed(2)
+          )})`;
+          const wrappedTotalText = pdf.splitTextToSize(totalText, pageWidth - 2 * padding);
+          pdf.text(wrappedTotalText, padding, currentY);
+          currentY += wrappedTotalText.length * 5 + 10;
+      
+          // 🟢 Terms & Conditions
+          if (data?.termsAndConditions && data.termsAndConditions !== "<p><strong></strong></p>") {
+            if (currentY + 30 > pageHeight - 40) {
+              pdf.addPage();
+              currentY = padding;
+            }
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(10);
+            pdf.setTextColor(67, 42, 119);
+            pdf.text("Terms & Conditions", padding, currentY);
+            currentY += 5;
+      
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+      
+            let cleanedText = termsRef.current.innerText;
+            if (cleanedText.startsWith("Terms & Conditions")) {
+              cleanedText = cleanedText.replace(/^Terms & Conditions\s*/, "");
+            }
+            const termsText = cleanedText
+              .split("\n")
+              .filter((line) => line.trim() !== "")
+              .map((line) => [line]);
+      
+            pdf.autoTable({
+              startY: currentY,
+              body: termsText,
+              theme: "plain",
+              styles: { fontSize: 8, cellPadding: 0.5 },
+              margin: { left: padding, right: padding },
+            });
+      
+            currentY = pdf.lastAutoTable.finalY + 5;
+          }
+      
+          // 🟢 Signature Section
+          if (currentY + 50 > pageHeight) {
+            pdf.addPage();
+            currentY = padding + 30;
+          }
+          pdf.setFontSize(10);
+          pdf.text("Thanking you,", padding, currentY);
+          pdf.text("Best Regards", padding, currentY + 5);
+          pdf.text(`${data?.regards?.name}`, padding, currentY + 10);
+          pdf.text(`${data?.regards?.contact}`, padding, currentY + 15);
+      
+          pdf.addImage(signature, "PNG", pageWidth - 60, currentY, 40, 40);
+      
+          // 🟢 Save PDF
+          pdf.save("Quotation.pdf");
         } catch (error) {
-            console.error("Error generating PDF:", error);
+          console.error("Error generating PDF:", error);
         }
-    };
+      };
+      
 
     console.log('data', data);//Quotation.pdf
 
@@ -379,16 +661,16 @@ if (imgElement && imgElement.src) {
                             src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
                             alt="Company Logo"
                         />
-                        <p className="text-xs mt-3">GSTIN: {data?.ownAddress!==null?data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}</p>
-                        <p className="text-xs">CIN: {data?.ownAddress!==null?data?.ownAddress?.cin:OrderInvoiceDetails.companyDetails.cin}</p>
-                        <p className="text-xs">PAN: {data?.ownAddress!==null?data?.ownAddress?.panNo:OrderInvoiceDetails.companyDetails.panNo}</p>
+                        <p className="text-xs mt-3">GSTIN: {data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}</p>
+                        <p className="text-xs">CIN: {data?.ownAddress !== null ? data?.ownAddress?.cin : OrderInvoiceDetails.companyDetails.cin}</p>
+                        <p className="text-xs">PAN: {data?.ownAddress !== null ? data?.ownAddress?.panNo : OrderInvoiceDetails.companyDetails.panNo}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-sm">{data?.ownAddress!==null?data?.ownAddress?.address + ', ':OrderInvoiceDetails.companyDetails.address.address}</p>
-                        <p className="text-sm">{data?.ownAddress!==null?data?.ownAddress?.city:OrderInvoiceDetails.companyDetails.address.city}</p>
+                        <p className="text-sm">{data?.ownAddress !== null ? data?.ownAddress?.address + ', ' : OrderInvoiceDetails.companyDetails.address.address}</p>
+                        <p className="text-sm">{data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}</p>
                         <p className="text-sm">
-                            {data?.ownAddress!==null?data?.ownAddress?.state:OrderInvoiceDetails.companyDetails.address.state} {data?.ownAddress!==null?data?.ownAddress?.pinCode:OrderInvoiceDetails.companyDetails.address.pinCode},{" "}
-                            {data?.ownAddress!==null?data?.ownAddress?.country:OrderInvoiceDetails.companyDetails.address.country}
+                            {data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} {data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode},{" "}
+                            {data?.ownAddress !== null ? data?.ownAddress?.country : OrderInvoiceDetails.companyDetails.address.country}
                         </p>
                     </div>
                 </div>
@@ -530,14 +812,14 @@ if (imgElement && imgElement.src) {
             <div style={{ display: "none" }}>
                 <div id="file-renderer-image">
                     <div className="grid grid-cols-3">
-                    {
-                        PDFAdsReducer?.doc !== null &&
-                        PDFAdsReducer?.doc?.map((ele, i) => {
-                            return (
-                                <FileRenderer fileId={ele?._id} />
-                            )
-                        })
-                    }
+                        {
+                            PDFAdsReducer?.doc !== null &&
+                            PDFAdsReducer?.doc?.map((ele, i) => {
+                                return (
+                                    <FileRenderer fileId={ele?._id} />
+                                )
+                            })
+                        }
                     </div>
                 </div>
             </div>
