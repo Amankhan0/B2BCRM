@@ -65,37 +65,37 @@ const POPDF = ({ data, onClickBack }) => {
             let currentY = padding;
 
             const desiredWidth = 50;
-          const logoUrl =
-            "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
-      
-          // 🟢 Load logo first to get natural aspect ratio
-          const loadImageAsBase64 = async (url) => {
-            const res = await fetch(url, { mode: "cors" });
-            const blob = await res.blob();
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
+            const logoUrl =
+                "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+
+            // 🟢 Load logo first to get natural aspect ratio
+            const loadImageAsBase64 = async (url) => {
+                const res = await fetch(url, { mode: "cors" });
+                const blob = await res.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            };
+
+            const base64Logo = await loadImageAsBase64(logoUrl);
+
+            const logoImg = new Image();
+            logoImg.src = base64Logo;
+            await new Promise((resolve) => {
+                logoImg.onload = resolve;
             });
-          };
-      
-          const base64Logo = await loadImageAsBase64(logoUrl);
-      
-          const logoImg = new Image();
-          logoImg.src = base64Logo;
-          await new Promise((resolve) => {
-            logoImg.onload = resolve;
-          });
-      
-          const aspectRatio = logoImg.width / logoImg.height;
-          const logoHeight = desiredWidth / aspectRatio;
-      
-          // 🟢 Add Logo (fixed stretch issue)
-          pdf.addImage(base64Logo, "PNG", padding, currentY - 5, desiredWidth, logoHeight);
-            
-            
-            
+
+            const aspectRatio = logoImg.width / logoImg.height;
+            const logoHeight = desiredWidth / aspectRatio;
+
+            // 🟢 Add Logo (fixed stretch issue)
+            pdf.addImage(base64Logo, "PNG", padding, currentY - 5, desiredWidth, logoHeight);
+
+
+
 
             // 🟢 Company Details
             pdf.setFontSize(8);
@@ -119,17 +119,25 @@ const POPDF = ({ data, onClickBack }) => {
                 align: "right",
             });
 
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(67, 42, 119);
+            pdf.setFontSize(13);
+            pdf.text("Purchase Order", pageWidth - padding, currentY - 5, { align: "right" });
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(8);
+            const dateY = rightTextY + 3;
             pdf.text(
                 `Date: ${GetFullYear(Date.now())}`,
                 pageWidth - padding,
-                rightTextY + wrappedRightText.length * 5 + 2,
+                currentY + 1,
                 { align: "right" }
             );
             pdf.text(
                 `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
                 }`,
                 pageWidth - padding,
-                rightTextY + wrappedRightText.length * 5 + 7,
+                currentY + 5,
                 { align: "right" }
             );
 

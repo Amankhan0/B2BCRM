@@ -518,15 +518,16 @@ const QuotaionPDF = ({ data }) => {
           currentY += 8;
       
           // 🟢 Product Table with GST only
-          const headRow = [["Product", "Variant", "HSN", "Qty", "Rate", "GST Amount (%)", "Amount"]];
+          const headRow = [["Product", "Variant", "Unit", "Qty", "Rate", "GST Amount (%)", "Amount"]];
           const body = data.products.map((ele) => {
             const baseAmount = Number(ele.price) * Number(ele.qty);
             const productName = ele.product_id.productName;
             const variantName = ele.productVarient.varientName;
+            const variantUnit = ele.productVarient.varientUnit;
             return [
               productName,
               variantName,
-              ele.product_id.hsnNo,
+              variantUnit,
               ele.qty,
               ele.price,
               `${GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2)} (${ele.productVarient.gst}%)`,

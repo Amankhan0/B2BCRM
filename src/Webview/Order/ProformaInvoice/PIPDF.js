@@ -79,49 +79,53 @@ const PIPDF = ({ data, onClickBack }) => {
       let currentY = padding;
 
       const desiredWidth = 50;
-          const logoUrl =
-            "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
-      
-          // 🟢 Load logo first to get natural aspect ratio
-          const loadImageAsBase64 = async (url) => {
-            const res = await fetch(url, { mode: "cors" });
-            const blob = await res.blob();
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            });
-          };
-      
-          const base64Logo = await loadImageAsBase64(logoUrl);
-      
-          const logoImg = new Image();
-          logoImg.src = base64Logo;
-          await new Promise((resolve) => {
-            logoImg.onload = resolve;
-          });
-      
-          const aspectRatio = logoImg.width / logoImg.height;
-          const logoHeight = desiredWidth / aspectRatio;
-      
-          // 🟢 Add Logo (fixed stretch issue)
-          pdf.addImage(base64Logo, "PNG", padding, currentY - 5, desiredWidth, logoHeight);
+      const logoUrl =
+        "https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75";
+
+      // 🟢 Load logo first to get natural aspect ratio
+      const loadImageAsBase64 = async (url) => {
+        const res = await fetch(url, { mode: "cors" });
+        const blob = await res.blob();
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      };
+
+
+      const base64Logo = await loadImageAsBase64(logoUrl);
+
+      const logoImg = new Image();
+      logoImg.src = base64Logo;
+      await new Promise((resolve) => {
+        logoImg.onload = resolve;
+      });
+
+      const aspectRatio = logoImg.width / logoImg.height;
+      const logoHeight = desiredWidth / aspectRatio;
+
+      // 🟢 Add Logo (fixed stretch issue)
+      pdf.addImage(base64Logo, "PNG", padding, currentY - 5, desiredWidth, logoHeight);
 
       // Company Details
       pdf.setFontSize(8);
       pdf.setFont("helvetica", "bold");
       currentY += logoHeight + 2;
 
-      pdf.text(`GSTIN: ${data?.ownAddress!==null?data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
+
+      pdf.text(`GSTIN: ${data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}`, padding, currentY);
       currentY += 5;
-      pdf.text(`CIN: ${data?.ownAddress!==null?data?.ownAddress?.cin:OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
+      pdf.text(`CIN: ${data?.ownAddress !== null ? data?.ownAddress?.cin : OrderInvoiceDetails.companyDetails.cin}`, padding, currentY);
       currentY += 5;
-      pdf.text(`PAN: ${data?.ownAddress!==null?data?.ownAddress?.panNo:OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
+      pdf.text(`PAN: ${data?.ownAddress !== null ? data?.ownAddress?.panNo : OrderInvoiceDetails.companyDetails.panNo}`, padding, currentY);
 
       // Address on Right
+
       const rightTextY = padding + 2;
-      const companyAddress = `${data?.ownAddress!==null?data?.ownAddress?.address:OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress!==null?data?.ownAddress?.city:OrderInvoiceDetails.companyDetails.address.city}, ${data?.ownAddress!==null?data?.ownAddress?.state:OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress!==null?data?.ownAddress?.pinCode:OrderInvoiceDetails.companyDetails.address.pinCode}, ${data?.ownAddress!==null?data?.ownAddress?.country:OrderInvoiceDetails.companyDetails.address.country}`;
+
+      const companyAddress = `${data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}, ${data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode}, ${data?.ownAddress !== null ? data?.ownAddress?.country : OrderInvoiceDetails.companyDetails.address.country}`;
 
       const wrappedRightText = pdf.splitTextToSize(companyAddress, 35);
       pdf.setFontSize(8);
@@ -134,34 +138,42 @@ const PIPDF = ({ data, onClickBack }) => {
       const addressTextHeight = wrappedRightText.length * 4;
 
       // Position date and order ref below the address
+      
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(67, 42, 119);
+      pdf.setFontSize(13);
+      pdf.text("Perfoma Invoice", pageWidth - padding, currentY-5, { align: "right" });
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(0,0,0);
+      pdf.setFontSize(8);
       const dateY = rightTextY + addressTextHeight + 3;
       pdf.text(
         `Date: ${GetFullYear(Date.now())}`,
         pageWidth - padding,
-        dateY,
+        currentY+1,
         { align: "right" }
       );
       pdf.text(
         `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
         }`,
         pageWidth - padding,
-        dateY + 5,
+        currentY+5,
         { align: "right" }
       );
 
       // Update currentY to account for the right side content
       const rightSideHeight = addressTextHeight + 15;
       currentY = Math.max(currentY, rightTextY + rightSideHeight);
-
       // Divider
       currentY += 10;
       pdf.setDrawColor(67, 42, 119);
       pdf.setLineWidth(0.5);
       pdf.line(padding, currentY, pageWidth - padding, currentY);
       currentY += 5;
-
+      // currentY += 8;
       // Billing & Shipping Addresses
       pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(10); // 👈 yaha bada font size
       pdf.setTextColor(67, 42, 119);
       pdf.text("Billing Address", padding, currentY);
       pdf.text("Shipping Address", pageWidth / 2 + 5, currentY);
@@ -242,7 +254,7 @@ const PIPDF = ({ data, onClickBack }) => {
       }
 
       // Product Table - Show GST column with separate Product and Variant columns
-      const headRow = [["Product", "Variant", "HSN", "Qty", "Rate", "GST (%)", "Amount"]];
+      const headRow = [["Product", "Variant", "Unit", "Qty", "Rate", "GST (%)", "Amount"]];
 
       const body = data.products.map((ele) => {
         const baseAmount = Number(ele.price) * Number(ele.qty);
@@ -251,7 +263,7 @@ const PIPDF = ({ data, onClickBack }) => {
         return [
           ele.product_id.productName,
           ele.productVarient.varientName,
-          ele.product_id.hsnNo,
+          ele.productVarient.varientUnit,
           ele.qty,
           ele.price,
           `${gst} (${ele.productVarient.gst}%)`,
@@ -312,76 +324,76 @@ const PIPDF = ({ data, onClickBack }) => {
 
       pdf.addPage();
 
-const imgElement = document.querySelector("#file-renderer-image img");
+      const imgElement = document.querySelector("#file-renderer-image img");
 
-if (imgElement && imgElement.src) {
-    try {
-        let base64Img;
+      if (imgElement && imgElement.src) {
+        try {
+          let base64Img;
 
-        // Check if img.src is already a base64 data URI
-        if (imgElement.src.startsWith("data:image")) {
+          // Check if img.src is already a base64 data URI
+          if (imgElement.src.startsWith("data:image")) {
             base64Img = imgElement.src; // Already base64
-        } else {
+          } else {
             // It's a URL, so fetch and convert to base64
             const toBase64 = async (url) => {
-                const res = await fetch(url, { mode: 'cors' });
-                const blob = await res.blob();
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
+              const res = await fetch(url, { mode: 'cors' });
+              const blob = await res.blob();
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
             };
 
             base64Img = await toBase64(imgElement.src);
-        }
+          }
 
-        // Detect format
-        const format = base64Img.includes("image/jpeg")
+          // Detect format
+          const format = base64Img.includes("image/jpeg")
             ? "JPEG"
             : base64Img.includes("image/png")
-            ? "PNG"
-            : "PNG"; // default fallback
+              ? "PNG"
+              : "PNG"; // default fallback
 
-        // Load into Image to get size
-        const tempImg = new Image();
-        tempImg.crossOrigin = "Anonymous";
-        tempImg.src = base64Img;
+          // Load into Image to get size
+          const tempImg = new Image();
+          tempImg.crossOrigin = "Anonymous";
+          tempImg.src = base64Img;
 
-        await new Promise((resolve, reject) => {
+          await new Promise((resolve, reject) => {
             tempImg.onload = resolve;
             tempImg.onerror = reject;
-        });
+          });
 
-        const imgWidth = tempImg.naturalWidth;
-        const imgHeight = tempImg.naturalHeight;
+          const imgWidth = tempImg.naturalWidth;
+          const imgHeight = tempImg.naturalHeight;
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const padding = 20;
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const padding = 20;
 
-        const maxWidth = pageWidth - 2 * padding;
-        const maxHeight = pageHeight - 2 * padding;
+          const maxWidth = pageWidth - 2 * padding;
+          const maxHeight = pageHeight - 2 * padding;
 
-        const aspectRatio = imgWidth / imgHeight;
+          const aspectRatio = imgWidth / imgHeight;
 
-        let displayWidth = maxWidth;
-        let displayHeight = displayWidth / aspectRatio;
+          let displayWidth = maxWidth;
+          let displayHeight = displayWidth / aspectRatio;
 
-        if (displayHeight > maxHeight) {
+          if (displayHeight > maxHeight) {
             displayHeight = maxHeight;
             displayWidth = displayHeight * aspectRatio;
+          }
+
+          const x = (pageWidth - displayWidth) / 2;
+          const y = (pageHeight - displayHeight) / 2;
+
+          pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
+        } catch (error) {
+          console.error("Error loading image for PDF:", error);
         }
-
-        const x = (pageWidth - displayWidth) / 2;
-        const y = (pageHeight - displayHeight) / 2;
-
-        pdf.addImage(base64Img, format, x, y, displayWidth, displayHeight);
-    } catch (error) {
-        console.error("Error loading image for PDF:", error);
-    }
-  }
+      }
 
       // Save the PDF with new filename
       pdf.save("ProformaInvoice.pdf");
@@ -456,13 +468,13 @@ if (imgElement && imgElement.src) {
               src="https://www.headsupb2b.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-dark.67589a8e.jpg&w=3840&q=75"
             />
             <p className="text-xs p-0.5 mt-3">
-              GSTIN : {data?.ownAddress!==null?data?.ownAddress?.gstNo:OrderInvoiceDetails.companyDetails.gstNo}
+              GSTIN : {data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}
             </p>
             <p className="text-xs p-0.5">
-              CIN : {data?.ownAddress!==null?data?.ownAddress?.cin:OrderInvoiceDetails.companyDetails.cin}
+              CIN : {data?.ownAddress !== null ? data?.ownAddress?.cin : OrderInvoiceDetails.companyDetails.cin}
             </p>
             <p className="text-xs p-0.5">
-              PAN : {data?.ownAddress!==null?data?.ownAddress?.panNo:OrderInvoiceDetails.companyDetails.panNo}
+              PAN : {data?.ownAddress !== null ? data?.ownAddress?.panNo : OrderInvoiceDetails.companyDetails.panNo}
             </p>
           </div>
           <div className="flex justify-end text-right">
@@ -558,9 +570,10 @@ if (imgElement && imgElement.src) {
               }}
             >
               <th style={{ padding: 8, border: "1px solid #ddd" }}>
-                Product / Varient
+                Product
               </th>
-              <th style={{ padding: 8, border: "1px solid #ddd" }}>HSN</th>
+              <th style={{ padding: 8, border: "1px solid #ddd" }}>Variant</th>
+              <th style={{ padding: 8, border: "1px solid #ddd" }}>Unit</th>
               <th style={{ padding: 8, border: "1px solid #ddd" }}>Qty</th>
               <th style={{ padding: 8, border: "1px solid #ddd" }}>Rate</th>
               {data.customerDetails?.shippingAddress?.state === "Delhi" ? (
@@ -585,13 +598,17 @@ if (imgElement && imgElement.src) {
               return (
                 <tr>
                   <td style={{ padding: 8, border: "1px solid #ddd" }}>
-                    {ele?.product_id?.productName +
+                    {ele?.product_id?.productName}
+                    {/* {ele?.product_id?.productName +
                       " / " +
                       ele?.productVarient?.varientName +
-                      ele?.productVarient?.varientUnit}
+                      ele?.productVarient?.varientUnit} */}
                   </td>
                   <td style={{ padding: 8, border: "1px solid #ddd" }}>
-                    {ele?.product_id?.hsnNo}
+                    {ele?.productVarient?.varientName}
+                  </td>
+                  <td style={{ padding: 8, border: "1px solid #ddd" }}>
+                    {ele?.productVarient?.varientUnit}
                   </td>
                   <td style={{ padding: 8, border: "1px solid #ddd" }}>
                     {ele?.qty}
@@ -735,19 +752,19 @@ if (imgElement && imgElement.src) {
         Download PDF
       </button>
       <div style={{ display: "none" }}>
-                <div id="file-renderer-image">
-                    <div className="grid grid-cols-3">
-                    {
-                        PDFAdsReducer?.doc !== null &&
-                        PDFAdsReducer?.doc?.map((ele, i) => {
-                            return (
-                                <FileRenderer fileId={ele?._id} />
-                            )
-                        })
-                    }
-                    </div>
-                </div>
-            </div>
+        <div id="file-renderer-image">
+          <div className="grid grid-cols-3">
+            {
+              PDFAdsReducer?.doc !== null &&
+              PDFAdsReducer?.doc?.map((ele, i) => {
+                return (
+                  <FileRenderer fileId={ele?._id} />
+                )
+              })
+            }
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
