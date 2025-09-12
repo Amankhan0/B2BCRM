@@ -161,7 +161,8 @@ const POPDF = ({ data, onClickBack }) => {
 
             const billingLines = [
                 `Company Name: ${data?.ownAddress !== null ? data?.ownAddress?.companyName : OrderInvoiceDetails.companyDetails.companyName}`,
-                `Address: ${data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address}, ${data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}`,
+                `Address: ${data?.ownAddress !== null ? data?.ownAddress?.address : OrderInvoiceDetails.companyDetails.address.address},`,
+                `${data?.ownAddress !== null ? data?.ownAddress?.city : OrderInvoiceDetails.companyDetails.address.city}`,
                 `${data?.ownAddress !== null ? data?.ownAddress?.state : OrderInvoiceDetails.companyDetails.address.state} - ${data?.ownAddress !== null ? data?.ownAddress?.pinCode : OrderInvoiceDetails.companyDetails.address.pinCode}`,
                 `GST No: ${data?.ownAddress !== null ? data?.ownAddress?.gstNo : OrderInvoiceDetails.companyDetails.gstNo}`,
             ];
@@ -210,7 +211,7 @@ const POPDF = ({ data, onClickBack }) => {
 
             const body = data.products.map((ele) => {
                 const baseAmount = Number(ele.vendorPrice) * Number(ele.qty);
-                const gst = GstCalculation(baseAmount, ele.productVarient.gst).toFixed(2);
+                const gst = GstCalculation(baseAmount, ele.productVarient.gst)?.toFixed(2);
 
                 return [
                     ele.product_id.productName,
@@ -219,7 +220,7 @@ const POPDF = ({ data, onClickBack }) => {
                     ele.qty,
                     ele.vendorPrice,
                     `${gst} (${ele.productVarient.gst}%)`,
-                    baseAmount.toFixed(2),
+                    baseAmount?.toFixed(2),
                 ];
             });
 
@@ -241,10 +242,10 @@ const POPDF = ({ data, onClickBack }) => {
             // Totals - Show GST instead of CGST/SGST
             pdf.setFontSize(10);
             const totals = [
-                `Total Amount: ${totalAmount.toFixed(2)}`,
-                `Total GST: ${totalGSTAmount.toFixed(2)}`,
-                `Total Taxable Amount: ${totalTaxAmount.toFixed(2)} (${numberToWords(
-                    totalTaxAmount.toFixed(2)
+                `Total Amount: ${totalAmount?.toFixed(2)}`,
+                `Total GST: ${totalGSTAmount?.toFixed(2)}`,
+                `Total Taxable Amount: ${totalTaxAmount?.toFixed(2)} (${numberToWords(
+                    totalTaxAmount?.toFixed(2)
                 )})`,
             ];
 
@@ -470,7 +471,7 @@ const POPDF = ({ data, onClickBack }) => {
                     <tbody>
                         {
                             data?.products?.map((ele, i) => {
-                                console.log('--?.toFixed(2)', ele);
+                                console.log('--??.toFixed(2)', ele);
 
                                 return (
                                     <tr>
