@@ -16,7 +16,7 @@ import { getAuthenticatedUserWithRoles } from '../../Storage/Storage';
 import { CrossMark } from '../../SVG/Icons';
 import CustomerView from '../../Component/CustomerView';
 
-function Quotation({ selectedLeadId }) {
+function Quotation({ selectedLeadId,page }) {
 
     const QuotationReducer = useSelector(state => state.QuotationReducer)
     const PaginationReducer = useSelector(state => state.PaginationReducer)
@@ -61,7 +61,7 @@ function Quotation({ selectedLeadId }) {
 
     const fetchQuotationData = () => {
         var json = {
-            page: PaginationReducer.pagination.page,
+            page:page?1:PaginationReducer.pagination.page,
             limit: PaginationReducer.pagination.limit,
             search: {
                 lead_id: JSON.parse(selectedLead)._id

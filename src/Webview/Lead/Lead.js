@@ -150,7 +150,7 @@ function Lead() {
               <i className='cursor-pointer' onClick={() => onCrossQuotaiotn()}>{crossIcon}</i>
             </div>
             <div className='p-5 overflow-scroll'>
-              <Quotation selectedLeadId={quotationModal} />
+              <Quotation page={true} selectedLeadId={quotationModal} />
             </div>
           </div>
         </div>
