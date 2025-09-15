@@ -142,7 +142,7 @@ const PIPDF = ({ data, onClickBack }) => {
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(67, 42, 119);
       pdf.setFontSize(13);
-      pdf.text("Perfoma Invoice", pageWidth - padding, currentY-5, { align: "right" });
+      pdf.text("Perfoma Invoice", pageWidth - padding, currentY + 1, { align: "right" });
       pdf.setFont("helvetica", "normal");
       pdf.setTextColor(0,0,0);
       pdf.setFontSize(8);
@@ -150,14 +150,14 @@ const PIPDF = ({ data, onClickBack }) => {
       pdf.text(
         `Date: ${GetFullYear(Date.now())}`,
         pageWidth - padding,
-        currentY+1,
+        currentY + 5,
         { align: "right" }
       );
       pdf.text(
         `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
         }`,
         pageWidth - padding,
-        currentY+5,
+        currentY+10,
         { align: "right" }
       );
 

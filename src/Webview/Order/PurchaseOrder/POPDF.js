@@ -28,6 +28,7 @@ const POPDF = ({ data, onClickBack }) => {
     const [totalAmount, setTotalAmount] = useState(null)
 
     useEffect(() => {
+       
         if (totalAmount === null) {
             var t = calculateTotalAmountUsingData(data?.products, true)
             if (t) {
@@ -48,14 +49,22 @@ const POPDF = ({ data, onClickBack }) => {
             var s = calculateTotalSGSTAmountUsingData(data?.products, true)
             setTotalSGSTAmount(s)
         }
+        console.log('call',totalTaxAmount,totalCGSTAmount,totalGSTAmount,totalSGSTAmount,totalAmount);
         if (totalTaxAmount === null && totalCGSTAmount !== null && totalGSTAmount !== null && totalSGSTAmount !== null && totalAmount !== null) {
+            
+            
             if (data?.customerDetails?.shippingAddress?.state === data.supplierDetails?.gstAddresses?.state) {
                 setTotalTaxAmount(totalAmount + totalGSTAmount)
             } else {
+                console.log('tota;',totalAmount,totalCGSTAmount,totalSGSTAmount);
+                
                 setTotalTaxAmount(totalAmount + totalCGSTAmount + totalSGSTAmount)
             }
         }
     }, [totalAmount])
+
+    console.log('totalTaxAmount;',totalTaxAmount);
+
     const downloadPDF = async () => {
         try {
             const pdf = new jsPDF("p", "mm", "a4");
@@ -122,7 +131,7 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.setFont("helvetica", "bold");
             pdf.setTextColor(67, 42, 119);
             pdf.setFontSize(13);
-            pdf.text("Purchase Order", pageWidth - padding, currentY - 5, { align: "right" });
+            pdf.text("Purchase Order", pageWidth - padding, currentY + 1, { align: "right" });
             pdf.setFont("helvetica", "normal");
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(8);
@@ -130,14 +139,14 @@ const POPDF = ({ data, onClickBack }) => {
             pdf.text(
                 `Date: ${GetFullYear(Date.now())}`,
                 pageWidth - padding,
-                currentY + 1,
+                currentY + 5,
                 { align: "right" }
             );
             pdf.text(
                 `${data?.poRefNo ? "PO" : "Order"} Ref No: ${data?.poRefNo || data?.orderRefNo
                 }`,
                 pageWidth - padding,
-                currentY + 5,
+                currentY + 10,
                 { align: "right" }
             );
 
