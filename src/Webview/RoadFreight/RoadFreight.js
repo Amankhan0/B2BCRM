@@ -19,7 +19,7 @@ function RoadFreight() {
 
     console.log("ApiReducer", ApiReducer);
 
-    // Get token and userId from localStorage
+    // Get token and userId from localSt
     const getStoredCredentials = () => {
         return {
             token: localStorage.getItem('ulipToken'),
