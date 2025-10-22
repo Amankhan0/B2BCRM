@@ -150,7 +150,20 @@ export const panelPermisson = {
             "readEndpoint": downloadWithoutIP,
             'writeEndpoint': [searchFileWithoutIP, fileUpdateWithoutIP],
             'deleteEndpoint': fileDeleteWithoutIP
-        }
+        },
+        {
+            "value": "Findvehicle",
+            "permission": [
+                {
+                    "read": false,
+                    "write": false,
+                    "delete": false
+                }
+            ],
+            "readEndpoint": 'downloadWithoutIP',
+            'writeEndpoint': ['searchFileWithoutIP', 'fileUpdateWithoutIP'],
+            'deleteEndpoint': 'fileDeleteWithoutIP'
+        },
     ]
 }
 
@@ -206,16 +219,44 @@ export function compileData(data) {
             write: [uploadFileWithoutIP, fileUpdateWithoutIP],
             delete: fileDeleteWithoutIP
         },
+        "Findvehicle": {
+            read: 'searchFileWithoutIP',
+            write: ['uploadFileWithoutIP', 'fileUpdateWithoutIP'],
+            delete: 'fileDeleteWithoutIP'
+        },
     };
 
-    return {
-        permission: data.map(item => ({
-            ...item,
-            readEndpoint: endpointMapping[item.value]?.read || null,
-            writeEndpoint: endpointMapping[item.value]?.write || [],
-            deleteEndpoint: endpointMapping[item.value]?.delete || null
-        }))
-    };
+    // Map existing permissions
+    const compiled = (data || []).map(item => ({
+        ...item,
+        // If nested permission array exists, merge first object; else default
+        read: item.permission?.[0]?.read ?? false,
+        write: item.permission?.[0]?.write ?? false,
+        delete: item.permission?.[0]?.delete ?? false,
+        readEndpoint: endpointMapping[item.value]?.read || null,
+        writeEndpoint: endpointMapping[item.value]?.write || [],
+        deleteEndpoint: endpointMapping[item.value]?.delete || null
+    }));
+
+    // Add missing modules from endpointMapping
+    const existingValues = new Set(compiled.map(i => i.value));
+    Object.keys(endpointMapping).forEach(key => {
+        if (!existingValues.has(key)) {
+            compiled.push({
+                value: key,
+                permission: [{ read: false, write: false, delete: false }],
+                read: false,
+                write: false,
+                delete: false,
+                readEndpoint: endpointMapping[key].read,
+                writeEndpoint: endpointMapping[key].write,
+                deleteEndpoint: endpointMapping[key].delete,
+                child: null
+            });
+        }
+    });
+
+    return { permission: compiled };
 }
 
 export const superAdminRoleData = {

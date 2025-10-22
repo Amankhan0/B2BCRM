@@ -23,6 +23,8 @@ const AddRole = ({ data }) => {
                 ...data,
                 permission: compileData(data.permission).permission
             }
+            console.log('compile',compile);
+            
             setPermissionData(compile)
         }
         else if (permissionData === null) {

@@ -82,14 +82,6 @@ export default [
     icon: <Package size={20} />,
     blackIcon: <Package size={20} />
   },
-   {
-    id: 7,
-    title: "Road Freight",
-    url: '/raoadfreight',
-    active: user?.roleObject?.roleType === 'superadmin',
-    icon: <Truck size={20} />,
-    blackIcon: <Truck size={20} />
-  },
   {
     id: 6,
     title: "Role",
@@ -112,6 +104,14 @@ export default [
     title: "PDF Ads",
     url: '/pdf-ads',
     active: user?.roleObject?.permission?.[9]?.permission?.[0].read,
+    icon: <File size={20} />,
+    blackIcon: <File size={20} />
+  },
+  {
+    id: 8,
+    title: "Findvehicle",
+    url: '/raoadfreight',
+    active: user?.roleObject?.roleType === 'superadmin' || user?.roleObject?.permission?.[10]?.permission?.[0].read,
     icon: <File size={20} />,
     blackIcon: <File size={20} />
   },
