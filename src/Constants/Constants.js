@@ -202,6 +202,10 @@ export const updatePIWithoutIP = OrderMicroServiceWithoutIP + 'updatePI'
 export const searchWebsiteLead = BASEURL + '/api/' + 'searchWebsiteLead'
 export const updateWebsiteLead = BASEURL + '/api/' + 'updateWebsiteLead'
 
+//Road Freight
+export const fastag1 = "https://api.knowyourtransporter.in/api/ulip/handler"
+export const ulipLogin = "https://api.knowyourtransporter.in/api/user/login"
+
 //Build Version
 export const buildVersion = 1.01
 

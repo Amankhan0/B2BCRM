@@ -8,6 +8,7 @@ import Cookies from "universal-cookie"
 import { setDataAction } from "./Store/Action/SetDataAction"
 import { SET_INTERNET_SERVICE } from "./Store/ActionName/ActionName"
 import { getAuthenticatedUser, getAuthToken, logOutAuthenticatedUser } from "./Storage/Storage"
+import { ulipLogin } from "./Constants/Constants"
 
 export const GetPageCount = (limit, page, index) => {
   var no = limit * page - limit + index + 1
@@ -393,9 +394,9 @@ export const getHeadingFromPathname = () => {
   }
   else if (segments === 'user' || segments?.includes('edituser') || segments?.includes('adduser')) {
     return "User"
-  }else if (segments === '') {
+  } else if (segments === '') {
     return "Dashboard"
-  }else if (segments === 'online-lead') {
+  } else if (segments === 'online-lead') {
     return "Online Lead"
   }
   else if (segments === 'pdf-ads') {
@@ -774,29 +775,29 @@ export function updateProductIdWithAvailablePOPIDispatch(data) {
 }
 
 export const GstCalculation = (amount, value) => {
-  var newValue = value  
+  var newValue = value
   if (newValue) {
-    return (amount * Number(newValue))/100
+    return (amount * Number(newValue)) / 100
   }
 }
 
-export const calculateTotalAmountUsingData = (products,type) => {
+export const calculateTotalAmountUsingData = (products, type) => {
   return products?.reduce((total, product) => {
-    const productTotal = Number(type?product.vendorPrice:product.price) * Number(product.qty);
+    const productTotal = Number(type ? product.vendorPrice : product.price) * Number(product.qty);
     console.log('productTotal', productTotal);
 
     return total + productTotal;
   }, 0);
 };
 
-export const calculateTotalGSTAmountUsingData = (products,type) => {
+export const calculateTotalGSTAmountUsingData = (products, type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst));
-    console.log('products',products);
-    
-    console.log('cal',cal);
-    
+    var cal = GstCalculation(Number(type ? product.vendorPrice : product.price) * Number(product.qty), Number(product?.productVarient?.gst));
+    console.log('products', products);
+
+    console.log('cal', cal);
+
     if (cal) {
       productTotal = cal;
     }
@@ -804,11 +805,11 @@ export const calculateTotalGSTAmountUsingData = (products,type) => {
   }, 0);
 };
 
-export const calculateTotalCGSTAmountUsingData = (products,type) => {
+export const calculateTotalCGSTAmountUsingData = (products, type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
-    console.log('cal',cal);
+    var cal = GstCalculation(Number(type ? product.vendorPrice : product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    console.log('cal', cal);
     if (cal) {
       productTotal = cal;
     }
@@ -816,10 +817,10 @@ export const calculateTotalCGSTAmountUsingData = (products,type) => {
   }, 0);
 };
 
-export const calculateTotalSGSTAmountUsingData = (products,type) => {
+export const calculateTotalSGSTAmountUsingData = (products, type) => {
   return products?.reduce((total, product) => {
     let productTotal = 0;
-    var cal = GstCalculation(Number(type?product.vendorPrice:product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
+    var cal = GstCalculation(Number(type ? product.vendorPrice : product.price) * Number(product.qty), Number(product?.productVarient?.gst) / 2);
     if (cal) {
       productTotal = cal;
     }
@@ -863,3 +864,90 @@ function toTitleCase(str) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 }
+
+
+
+
+//ulip
+
+
+// let tokenUlip = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWY3ZTcwZjdjMDFkMjIyYjliMTUwMjYiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNzYxMTMzMDMwLCJleHAiOjE3NjM3MjUwMzB9.CFcePmEzj0gtUqBCKubbxxeWCb9HPiRGZAPrcqjbogc"
+export const ApiHitUlip = (json, api, tokenUlip) => {
+
+  const MyPromise = new Promise((resolve, reject) => {
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        Token: `${tokenUlip}`,
+      },
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(json)
+    };
+
+    fetch(api, requestOptions)
+      .then(res => res.text())
+      .then(
+        (res) => {
+          var result = JSON.parse(res)
+          resolve(result)
+        },
+        (error) => {
+          console.error('ULIP API Error:', error)
+          reject(error)
+        }
+      )
+      .catch((error) => {
+        console.error('ULIP Fetch Error:', error)
+        reject(error)
+      })
+  });
+  return MyPromise;
+}
+
+export const ApiTYTLogin = () => {
+  let json = {
+    "email": "deshpande.anita@gmail.com",
+    "password": "Abc@1234"
+  }
+
+  const MyPromise = new Promise((resolve, reject) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(json)
+    };
+
+    fetch(ulipLogin, requestOptions)
+      .then(res => res.text())
+      .then(
+        (res) => {
+          var result = JSON.parse(res)
+          // Store token and userId in localStorage
+          if (result?.status === 200 && result?.doc?.token && result?.doc?.doc?._id) {
+            localStorage.setItem('ulipToken', result.doc.token);
+            localStorage.setItem('ulipUserId', result.doc.doc._id);
+          }
+          resolve(result)
+        },
+        (error) => {
+          console.error('ULIP API Error:', error)
+          reject(error)
+        }
+      )
+      .catch((error) => {
+        console.error('ULIP Fetch Error:', error)
+        reject(error)
+      })
+  });
+  return MyPromise;
+}
+

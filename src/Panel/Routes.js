@@ -25,6 +25,7 @@ import EditUser from "../Webview/UserMangment/UserManagement/EditUser";
 import OnlineLead from "../Webview/OnlineLead";
 import OnlineCreateLead from "../Webview/OnlineCreateLead";
 import PDFAds from "../Webview/PDFAds/PDFAds";
+import RoadFreight from "../Webview/RoadFreight/RoadFreight";
 
 const PanelRoutes = () => {
 
@@ -130,6 +131,12 @@ const PanelRoutes = () => {
           // user?.roleObject?.permission?.[9]?.permission?.[0].write &&
            <Route path="/pdf-ads" exact element={<PDFAds/>} />
         }
+          {
+          // user?.roleObject?.permission?.[9]?.permission?.[0].write &&
+           <Route path="/raoadfreight" exact element={<RoadFreight/>} />
+        }
+
+        
         <Route path="/" exact element={<Dashboard />} />
         {/* <Route path="/profile" exact element={<Profile />} /> */}
       </Routes>
