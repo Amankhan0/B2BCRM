@@ -109,10 +109,10 @@ export default [
   },
   {
     id: 8,
-    title: "Findvehicle",
+    title: "Road Freight",
     url: '/raoadfreight',
     active: user?.roleObject?.roleType === 'superadmin' || user?.roleObject?.permission?.[10]?.permission?.[0].read,
-    icon: <File size={20} />,
-    blackIcon: <File size={20} />
+    icon: <Truck size={20} />,
+    blackIcon: <Truck size={20} />
   },
 ];
