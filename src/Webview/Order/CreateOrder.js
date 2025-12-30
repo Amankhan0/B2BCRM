@@ -64,7 +64,7 @@ function CreateOrder() {
     const fetchCustomerData = () => {
         var json = {
             page: 1,
-            limit: 100,
+            limit: 1000,
             search: {
             }
         }

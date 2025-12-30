@@ -94,7 +94,7 @@ function CreateLead({ edit, isOnlineLead, onLineLeadId }) {
   const fetchData = () => {
     var json = {
       page: 1,
-      limit: 100,
+      limit: 1000,
       search: {}
     }
     ApiHit(json, searchCustomer).then(res => {
